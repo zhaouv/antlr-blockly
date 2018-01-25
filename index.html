@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Fixed Blockly</title>
+  <!-- <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../msg/js/zh-hans.js"></script> -->
+  <!-- <script src="../../msg/js/en.js"></script> -->
+  
+  <script src="blockly_compressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="javascript_compressed.js"></script>
+  <script src="zh-hans.js"></script>
+  <script src="motaActionBlocks.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+<!-- =========================================================== -->
+
+<h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+  <a href="../index.html">Demos</a> &gt; Fixed Blockly</h1>
+<p>
+  <button onclick="showXML()">Show XML</button>
+  <button onclick="runCode()">Run JavaScript</button>
+</p>
+
+<div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+<pre id="codeArea"></pre>
+
+<!-- =========================================================== -->
+
+<xml id="toolbox" style="display: none">
+  <category name="类别" expanded="true">
+    <category name="events"></category>
+    <category name="changefloor"></category>
+  </category>
+  <sep gap="200"></sep>
+  <category name="default">
+    <block type="controls_if"></block>
+    <block type="logic_compare"></block>
+    <block type="controls_repeat_ext"></block>
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="text"></block>
+    <block type="text_print"></block>
+  </category>
+  <category name="new"></category>
+  <category name="变量" expanded="true">
+    <category name="status" custom="MY_VARIABLE"></category>
+    <category name="item"></category>
+    <category name="flag">
+      <block type="flagvar"></block>
+    </category>
+  </category>
+  <category name="事件例子">
+    <block type="math_number" disabled="true">
+      <field name="NUM">42</field>
+    </block>
+    <sep gap="200"></sep>
+    <label text="这是一个循环的例子"></label>
+    <block type="controls_for">
+      <value name="FROM">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TO">
+        <block type="math_number">
+          <field name="NUM">10</field>
+        </block>
+      </value>
+      <value name="BY">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+  
+    <block type="math_arithmetic">
+      <field name="OP">ADD</field>
+      <value name="A">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="B">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+  <!-- <category name="Variables" colour="330" custom="VARIABLE"></category>
+  <category name="Functions" colour="290" custom="PROCEDURE"></category> -->
+</xml>
+
+
+<script>
+var mblocks = [
+  {
+    "type": "string_length",
+    "message0": "length of %1",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "VALUE",
+        "check": "String"
+      }
+    ],
+    "output": "Number",
+    "colour": 160,
+    "tooltip": "",
+    "helpUrl": "",
+    "generFunc": function(block) {
+      // String or array length.
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || "''";
+      return [argument0 + '.length', Blockly.JavaScript.ORDER_MEMBER];
+    }
+  },
+  {
+    "type": "customvar",
+    "message0": "%1",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "VARNAME",
+        "text": "status:hp",
+        "spellcheck": false
+      }
+    ],
+    "output": null,
+    "colour": 330,
+    "tooltip": "",
+    "helpUrl": "",
+    "generFunc": function(block) {
+      var text_varname = block.getFieldValue('VARNAME');
+      var code = ""+text_varname;
+      return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    }
+  },
+  {
+    "type": "flagvar",
+    "initFunc": function() {
+          this.appendDummyInput()
+              .appendField("flag:")
+              .appendField(new Blockly.FieldDropdown([["enableFloor","enableFloor"], ["enableLv","enableLv"], ["enableMDef","enableMDef"]]), "FLAGNAME");
+          this.setOutput(true, null);
+          this.setColour(330);
+      this.setTooltip("");
+      this.setHelpUrl("");
+    },
+    "generFunc": function(block) {
+      var dropdown_flagname = block.getFieldValue('FLAGNAME');
+      var code = "flag:"+dropdown_flagname;
+      return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    }
+  },
+  {
+    "type": "all3var",
+    "initFunc": function() {
+          this.appendDummyInput()
+              .appendField(new Blockly.FieldDropdown([["status","status"], ["item","item"], ["flag","flag"]]), "VARTYPE")
+              .appendField(new Blockly.FieldTextInput("hp"), "VARNAME");
+          this.setOutput(true, null);
+          this.setColour(330);
+      this.setTooltip("");
+      this.setHelpUrl("");
+    },
+    "generFunc": function(block) {
+      var dropdown_vartype = block.getFieldValue('VARTYPE');
+      var text_varname = block.getFieldValue('VARNAME');
+      // TODO: Assemble JavaScript into code variable.
+      var code =  ""+dropdown_vartype+":"+text_varname+"";
+      // TODO: Change ORDER_NONE to the correct strength.
+      return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    }
+  },
+  {
+    "type": "vartoevalstring",
+    "message0": "%1",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "INPUTVAR",
+        "check": "Boolean"
+      }
+    ],
+    "inputsInline": false,
+    "output": null,
+    "colour": 330,
+    "tooltip": "",
+    "helpUrl": "",
+    "generFunc": function(block) {
+      var value_inputvar = Blockly.JavaScript.valueToCode(block, 'INPUTVAR', Blockly.JavaScript.ORDER_NONE);
+      var code = value_inputvar;
+      return [code, Blockly.JavaScript.ORDER_NONE];
+    }
+  },
+  {
+    "type": "show_text",
+    "initFunc": function() {
+          this.appendValueInput("NAME")
+              .setCheck(null)
+              .appendField("prpr")
+              .appendField(new Blockly.FieldTextInput("default"), "NAME");
+          this.setPreviousStatement(true, "prpr");
+          this.setNextStatement(true, null);
+          this.setColour(160);
+      this.setTooltip("打印一段文字");
+      this.setHelpUrl("//pppl.ml");
+    },
+    "generFunc": function(block) {
+      var text_name = block.getFieldValue('NAME');
+      var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ADDITION) || "";
+      // TODO: Assemble JavaScript into code variable.
+      var code = "console.log('"+text_name+"+"+value_name+"');\n";
+      return code;
+    }
+  },
+  {
+    "type": "set_statment",
+    "message0": "组合语句块 %1 语句1 %2 语句2 %3",
+    "args0": [
+      {
+        "type": "input_dummy"
+      },
+      {
+        "type": "input_statement",
+        "name": "NAME"
+      },
+      {
+        "type": "input_statement",
+        "name": "NAME",
+        "check": "not_prpr"
+      }
+    ],
+    "colour": 230,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "main_block",
+    "message0": "main %1 %2",
+    "args0": [
+      {
+        "type": "input_dummy"
+      },
+      {
+        "type": "input_statement",
+        "name": "statements"
+      }
+    ],
+    "inputsInline": false,
+    "colour": 230,
+    "tooltip": "",
+    "helpUrl": "",
+    "generFunc": function(block) {
+      var statements_statements = Blockly.JavaScript.statementToCode(block, 'statements');
+      // TODO: Assemble JavaScript into code variable.
+      var code = '(function(){\n'+statements_statements+'})();\n';
+      return code;
+    }
+  },
+];
+
+var category_new = (function(){
+  for(var node of document.getElementById('toolbox').children) {
+    if(node.getAttribute('name')=='new') return node;
+  }
+})();
+
+mblocks.forEach(function(v){
+  var blockNode=document.createElement('block');
+  blockNode.setAttribute('type',v.type)
+  category_new.appendChild(blockNode);
+  //category_new.innerHTML+='<block type="'+v.type+'"></block>';
+
+  var blockFunc;
+
+  if(v.hasOwnProperty('initFunc')){
+    blockFunc = v['initFunc'];
+    if (!(blockFunc instanceof Function)){
+      eval('blockFunc = '+v['initFunc']);
+    }
+  } else {
+    blockFunc = function() {this.jsonInit(v);}
+  }
+  Blockly.Blocks[v.type] = {
+    init: blockFunc
+  };
+
+  if(v.hasOwnProperty('generFunc')){
+    blockFunc = v['generFunc'];
+    if (!(blockFunc instanceof Function)){
+      eval('blockFunc = '+v['generFunc']);
+    }
+    Blockly.JavaScript[v.type] = blockFunc;
+  }
+
+});
+
+
+
+/* 
+  b=[]
+  for(var ii in Blockly.JavaScript){if(typeof(Blockly.JavaScript[ii])==typeof(0)){
+    b.push([ii,Blockly.JavaScript[ii]]);
+  }}
+  b.sort(function(a,b){return a[1]-b[1]})
+
+  Blockly.JavaScript.ORDER_ATOMIC = 0;           // 0 "" ...
+  Blockly.JavaScript.ORDER_NEW = 1.1;            // new
+  Blockly.JavaScript.ORDER_MEMBER = 1.2;         // . []
+  Blockly.JavaScript.ORDER_FUNCTION_CALL = 2;    // ()
+  Blockly.JavaScript.ORDER_INCREMENT = 3;        // ++
+  Blockly.JavaScript.ORDER_DECREMENT = 3;        // --
+  Blockly.JavaScript.ORDER_BITWISE_NOT = 4.1;    // ~
+  Blockly.JavaScript.ORDER_UNARY_PLUS = 4.2;     // +
+  Blockly.JavaScript.ORDER_UNARY_NEGATION = 4.3; // -
+  Blockly.JavaScript.ORDER_LOGICAL_NOT = 4.4;    // !
+  Blockly.JavaScript.ORDER_TYPEOF = 4.5;         // typeof
+  Blockly.JavaScript.ORDER_VOID = 4.6;           // void
+  Blockly.JavaScript.ORDER_DELETE = 4.7;         // delete
+  Blockly.JavaScript.ORDER_DIVISION = 5.1;       // /
+  Blockly.JavaScript.ORDER_MULTIPLICATION = 5.2; // *
+  Blockly.JavaScript.ORDER_MODULUS = 5.3;        // %
+  Blockly.JavaScript.ORDER_SUBTRACTION = 6.1;    // -
+  Blockly.JavaScript.ORDER_ADDITION = 6.2;       // +
+  Blockly.JavaScript.ORDER_BITWISE_SHIFT = 7;    // << >> >>>
+  Blockly.JavaScript.ORDER_RELATIONAL = 8;       // < <= > >=
+  Blockly.JavaScript.ORDER_IN = 8;               // in
+  Blockly.JavaScript.ORDER_INSTANCEOF = 8;       // instanceof
+  Blockly.JavaScript.ORDER_EQUALITY = 9;         // == != === !==
+  Blockly.JavaScript.ORDER_BITWISE_AND = 10;     // &
+  Blockly.JavaScript.ORDER_BITWISE_XOR = 11;     // ^
+  Blockly.JavaScript.ORDER_BITWISE_OR = 12;      // |
+  Blockly.JavaScript.ORDER_LOGICAL_AND = 13;     // &&
+  Blockly.JavaScript.ORDER_LOGICAL_OR = 14;      // ||
+  Blockly.JavaScript.ORDER_CONDITIONAL = 15;     // ?:
+  Blockly.JavaScript.ORDER_ASSIGNMENT = 16;      // = += -= *= /= %= <<= >>= ...
+  Blockly.JavaScript.ORDER_COMMA = 17;           // ,
+  Blockly.JavaScript.ORDER_NONE = 99;            // (...)
+*/
+
+
+
+var demoWorkspace = Blockly.inject('blocklyDiv',{
+  media: 'media/',
+  toolbox: document.getElementById('toolbox'),
+  zoom:{
+    controls: true,
+    wheel: false,
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.2
+  },
+  trashcan: false,
+});
+
+//===init===
+var xml_text = `<xml xmlns="http://www.w3.org/1999/xhtml"><block type="main_block" id="ZjQTmcPqlbmB4rW~th|b" xxxdeletable="false" xxxmovable="false"></block></xml>`
+var xml = Blockly.Xml.textToDom(xml_text);
+Blockly.Xml.domToWorkspace(xml, demoWorkspace);
+//demoWorkspace.getBlockById("ZjQTmcPqlbmB4rW~th|b").setDeletable(false);//设置为不可删除
+setTimeout(function(){
+  demoWorkspace.getBlockById("ZjQTmcPqlbmB4rW~th|b").dispose();//删除
+}, 1000*1000); 
+
+
+//=== listen
+
+function myUpdateFunction(event) {
+  gevent=event;
+  console.log(event);
+  /* 
+  https://developers.google.com/blockly/guides/configure/web/events
+  file:///E:/workspace/blockly/blockly-master/demos/[mytest/Events%20%C2%A0_%C2%A0%20Blockly%20%C2%A0_%C2%A0%20Google%20Developers.mhtml
+
+  type	string	One of Blockly.Events.CREATE, Blockly.Events.DELETE, Blockly.Events.CHANGE, Blockly.Events.MOVE, Blockly.Events.UI.
+  workspaceId	string	UUID of workspace. The workspace can be found with Blockly.Workspace.getById(event.workspaceId)
+  blockId	string	UUID of block. The block can be found with workspace.getBlockById(event.blockId)
+  group	string	UUID of group. Some events are part of an indivisible group, such as inserting a statement in a stack.
+
+  demoWorkspace.getBlockById(event.blockId).type=="customvar"
+  
+   */
+  try {
+    var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+    document.getElementById('codeArea').innerText = code;
+  } catch (error) {
+    document.getElementById('codeArea').innerText = String(error);
+    console.log(error);
+  }
+  
+}
+demoWorkspace.addChangeListener(myUpdateFunction);
+
+demoWorkspace.addChangeListener(Blockly.Events.disableOrphans);//自动禁用任何未连接到根块的块
+
+var MY_VARIABLE_callback = function (workspace) {
+  var varList = ['status:atk','status:money','status:hp'];
+  var xmlList = [];
+  if (Blockly.Blocks['customvar']) {
+    for (var i = 0; i < varList.length; i++) {
+      var blockText = '<xml>' +
+        '<block type="customvar">' +
+        '<field name="VARNAME">' + varList[i] + '</field>' +
+        '</block>' +
+        '</xml>';
+      var block = Blockly.Xml.textToDom(blockText).firstChild;
+      xmlList.push(block);
+    }
+  }
+  return xmlList;
+}
+demoWorkspace.registerToolboxCategoryCallback('MY_VARIABLE', MY_VARIABLE_callback);
+
+</script>
+
+<script>
+
+function showXML() {
+  /* // Generate JavaScript code and display it.
+  Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+  var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+  alert(code); */
+  var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+  var xml_text = Blockly.Xml.domToText(xml);
+  console.log(xml_text);
+  console.log(xml);
+}
+
+function runCode() {
+  // Generate JavaScript code and run it.
+  window.LoopTrap = 1000;
+  Blockly.JavaScript.INFINITE_LOOP_TRAP =
+    'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+  var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+  Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+  try {
+    eval(code);
+  } catch (e) {
+    alert(e);
+  }
+}
+
+</script>
+
+<script>
+/*
+  var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+  var xml_text = Blockly.Xml.domToText(xml);
+  //------
+  var xml = Blockly.Xml.textToDom(xml_text);
+  Blockly.Xml.domToWorkspace(xml, demoWorkspace);
+*/
+</script>
+
+</body>
+</html>

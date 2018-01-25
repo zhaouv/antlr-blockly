@@ -1,0 +1,221 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox_source" style="display: none;">
+  <block type="event_m">
+    <statement name="actionList">
+      <block type="actionlist"></block>
+    </statement>
+  </block>
+  <block type="actionlist"></block>
+  <block type="text_s_1">
+    <field name="Evalstring">欢迎使用事件编辑器</field>
+  </block>
+  <block type="text_s_2">
+    <field name="EvalString">小妖精</field>
+    <field name="IdString">fairy</field>
+    <field name="Evalstring_1">欢迎使用事件编辑器</field>
+  </block>
+  <block type="tip_s">
+    <field name="EvalString">这段话将在左上角以气泡形式显示</field>
+  </block>
+  <block type="setvalue_s">
+    <value name="EvalString">
+      <block type="evalstring_all_e">
+        <field name="IdString">status</field>
+        <field name="EvalString">hp</field>
+      </block>
+    </value>
+    <value name="EvalString_1">
+      <block type="math_arithmetic">
+        <field name="OP">ADD</field>
+        <value name="A">
+          <block type="evalstring_all_e">
+            <field name="IdString">status</field>
+            <field name="EvalString">hp</field>
+          </block>
+        </value>
+        <value name="B">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+    </value>
+  </block>
+  <block type="evalstring_e">
+    <field name="EvalString">EvalString</field>
+  </block>
+  <block type="evalstring_all_e">
+    <field name="IdString">status</field>
+    <field name="EvalString">hp</field>
+  </block>
+  <block type="evalstring_all_e">
+    <field name="IdString">item</field>
+    <field name="EvalString">yellowKey</field>
+  </block>
+  <block type="evalstring_all_e">
+    <field name="IdString">flag</field>
+    <field name="EvalString">abc</field>
+  </block>
+  <block type="show_s">
+    <field name="INT">0</field>
+    <field name="INT_1">0</field>
+    <field name="IdString"></field>
+    <field name="INT_2"></field>
+  </block>
+  <block type="hide_s">
+    <field name="INT"></field>
+    <field name="INT_1"></field>
+    <field name="IdString"></field>
+    <field name="INT_2"></field>
+  </block>
+  <block type="trigger_s">
+    <field name="INT">0</field>
+    <field name="INT_1">0</field>
+  </block>
+  <block type="revisit_s"></block>
+  <block type="exit_s"></block>
+  <block type="update_s"></block>
+  <block type="sleep_s">
+    <field name="INT">500</field>
+  </block>
+  <block type="battle_s">
+    <field name="IdString">greenSlime</field>
+  </block>
+  <block type="opendoor_s">
+    <field name="INT">0</field>
+    <field name="INT_1">0</field>
+    <field name="IdString"></field>
+  </block>
+  <block type="changefloor_s">
+    <field name="IdString">MT1</field>
+    <field name="INT">0</field>
+    <field name="INT_1">0</field>
+    <field name="EvalString"></field>
+    <field name="INT_2"></field>
+  </block>
+  <block type="changepos_s_1">
+    <field name="INT">0</field>
+    <field name="INT_2">0</field>
+    <field name="EvalString"></field>
+  </block>
+  <block type="changepos_s_2">
+    <field name="EvalString">up</field>
+  </block>
+  <block type="openshop_s">
+    <field name="IdString">shop1</field>
+  </block>
+  <block type="disableshop_s">
+    <field name="IdString">shop1</field>
+  </block>
+  <block type="setfg_s_1">
+    <field name="INT">255</field>
+    <field name="INT_1">255</field>
+    <field name="INT_2">255</field>
+    <field name="EvalString">1</field>
+    <field name="INT_3"></field>
+  </block>
+  <block type="setfg_s_2">
+    <field name="INT"></field>
+  </block>
+  <block type="move_s">
+    <field name="INT"></field>
+    <field name="INT_1"></field>
+    <field name="INT_2"></field>
+    <field name="EvalString">TRUE</field>
+    <field name="EvalString_1">上右3下2左上左2</field>
+  </block>
+  <block type="movehero_s">
+    <field name="INT"></field>
+    <field name="EvalString">上右3下2左上左2</field>
+  </block>
+  <block type="playbgm_s">
+    <field name="EvalString">bgm.mp3</field>
+  </block>
+  <block type="pausebgm_s"></block>
+  <block type="resumebgm_s"></block>
+  <block type="playsound_s">
+    <field name="EvalString">item.ogg</field>
+  </block>
+  <block type="win_s">
+    <field name="EvalString"></field>
+  </block>
+  <block type="lose_s">
+    <field name="EvalString"></field>
+  </block>
+  <block type="if_s">
+    <value name="EvalString">
+      <block type="logic_compare">
+        <field name="OP">GT</field>
+        <value name="A">
+          <block type="evalstring_all_e">
+            <field name="IdString">status</field>
+            <field name="EvalString">hp</field>
+          </block>
+        </value>
+        <value name="B">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+    </value>
+    <statement name="actionList">
+      <block type="actionlist"></block>
+    </statement>
+    <statement name="actionList_1">
+      <block type="actionlist"></block>
+    </statement>
+  </block>
+  <block type="choices_s">
+    <field name="EvalString">提示文字:选择一种钥匙</field>
+    <statement name="choicesContextList">
+      <block type="choicescontext">
+        <field name="EvalString">提示文字:黄钥匙</field>
+        <statement name="actionList">
+          <block type="actionlist"></block>
+        </statement>
+        <next>
+          <block type="choicescontext">
+            <field name="EvalString">提示文字:蓝钥匙</field>
+            <statement name="actionList">
+              <block type="actionlist"></block>
+            </statement>
+            <next>
+              <block type="choicescontext">
+                <field name="EvalString">提示文字:红钥匙</field>
+                <statement name="actionList">
+                  <block type="actionlist"></block>
+                </statement>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="function_s">
+    <field name="EvalString">alert(core.getStatus("atk"));</field>
+  </block>
+  <block type="math_number">
+    <field name="NUM">0</field>
+  </block>
+  <block type="math_arithmetic">
+    <field name="OP">ADD</field>
+    <value name="A">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="B">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="logic_compare">
+    <field name="OP">EQ</field>
+  </block>
+  <block type="logic_operation">
+    <field name="OP">AND</field>
+  </block>
+  <block type="logic_negate"></block>
+</xml>
