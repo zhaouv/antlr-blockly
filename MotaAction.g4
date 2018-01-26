@@ -1,15 +1,16 @@
 grammar MotaAction;
 
 //===============parser===============
+//===blockly语句===
 
 //事件  程序入口之一
 event_m
-    :   actionList
+    :   '事件' Newline actionList
     ;
 
 //动作集合
 actionList
-    :   (statement|Newline)+ 
+    :   statement+ 
     ;
 
 
@@ -18,37 +19,38 @@ actionList
 statement
     :   text_s
     |   tip_s
+    |   setValue_s
     |   show_s
     |   hide_s
-    |   move_s
-    |   moveHero_s
+    |   trigger_s
+    |   revisit_s
+    |   exit_s
+    |   update_s
+    |   sleep_s
+    |   battle_s
+    |   openDoor_s
     |   changeFloor_s
     |   changePos_s
-    |   setFg_s
-    |   openDoor_s
     |   openShop_s
     |   disableShop_s
-    |   battle_s
-    |   trigger_s
-    |   playSound_s
+    |   setFg_s
+    |   move_s
+    |   moveHero_s
     |   playBgm_s
     |   pauseBgm_s
     |   resumeBgm_s
-    |   setValue_s
-    |   if_s
-    |   choices_s
+    |   playSound_s
     |   win_s
     |   lose_s
+    |   if_s
+    |   choices_s
     |   function_s
-    |   update_s
-    |   sleep_s
-    |   revisit_s
-    |   exit_s
+    |   pass_s
     ;
 
 text_s
     :   '显示文章' ':' EvalString Newline
-    |   ('标题' EvalString)? ('图像' IdString)? ':' EvalString Newline
+    |   '标题' EvalString? '图像' IdString? ':' EvalString Newline
     ;
 
 tip_s
@@ -56,19 +58,19 @@ tip_s
     ;
 
 setValue_s
-    :   '变量操作' ':' '名称' EvalString '值' EvalString Newline
+    :   '变量操作' ':' '名称' idString_e '值' evalString_e Newline
     ;
 
 show_s
-    :   '显示事件' INT ',' INT ('楼层' IdString)? ('动画时间' INT)? Newline
+    :   '显示事件' 'x' INT ',' 'y' INT '楼层' IdString? '动画时间' INT? Newline
     ;
 
 hide_s
-    :   '隐藏事件' (INT ',' INT)? ('楼层' IdString)? ('动画时间' INT)? Newline
+    :   '隐藏事件' 'x' INT? ',' 'y' INT? '楼层' IdString? '动画时间' INT? Newline
     ;
 
 trigger_s
-    :   '触发事件' INT ',' INT  Newline
+    :   '触发事件' 'x' INT ',' 'y' INT  Newline
     ;
 
 revisit_s
@@ -92,16 +94,16 @@ battle_s
     ;
 
 openDoor_s
-    :   '开门' INT ',' INT ('楼层' IdString)? Newline
+    :   '开门' 'x' INT ',' 'y' INT '楼层' IdString? Newline
     ;
 
 changeFloor_s
-    :   '楼层切换' IdString INT ',' INT ('上'|'下'|'左'|'右')? ('动画时间' INT)? Newline
+    :   '楼层切换' IdString 'x' INT ',' 'y' INT '朝向' DirectionEx_List '动画时间' INT? Newline
     ;
 
 changePos_s
-    :   '位置切换' INT ',' INT ('上'|'下'|'左'|'右')? Newline
-    |   '勇士转向' ('上'|'下'|'左'|'右') Newline
+    :   '位置切换' 'x' INT ',' 'y' INT '朝向' DirectionEx_List Newline
+    |   '勇士转向' Direction_List Newline
     ;
 
 openShop_s
@@ -113,16 +115,16 @@ disableShop_s
     ;
 
 setFg_s
-    :   '更改画面色调' NUMBER ',' NUMBER ',' NUMBER (',' NUMBER)? ('动画时间' INT)? Newline
-    |   '恢复画面色调' ('动画时间' INT)? Newline
+    :   '更改画面色调' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER '动画时间' INT? Newline
+    |   '恢复画面色调' '动画时间' INT? Newline
     ;
 
 move_s
-    :   '移动事件' (INT ',' INT)? ('动画时间' INT)? '立刻消失'? (('上'|'下'|'左'|'右') INT?)+ Newline
+    :   '移动事件' 'x' INT? ',' 'y' INT? '动画时间' INT? '立刻消失' Bool StepString Newline
     ;
 
 moveHero_s
-    :   '移动勇士' ('动画时间' INT)? (('上'|'下'|'左'|'右') INT?)+ Newline
+    :   '移动勇士' '动画时间' INT? StepString Newline
     ;
 
 playBgm_s
@@ -142,43 +144,78 @@ playSound_s
     ;
 
 win_s
-    :   '游戏胜利' EvalString Newline
+    :   '游戏胜利,原因' ':' EvalString Newline
     ;
 
 lose_s
-    :   '游戏失败' EvalString Newline
+    :   '游戏失败,原因' ':' EvalString Newline
     ;
 
 if_s
-    :   '条件分歧' ':' EvalString Newline actionList '条件失败' ':' Newline actionList '分歧结束' Newline
+    :   '如果' ':' evalString_e Newline actionList '否则' ':' Newline actionList BEND Newline
     ;
 
 choices_s
-    :   '选项开始' EvalString Newline choicesContext+ '选项结束' Newline
+    :   '选项' '标题' EvalString? '图像' IdString? ':' EvalString Newline choicesContext+ BEND Newline
     ;
 
 choicesContext
-    :   '选项文字' EvalString Newline actionList
+    :   '子选项' EvalString Newline actionList
     ;
 
 function_s
-    :   '自定义脚本' Newline .*? Newline '自定义结束' Newline
+    :   '自定义JS脚本' Newline EvalString Newline BEND Newline
+    ;
+
+pass_s
+    :   Newline
+    ;
+
+statExprSplit : '=== statment ^ === expression v ===' ;
+//===blockly表达式===
+
+expression
+    :   idString_e
+    |   evalString_e
+    ;
+
+idString_e
+    :   IdString
+    ;
+
+evalString_e
+    :   EvalString
     ;
 
 //===============lexer===============
+
+Bool:   'TRUE' 
+    |   'FALSE'
+    ;
+
+INT :   '0' | [1-9][0-9]* ; // no leading zeros
 
 NUMBER
     :   '-'? INT '.' INT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
     |   '-'? INT EXP            // 1e10 -3e4
     |   '-'? INT                // -3, 45
     ;
-
-INT :   '0' | '1'..'9' '0'..'9'* ; // no leading zeros
-
 fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
 
+Direction_List
+    :   '上'|'下'|'左'|'右'
+    ;
+
+DirectionEx_List
+    :   '不变'|'上'|'下'|'左'|'右'
+    ;
+
+StepString
+    :   (Direction INT?)+
+    ;
+
 IdString
-    :   [a-zA-Z_][0-9a-zA-Z_\-]*
+    :   [a-zA-Z_][0-9a-zA-Z_\-:]*
     ;
 
 EvalString
@@ -189,7 +226,14 @@ fragment ESC_str : '\\' ([\\/bfnrt] | UNICODE) ;
 fragment UNICODE : 'u' HEX HEX HEX HEX ;
 fragment HEX : [0-9a-fA-F] ;
 
-//===
+MeaningfulSplit : '=== meaningful ^ ===' ;
+
+BSTART
+    :   '开始'
+    ;
+
+BEND:   '结束'
+    ;
 
 WhiteSpace
     :   [ \t]+ -> skip
