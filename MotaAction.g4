@@ -5,14 +5,8 @@ grammar MotaAction;
 
 //事件  程序入口之一
 event_m
-    :   '事件' Newline actionList
+    :   '事件' Newline statement+ BEND
     ;
-
-//动作集合
-actionList
-    :   statement+ 
-    ;
-
 
 //为了避免关键字冲突,全部加了_s
 //动作
@@ -49,8 +43,7 @@ statement
     ;
 
 text_s
-    :   '显示文章' ':' EvalString Newline
-    |   '标题' EvalString? '图像' IdString? ':' EvalString Newline
+    :   '标题' EvalString? '图像' IdString? ':' EvalString Newline
     ;
 
 tip_s
@@ -70,7 +63,7 @@ hide_s
     ;
 
 trigger_s
-    :   '触发事件' 'x' INT ',' 'y' INT  Newline
+    :   '触发事件' 'x' INT ',' 'y' INT Newline
     ;
 
 revisit_s
@@ -152,7 +145,7 @@ lose_s
     ;
 
 if_s
-    :   '如果' ':' evalString_e Newline actionList '否则' ':' Newline actionList BEND Newline
+    :   '如果' ':' evalString_e Newline statement+ '否则' ':' Newline statement+ BEND Newline
     ;
 
 choices_s
@@ -160,7 +153,7 @@ choices_s
     ;
 
 choicesContext
-    :   '子选项' EvalString Newline actionList
+    :   '子选项' EvalString Newline statement+
     ;
 
 function_s
@@ -200,7 +193,7 @@ NUMBER
     |   '-'? INT EXP            // 1e10 -3e4
     |   '-'? INT                // -3, 45
     ;
-fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
+fragment EXP : [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
 
 Direction_List
     :   '上'|'下'|'左'|'右'
@@ -221,7 +214,6 @@ IdString
 EvalString
     :   (ESC_str | ~[\\])*?
     ;
-
 fragment ESC_str : '\\' ([\\/bfnrt] | UNICODE) ;
 fragment UNICODE : 'u' HEX HEX HEX HEX ;
 fragment HEX : [0-9a-fA-F] ;
