@@ -394,8 +394,8 @@ function showXML() {
   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
   var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
   alert(code); */
-  var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
-  var xml_text = Blockly.Xml.domToText(xml);
+  xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+  xml_text = Blockly.Xml.domToText(xml);
   console.log(xml_text);
   console.log(xml);
 }
@@ -405,7 +405,7 @@ function runCode() {
   window.LoopTrap = 1000;
   Blockly.JavaScript.INFINITE_LOOP_TRAP =
     'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-  var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+  code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
   try {
     eval('obj=' + code.split('\n').join(''));

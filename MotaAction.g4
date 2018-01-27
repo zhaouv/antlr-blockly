@@ -204,21 +204,25 @@ DirectionEx_List
     ;
 
 StepString
-    :   (Direction INT?)+
+    :   (Direction_List INT?)+
     ;
 
 IdString
     :   [a-zA-Z_][0-9a-zA-Z_\-:]*
     ;
 
+//转blockly后不准备保留需要加"
 EvalString
-    :   (ESC_str | ~[\\])*?
+    :   Equote_double (ESC_double | ~["\\])* Equote_double
     ;
-fragment ESC_str : '\\' ([\\/bfnrt] | UNICODE) ;
+
+fragment ESC_double :   '\\' (["\\/bfnrt] | UNICODE) ;
 fragment UNICODE : 'u' HEX HEX HEX HEX ;
 fragment HEX : [0-9a-fA-F] ;
 
 MeaningfulSplit : '=== meaningful ^ ===' ;
+
+fragment Equote_double : '"' ;
 
 BSTART
     :   '开始'
@@ -227,12 +231,12 @@ BSTART
 BEND:   '结束'
     ;
 
-WhiteSpace
-    :   [ \t]+ -> skip
+Newline
+    :   ('\r' '\n'?| '\n')// -> skip
     ;
 
-Newline
-    :   ('\r' '\n'?| '\n') -> skip
+WhiteSpace
+    :   [ \t]+ -> skip
     ;
 
 BlockComment
