@@ -15,15 +15,19 @@ parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需
 
 ### statement
 
-如果一个statementRule包含`|`,那么其子规则只能全部是`|`隔开的单独的statementRule
+如果一个statementRule包含`|`,那么其子规则必须全部是`|`隔开的单独的statementRule
 
 其他情况下statementRule不允许包含`|`
+
+```
+入口,以及函数声明和变量声明有待仔细考察
+```
 
 ### expression
 
 expressionRule中只有`expression`能包含`|`  
 
-`expression`中不以`expression`开头的全部要求是新的规则  
+`expression`中不以`expression`开头的全部要求是新的expressionRule  
 建立一个名为`expression`的数组存放  
 以`expression`开头的生成为类似四则运算的块  
 

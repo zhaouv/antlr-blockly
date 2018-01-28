@@ -16,3 +16,5 @@ b=workspace.getBlockById(event.blockId)
 event.type == Blockly.Events.CHANGE && b.type == 'xxxx'
 
 blockly.xml需要仔细研究一下
+
+函数声明和变量声明也要再看一看

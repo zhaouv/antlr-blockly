@@ -20,7 +20,7 @@ statmentRule
     ;
 
 expressionRule
-    :   'expression' ':' arithmeticRuleCollection? ParserIdentifier ('|' ParserIdentifier)* ';'
+    :   'expression' ':' arithmeticRuleCollection* ParserIdentifier ('|' ParserIdentifier)* ';'
     |   ParserIdentifier ':' parserRuleAtom* ';'
     ;
 
@@ -44,11 +44,15 @@ meaningfulSplit
     ;
 
 lexerRule
-    :   LexerIdentifier ':' String+ ';'
-    |   LexerIdentifier ':' String ('|' String)+ ';'
+    :   LexerIdentifier ':' strings ';'
+    |   LexerIdentifier ':' strings ('|' strings)+ ';'
     |   LexerIdentifier ':' lexerRuleAtom ';'
     ;
 
+strings
+    :   String+
+    ;
+    
 lexerRuleAtom
     :   lexerRuleAtom '?'
     |   lexerRuleAtom ('+'|'*') '?'?

@@ -24,10 +24,12 @@ statement
     |   battle_s
     |   openDoor_s
     |   changeFloor_s
-    |   changePos_s
+    |   changePos_0_s
+    |   changePos_1_s
     |   openShop_s
     |   disableShop_s
-    |   setFg_s
+    |   setFg_0_s
+    |   setFg_1_s
     |   move_s
     |   moveHero_s
     |   playBgm_s
@@ -51,7 +53,7 @@ tip_s
     ;
 
 setValue_s
-    :   '变量操作' ':' '名称' idString_e '值' evalString_e Newline
+    :   '变量操作' ':' '名称' idString_e '值' expression Newline
     ;
 
 show_s
@@ -94,9 +96,11 @@ changeFloor_s
     :   '楼层切换' IdString 'x' INT ',' 'y' INT '朝向' DirectionEx_List '动画时间' INT? Newline
     ;
 
-changePos_s
+changePos_0_s
     :   '位置切换' 'x' INT ',' 'y' INT '朝向' DirectionEx_List Newline
-    |   '勇士转向' Direction_List Newline
+    ;
+changePos_1_s
+    :   '勇士转向' Direction_List Newline
     ;
 
 openShop_s
@@ -107,9 +111,11 @@ disableShop_s
     :   '禁用全局商店' IdString Newline
     ;
 
-setFg_s
+setFg_0_s
     :   '更改画面色调' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER '动画时间' INT? Newline
-    |   '恢复画面色调' '动画时间' INT? Newline
+    ;
+setFg_1_s
+    :   '恢复画面色调' '动画时间' INT? Newline
     ;
 
 move_s
@@ -145,7 +151,7 @@ lose_s
     ;
 
 if_s
-    :   '如果' ':' evalString_e Newline statement+ '否则' ':' Newline statement+ BEND Newline
+    :   '如果' ':' expression Newline statement+ '否则' ':' Newline statement+ BEND Newline
     ;
 
 choices_s
@@ -168,8 +174,11 @@ statExprSplit : '=== statment ^ === expression v ===' ;
 //===blockly表达式===
 
 expression
-    :   idString_e
+    :   expression Arithmetic_List expression
+    |   '非' expression
+    |   idString_e
     |   evalString_e
+    |   number_e
     ;
 
 idString_e
@@ -180,7 +189,14 @@ evalString_e
     :   EvalString
     ;
 
+number_e
+    :   NUMBER
+    ;
+
 //===============lexer===============
+Arithmetic_List
+    :   '+'|'-'|'*'|'/'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
+    ;
 
 Bool:   'TRUE' 
     |   'FALSE'
