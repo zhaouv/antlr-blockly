@@ -1,15 +1,17 @@
 # MotaAction
-项目[mota-js](https://github.com/ckcz123/mota-js)的事件编辑器子模块
+项目 [mota-js](https://github.com/ckcz123/mota-js) 的事件编辑器子模块
 
-同时用来尝试用[antlr](https://github.com/antlr/antlr4)来完成自动的.g4转[blockly](https://github.com/google/blockly)的过程
+同时用来尝试用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly) 的过程
 
-[转化思路](./convert.md)
+转化思路 [convert.md](./convert.md)
 
-motaAction和blockly运行机制的[简单介绍](./talk.md)
+motaAction和blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 目前进度
-+ 能够用BlocklyGrammer.g4解析MotaAction.g4
++ 能够用 [BlocklyGrammer.g4](./BlocklyGrammer.g4) 解析 [MotaAction.g4](./MotaAction.g4)
 + SymbolVisitor能够解析所有符号
+
+[LICENSE](./NOTICE.md)
 
 - - -
 

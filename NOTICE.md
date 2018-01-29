@@ -7,7 +7,7 @@
 `media/*`  
 Copyed from https://github.com/google/blockly.git  
 
-`Apache License 2.0`
+`[Apache License 2.0](./LICENSE)`
 
 ### diff in blockly code
 blocks_compressed.js  

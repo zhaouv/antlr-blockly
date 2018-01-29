@@ -30,7 +30,7 @@ arithmeticRuleCollection
 
 parserRuleAtom
     :   'expression' '?'? # ParserAtomExpr
-    |   ParserIdentifier ('+' | '*' | '?')? # ParserAtomParesrId
+    |   ParserIdentifier ('+' | '*' | '?')? # ParserAtomParserId
     |   LexerIdentifier '?'? # ParserAtomLexerId
     |   String # ParserAtomStr
     ;

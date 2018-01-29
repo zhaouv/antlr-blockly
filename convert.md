@@ -15,7 +15,10 @@ parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需
 
 ### statement
 
-如果一个statementRule包含`|`,那么其子规则必须全部是`|`隔开的单独的statementRule
+如果一个statementRule包含`|`,那么其子规则必须全部是`|`隔开的单独的statementRule,代表一类语句的集合的概念,此时其子规则不能再是语句集合,由于blockly是以语句块为单位,一个语句只能属于一个语句集合 
+```
+目前实现上,还没有做一个语句只能属于一个语句集合的检查
+```
 
 其他情况下statementRule不允许包含`|`
 
@@ -33,7 +36,9 @@ expressionRule中只有`expression`能包含`|`
 
 ### 可变形状`? * + |`的处理
 
-目前的blockly的语句拼接的方式,一个blockly的statsment,`statment`或`statment?`大多数情况下是无效的,除非是作为某个statementRule的第一个或最后一个子规则
+目前的blockly的语句拼接的方式,一个blockly的statsment,`statment`或`statment?`大多数情况下是无效的,除非是作为某个statementRule的第一个或最后一个子规则,并且需要该语句在整个语法中都不能有形式`statment+`或`statment*`出现,这种情况下应使用blockly的value实现,因而不提供blockly拼接层面的支持
+
+(程序入口不包含在上一段的讨论中)
 
 形如`expressionRule+`或`expressionRule*`的处理  
 借助mutators处理实现上太麻烦  
@@ -54,6 +59,7 @@ fragment不会被显示
 + Bool => `checkbox`
 + Int => `precision`为1`min`为0的`numeric imput`
 + Number => `numeric imput`
++ BGNL => 块中使文本换行,使用时在规则中填`BGNL?`(Lexer中设定成一个长字符串,如`BGNL : 'aiyuviaurgfuabvar' ;`)
 + 以`_List`结尾的LexerRule => `dropdown`
 
 

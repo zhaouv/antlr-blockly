@@ -5,7 +5,7 @@ grammar MotaAction;
 
 //事件  程序入口之一
 event_m
-    :   '事件' Newline statement+ BEND
+    :   '事件' BGNL? Newline statement+ BEND
     ;
 
 //为了避免关键字冲突,全部加了_s
@@ -119,11 +119,11 @@ setFg_1_s
     ;
 
 move_s
-    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '立刻消失' Bool StepString Newline
+    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '立刻消失' Bool BGNL? StepString Newline
     ;
 
 moveHero_s
-    :   '移动勇士' '动画时间' Int? StepString Newline
+    :   '移动勇士' '动画时间' Int? BGNL? StepString Newline
     ;
 
 playBgm_s
@@ -151,19 +151,19 @@ lose_s
     ;
 
 if_s
-    :   '如果' ':' expression Newline statement+ '否则' ':' Newline statement+ BEND Newline
+    :   '如果' ':' expression BGNL? Newline statement+ '否则' ':' Newline statement+ BEND Newline
     ;
 
 choices_s
-    :   '选项' '标题' EvalString? '图像' IdString? ':' EvalString Newline choicesContext+ BEND Newline
+    :   '选项' '标题' EvalString? '图像' IdString? ':' EvalString BGNL? Newline choicesContext+ BEND Newline
     ;
 
 choicesContext
-    :   '子选项' EvalString Newline statement+
+    :   '子选项' EvalString BGNL? Newline statement+
     ;
 
 function_s
-    :   '自定义JS脚本' Newline EvalString Newline BEND Newline
+    :   '自定义JS脚本' BGNL? Newline EvalString Newline BEND Newline
     ;
 
 pass_s
@@ -199,7 +199,7 @@ number_e
 
 //===============lexer===============
 Arithmetic_List
-    :   '+'|'-'|'*'|'/'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
+    :   '+'|'-'|'*'|'/'|'^'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
     ;
 
 Bool:   'TRUE' 
@@ -239,6 +239,10 @@ EvalString
 fragment ESC_double :   '\\' (["\\/bfnrt] | UNICODE) ;
 fragment UNICODE : 'u' HEX HEX HEX HEX ;
 fragment HEX : [0-9a-fA-F] ;
+
+BGNL
+    :   'BGNLaergayergfuybgv'
+    ;
 
 MeaningfulSplit : '=== meaningful ^ ===' ;
 

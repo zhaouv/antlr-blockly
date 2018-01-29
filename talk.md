@@ -1,4 +1,4 @@
-看完了[blockly](https://github.com/google/blockly)文档,把 [MotaAction.g4](http://pppl.pw:23456/blockly/MotaAction.g4) 转成了blockly http://pppl.pw:23456/blockly/motaActionBlockyDemo.html
+看完了 [blockly](https://github.com/google/blockly) 文档,把 [MotaAction.g4](http://pppl.pw:23456/blockly/MotaAction.g4) 转成了blockly http://pppl.pw:23456/blockly/motaActionBlockyDemo.html
 
 这个dsl目的是生成这个规则下的json [event文档](https://ckcz123.github.io/mota-js/#/event) 
 
@@ -39,7 +39,7 @@ blockly主要是写配置文件 [motaActionBlocks](http://pppl.pw:23456/blockly/
 ```
 
 2. 写visitor  
-例如此函数前三行获取所有子节点生成的字符串,到目前都是可以借助[blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html)来拖拽生成的  
+例如此函数前三行获取所有子节点生成的字符串,到目前都是可以借助 [blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) 来拖拽生成的  
 之后有了子代生成的字符串,就和写antlr4的visitor的过程几乎一样了,生成字符串返回给父代
 ```javascript
     function(block) {
@@ -55,4 +55,4 @@ blockly主要是写配置文件 [motaActionBlocks](http://pppl.pw:23456/blockly/
 ```
 
 相当于,为了能够通过写visitor来运行, blockly是编辑每个块的json, antlr只需要写一个.g4就够了,相比之下antlr优雅了无数倍  
-就这个[json](http://pppl.pw:23456/blockly/motaActionBlocks.js)而言,应该能够直接用[.g4](http://pppl.pw:23456/blockly/MotaAction.g4)来生成那些繁琐的部分,从而能够像antlr一样专心写visitor
+就这个 [motaActionBlocks.js](http://pppl.pw:23456/blockly/motaActionBlocks.js) 而言,应该能够直接用 [MotaAction.g4](http://pppl.pw:23456/blockly/MotaAction.g4) 来生成那些繁琐的部分,从而能够像antlr一样专心写visitor
