@@ -101,6 +101,7 @@ SymbolVisitor.prototype.visitLexerRuleCollection = function(ctx) {
   }
 };
 
+//============================================================================
 
 function EvalVisitor() {
 	BlocklyGrammerVisitor.call(this);
@@ -125,7 +126,21 @@ EvalVisitor.prototype.init = function(symbols) {
   this.expressionRules=convert(symbols.expressionRules);
   this.lexerRules=symbols.lexerRules;
   this.expression_arithmetic_num_=symbols.expression_arithmetic_num;
+  this.valueColor='valuecolor_oeusrderehrhnggb';//占位符
+  this.statementColor='statementcolor_fuefheishfjawflb';
+  this.valueColorNum=330;
+  this.statementColorNum=160;
   return this;
+}
+
+EvalVisitor.prototype.getOutputString = function() {
+  var evisitor_ = Object.assign({},evisitor);
+  delete(evisitor_.valueColor);
+  delete(evisitor_.statementColor);
+  var str_ = JSON.stringify(evisitor_,null,4);
+  str_ = str_.split('"'+this.valueColor+'"').join(this.valueColor);
+  str_ = str_.split('"'+this.statementColor+'"').join(this.statementColorNum);
+  return str_;
 }
 
 EvalVisitor.prototype.error = function(error) {
@@ -135,6 +150,12 @@ EvalVisitor.prototype.error = function(error) {
 EvalVisitor.prototype.setRule = function(type,name,value) {
   if (type==='lexer') {
     this.lexerRules[name]=value;
+  }
+  if (type==='statement') {
+    this.statementRules[name]=value;
+  }
+  if (type==='value') {
+    this.expressionRules[name]=value;
   }
 }
 
@@ -154,6 +175,89 @@ EvalVisitor.prototype.escapeString = function(string_) {
   return eval(string_);
 }
 
+EvalVisitor.prototype.initAssemble = function(obj) {
+  console.log(obj);
+  //未完成====================
+  var args0 = [];
+  obj.vars = [];
+  for(var ii=0,args,ids={};args=obj.args[ii];ii++){
+    var args_ = Object.assign({},args.data);
+    if (args.id) {
+      ids[args.id]=ids[args.id]?ids[args.id]:0;
+      args_.name=args.id+'_'+ids[args.id];
+      if (args.blockType!=='getFieldValue')args_.check=null;
+      ids[args.id]++;
+    }
+    obj.vars.push(args_.name?args_.name:null);
+    args0.push(args_);
+  }
+  var blockjs = {
+    'type': obj.name,
+    'message0': obj.message.join(' '),
+    'args0': args0,
+    'inputsInline': true,
+    'tooltip': '',
+    'helpUrl': ''
+  }
+  if (args0.length===0){
+    delete(blockjs.args0);
+    delete(obj.args);
+    delete(obj.vars);
+  }
+  if (obj.type==='value') {
+    blockjs.colour=this.valueColor;
+    blockjs.output=null
+    //blockjs.output=this.getRule('value',obj.name).check;
+  } else { //statement
+    blockjs.colour=this.statementColor;
+    blockjs.previousStatement=null;
+    blockjs.nextStatement=null;
+    //statement的拼接处理初始化之后再处理
+  }
+  var value = this.getRule(obj.type,obj.name);
+  value.blockjs = blockjs;
+  value.obj = obj;
+  this.setRule(obj.type,obj.name,value);
+}
+
+EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
+  var lexervalue = {};
+  if (lexerId==='Bool') {
+    lexervalue = {
+      'type':'field_checkbox',
+      'checked':true
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  if (lexerId==='Int') {
+    lexervalue = {
+      'type': 'field_number',
+      'value': 0,
+      'min': 0,
+      'precision': 1
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  if (lexerId==='Number') {
+    lexervalue = {
+      'type': 'field_number',
+      'value': 0,
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  if (lexerId==='BGNL') {
+    lexervalue = {
+      'type': 'input_dummy'
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  return false;
+};
+
 // Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
 EvalVisitor.prototype.visitGrammarFile = function(ctx) {
   this.visit(ctx.lexerRuleCollection(0));
@@ -163,44 +267,9 @@ EvalVisitor.prototype.visitGrammarFile = function(ctx) {
   if (this.expression_arithmetic_num===this.expression_arithmetic_num_) {
     delete(this.expression_arithmetic_num_);
   } else {
-    this.error('算数表达式数量出错: '+this.expression_arithmetic_num
+    this.error('运算表达式数量出错: '+this.expression_arithmetic_num
     +' | '+this.expression_arithmetic_num_);
   }
-};
-
-EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
-  var lexervalue = {};
-  if (lexerId==='Bool') {
-    lexervalue = {'type':'field_checkbox','checked':true}
-    this.setRule('lexer',lexerId,lexervalue);
-    return true;
-  }
-  if (lexerId==='Int') {
-    lexervalue = {
-      "type": "field_number",
-      "value": 0,
-      "min": 0,
-      "precision": 1
-    }
-    this.setRule('lexer',lexerId,lexervalue);
-    return true;
-  }
-  if (lexerId==='Number') {
-    lexervalue = {
-      "type": "field_number",
-      "value": 0,
-    }
-    this.setRule('lexer',lexerId,lexervalue);
-    return true;
-  }
-  if (lexerId==='BGNL') {
-    lexervalue = {
-      "type": "input_dummy"
-    }
-    this.setRule('lexer',lexerId,lexervalue);
-    return true;
-  }
-  return false;
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#strings.
@@ -233,7 +302,10 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     var string_ = this.visit(value);
     strings[ii] = [string_,string_];
   }
-  var lexervalue = {'type':'field_dropdown','options':strings}
+  var lexervalue = {
+    'type':'field_dropdown',
+    'options':strings
+  }
   this.setRule('lexer',lexerId,lexervalue);
 };
 
@@ -242,8 +314,8 @@ EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
   var lexerId = ctx.LexerIdentifier(0).getText();
   if (this.SpeicalLexerRule(lexerId)) return;
   var lexervalue = {
-    "type": "field_input",
-    "text": ""
+    'type': 'field_input',
+    'text': ''
   }
   this.setRule('lexer',lexerId,lexervalue);
 };
@@ -253,13 +325,14 @@ EvalVisitor.prototype.visitStatValue = function(ctx) {
   //ParserIdentifier ':' parserRuleAtom* ';'
   this.status={
     'name': ctx.ParserIdentifier(0).getText(),
-    'type': 'statment',
+    'type': 'statement',
     'message': [],
     'args': []
   }
   this.visitChildren(ctx);
-  console.log(this.status);
-  //未完成====================================
+  var obj = this.status;
+  delete(this.status);
+  this.initAssemble(obj);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#arithmeticRuleCollection.
@@ -275,8 +348,7 @@ BlocklyGrammerVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
         'blockType': 'valueToCode',
         'omitted': false,
         'data': {
-          'type': 'input_value',
-          'check': this.getRule('value','expression').check
+          'type': 'input_value'
         }
       }
     ]
@@ -284,8 +356,9 @@ BlocklyGrammerVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
   this.visitChildren(ctx);
   this.status.name='expression_arithmetic_'+this.expression_arithmetic_num;
   this.expression_arithmetic_num++;
-  console.log(this.status);
-  //未完成====================================
+  var obj = this.status;
+  delete(this.status);
+  this.initAssemble(obj);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
@@ -298,8 +371,9 @@ BlocklyGrammerVisitor.prototype.visitExprValue = function(ctx) {
     'args': []
   }
   this.visitChildren(ctx);
-  console.log(this.status);
-  //未完成====================================
+  var obj = this.status;
+  delete(this.status);
+  this.initAssemble(obj);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomExpr.
@@ -310,8 +384,7 @@ EvalVisitor.prototype.visitParserAtomExpr = function(ctx) {
     'blockType': 'valueToCode',
     'omitted': ctx.children.length>1,
     'data': {
-      'type': 'input_value',
-      'check': this.getRule('value','expression').check
+      'type': 'input_value'
     }
   }
   this.status.args.push(parservalue);
@@ -330,8 +403,7 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
     'omitted': ex==='?' || ex==='*',
     'multi': ex==='+' || ex==='*',
     'data': {
-      'type': 'input_value',
-      'check': this.getRule(blockType,parserId).check
+      'type': 'input_value'
     }
   }
   if (blockType==='value' && parservalue.multi) {

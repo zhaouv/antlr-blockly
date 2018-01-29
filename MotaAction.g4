@@ -179,6 +179,7 @@ expression
     |   idString_e
     |   evalString_e
     |   number_e
+    |   bool_e
     ;
 
 negate_e
@@ -195,6 +196,10 @@ evalString_e
 
 number_e
     :   Number
+    ;
+
+bool_e
+    :   Bool
     ;
 
 //===============lexer===============

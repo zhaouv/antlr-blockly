@@ -10,6 +10,7 @@ motaAction和blockly运行机制的简单介绍 [talk.md](./talk.md)
 目前进度
 + 能够用 [BlocklyGrammer.g4](./BlocklyGrammer.g4) 解析 [MotaAction.g4](./MotaAction.g4)
 + SymbolVisitor能够解析所有符号
++ 不考虑拼接检查的情况下,能产生所有图块的json
 
 [LICENSE](./NOTICE.md)
 

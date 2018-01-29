@@ -1,5 +1,5 @@
 # .g4转blockly思路
-限制.g4的规则,约定作为其子规则的blockly grammer : .bg
+限制.g4的规则,约定作为其子规则的blockly grammer
 
 ## parser
 
@@ -33,6 +33,13 @@ expressionRule中只有`expression`能包含`|`
 `expression`中不以`expression`开头的全部要求是新的expressionRule  
 建立一个名为`expression`的数组存放  
 以`expression`开头的生成为类似四则运算的块  
+```
+目前实现上,还没有做多层的expressionRule导致的左递归的检查,形如
+expression : expression '+' expression | a_e ;
+a_e : expression 'a' ;
+左递归必须直接写在expression里
+如果语法只用来生成blockly不用antlr解析,不需要考虑这一点
+```
 
 ### 可变形状`? * + |`的处理
 

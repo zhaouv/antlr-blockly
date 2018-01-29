@@ -20,12 +20,12 @@ statementRule
     ;
 
 expressionRule
-    :   'expression' ':' arithmeticRuleCollection* ParserIdentifier ('|' ParserIdentifier)* ';' # ExprList
+    :   'expression' ':' (arithmeticRuleCollection|ParserIdentifier) ('|' (arithmeticRuleCollection|ParserIdentifier))* ';' # ExprList
     |   ParserIdentifier ':' parserRuleAtom* ';' # ExprValue
     ;
 
 arithmeticRuleCollection
-    :   'expression' parserRuleAtom* '|'
+    :   'expression' parserRuleAtom*
     ;
 
 parserRuleAtom
