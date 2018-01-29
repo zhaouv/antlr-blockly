@@ -3,6 +3,10 @@
 
 同时用来尝试用[antlr](https://github.com/antlr/antlr4)来完成自动的.g4转[blockly](https://github.com/google/blockly)的过程
 
+[转化思路](./convert.md)
+
+motaAction和blockly运行机制的[简单介绍](./talk.md)
+
 目前进度
 + 能够用BlocklyGrammer.g4解析MotaAction.g4
 + SymbolVisitor能够解析所有符号
