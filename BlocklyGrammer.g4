@@ -3,7 +3,7 @@ grammar BlocklyGrammer;
 //===============parser===============
 
 grammarFile
-    :   grammerDecl statmentRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection
+    :   grammerDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection
     ;
 
 grammerDecl
@@ -14,14 +14,14 @@ statExprSplit
     :   'statExprSplit : \'=== statment ^ === expression v ===\' ;'
     ;
 
-statmentRule
-    :   ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)* ';'
-    |   ParserIdentifier ':' parserRuleAtom* ';'
+statementRule
+    :   ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)* ';' # StatList
+    |   ParserIdentifier ':' parserRuleAtom* ';' # StatValue
     ;
 
 expressionRule
-    :   'expression' ':' arithmeticRuleCollection* ParserIdentifier ('|' ParserIdentifier)* ';'
-    |   ParserIdentifier ':' parserRuleAtom* ';'
+    :   'expression' ':' arithmeticRuleCollection* ParserIdentifier ('|' ParserIdentifier)* ';' # ExprList
+    |   ParserIdentifier ':' parserRuleAtom* ';' # ExprValue
     ;
 
 arithmeticRuleCollection
@@ -29,10 +29,10 @@ arithmeticRuleCollection
     ;
 
 parserRuleAtom
-    :   'expression' '?'?
-    |   ParserIdentifier ('+' | '*' | '?')?
-    |   LexerIdentifier '?'?
-    |   String
+    :   'expression' '?'? # ParserAtomExpr
+    |   ParserIdentifier ('+' | '*' | '?')? # ParserAtomParesrId
+    |   LexerIdentifier '?'? # ParserAtomLexerId
+    |   String # ParserAtomStr
     ;
 
 lexerRuleCollection
@@ -44,9 +44,9 @@ meaningfulSplit
     ;
 
 lexerRule
-    :   LexerIdentifier ':' strings ';'
-    |   LexerIdentifier ':' strings ('|' strings)+ ';'
-    |   LexerIdentifier ':' lexerRuleAtom ';'
+    :   LexerIdentifier ':' strings ';' # LexerRuleStrings
+    |   LexerIdentifier ':' strings ('|' strings)+ ';' # LexerRuleList
+    |   LexerIdentifier ':' lexerRuleAtom ';' # LexerRuleComplex
     ;
 
 strings

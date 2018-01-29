@@ -52,7 +52,7 @@ fragment不会被显示
 
 约定几个特殊的LexerRule,按照blockly中已有的特殊field处理,其他视为`text input`
 + Bool => `checkbox`
-+ INT => `precision`为1`min`为0的`numeric imput`
++ Int => `precision`为1`min`为0的`numeric imput`
 + Number => `numeric imput`
 + 以`_List`结尾的LexerRule => `dropdown`
 

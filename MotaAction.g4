@@ -57,15 +57,15 @@ setValue_s
     ;
 
 show_s
-    :   '显示事件' 'x' INT ',' 'y' INT '楼层' IdString? '动画时间' INT? Newline
+    :   '显示事件' 'x' Int ',' 'y' Int '楼层' IdString? '动画时间' Int? Newline
     ;
 
 hide_s
-    :   '隐藏事件' 'x' INT? ',' 'y' INT? '楼层' IdString? '动画时间' INT? Newline
+    :   '隐藏事件' 'x' Int? ',' 'y' Int? '楼层' IdString? '动画时间' Int? Newline
     ;
 
 trigger_s
-    :   '触发事件' 'x' INT ',' 'y' INT Newline
+    :   '触发事件' 'x' Int ',' 'y' Int Newline
     ;
 
 revisit_s
@@ -81,7 +81,7 @@ update_s
     ;
 
 sleep_s
-    :   '等待' INT '毫秒' Newline
+    :   '等待' Int '毫秒' Newline
     ;
 
 battle_s
@@ -89,15 +89,15 @@ battle_s
     ;
 
 openDoor_s
-    :   '开门' 'x' INT ',' 'y' INT '楼层' IdString? Newline
+    :   '开门' 'x' Int ',' 'y' Int '楼层' IdString? Newline
     ;
 
 changeFloor_s
-    :   '楼层切换' IdString 'x' INT ',' 'y' INT '朝向' DirectionEx_List '动画时间' INT? Newline
+    :   '楼层切换' IdString 'x' Int ',' 'y' Int '朝向' DirectionEx_List '动画时间' Int? Newline
     ;
 
 changePos_0_s
-    :   '位置切换' 'x' INT ',' 'y' INT '朝向' DirectionEx_List Newline
+    :   '位置切换' 'x' Int ',' 'y' Int '朝向' DirectionEx_List Newline
     ;
 changePos_1_s
     :   '勇士转向' Direction_List Newline
@@ -112,18 +112,18 @@ disableShop_s
     ;
 
 setFg_0_s
-    :   '更改画面色调' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER '动画时间' INT? Newline
+    :   '更改画面色调' Number ',' Number ',' Number ',' Number '动画时间' Int? Newline
     ;
 setFg_1_s
-    :   '恢复画面色调' '动画时间' INT? Newline
+    :   '恢复画面色调' '动画时间' Int? Newline
     ;
 
 move_s
-    :   '移动事件' 'x' INT? ',' 'y' INT? '动画时间' INT? '立刻消失' Bool StepString Newline
+    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '立刻消失' Bool StepString Newline
     ;
 
 moveHero_s
-    :   '移动勇士' '动画时间' INT? StepString Newline
+    :   '移动勇士' '动画时间' Int? StepString Newline
     ;
 
 playBgm_s
@@ -175,10 +175,14 @@ statExprSplit : '=== statment ^ === expression v ===' ;
 
 expression
     :   expression Arithmetic_List expression
-    |   '非' expression
+    |   negate_e
     |   idString_e
     |   evalString_e
     |   number_e
+    ;
+
+negate_e
+    :   '非' expression
     ;
 
 idString_e
@@ -190,7 +194,7 @@ evalString_e
     ;
 
 number_e
-    :   NUMBER
+    :   Number
     ;
 
 //===============lexer===============
@@ -202,14 +206,14 @@ Bool:   'TRUE'
     |   'FALSE'
     ;
 
-INT :   '0' | [1-9][0-9]* ; // no leading zeros
+Int :   '0' | [1-9][0-9]* ; // no leading zeros
 
-NUMBER
-    :   '-'? INT '.' INT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
-    |   '-'? INT EXP            // 1e10 -3e4
-    |   '-'? INT                // -3, 45
+Number
+    :   '-'? Int '.' Int EXP?   // 1.35, 1.35E-9, 0.3, -4.5
+    |   '-'? Int EXP            // 1e10 -3e4
+    |   '-'? Int                // -3, 45
     ;
-fragment EXP : [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
+fragment EXP : [Ee] [+\-]? Int ; // \- since - means "range" inside [...]
 
 Direction_List
     :   '上'|'下'|'左'|'右'
@@ -220,7 +224,7 @@ DirectionEx_List
     ;
 
 StepString
-    :   (Direction_List INT?)+
+    :   (Direction_List Int?)+
     ;
 
 IdString
