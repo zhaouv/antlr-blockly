@@ -33,10 +33,10 @@ expressionRule中只有`expression`能包含`|`
 建立一个名为`expression`的数组存放  
 以`expression`开头的生成为类似四则运算的块  
 ```
-目前实现上,还没有做多层的expressionRule导致的左递归的检查,形如
+实现上,没有做多层的expressionRule导致的左递归的检查,形如
 expression : expression '+' expression | a_e ;
 a_e : expression 'a' ;
-左递归必须直接写在expression里
+antlr中左递归必须直接写在expression里
 如果语法只用来生成blockly不再用antlr解析,不需要考虑这一点
 ```
 
