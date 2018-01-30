@@ -16,14 +16,13 @@ parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需
 ### statement
 
 如果一个statementRule包含`|`,那么其子规则必须全部是`|`隔开的单独的statementRule,代表一类语句的集合的概念,此时其子规则不能再是语句集合,由于blockly是以语句块为单位,一个语句只能属于一个语句集合 
-```
-目前实现上,还没有做一个语句只能属于一个语句集合的检查
-```
 
 其他情况下statementRule不允许包含`|`
 
+没有被引用过的statementRule将被处理为上下没有连接的语句块
+
 ```
-入口,以及函数声明和变量声明有待仔细考察
+函数声明和变量声明有待仔细考察
 ```
 
 ### expression
@@ -38,12 +37,15 @@ expressionRule中只有`expression`能包含`|`
 expression : expression '+' expression | a_e ;
 a_e : expression 'a' ;
 左递归必须直接写在expression里
-如果语法只用来生成blockly不用antlr解析,不需要考虑这一点
+如果语法只用来生成blockly不再用antlr解析,不需要考虑这一点
 ```
 
 ### 可变形状`? * + |`的处理
 
-目前的blockly的语句拼接的方式,一个blockly的statsment,`statment`或`statment?`大多数情况下是无效的,除非是作为某个statementRule的第一个或最后一个子规则,并且需要该语句在整个语法中都不能有形式`statment+`或`statment*`出现,这种情况下应使用blockly的value实现,因而不提供blockly拼接层面的支持
+目前的blockly的语句拼接的方式,一个blockly的statsment,`statment`或`statment?`大多数情况下是无效的,除非是始终作为某个statementRule的第一个或最后一个子规则(类似`else语句`),并且需要该语句在整个语法中都不能有形式`statment+`或`statment*`出现
+```
+这种情况暂不提供自动改变blockly形状的拼接支持,通过运行时的检查来实现
+```
 
 (程序入口不包含在上一段的讨论中)
 
@@ -58,7 +60,7 @@ a_e : expression 'a' ;
 引入分隔符`MeaningfulSplit : '=== meaningful ^ ===' ;`,有意义的LexerRule都放置在其上面
 
 只包含形如`'function'`的固定字符串的有意义的LexerRule,直接置入message中  
-也意味着在dsl中需要但是blockly中不需要的文本写成LexerRule放置在分隔符下面
+也意味着在dsl中需要但是blockly中不需要显示的文本写成LexerRule放置在分隔符下面,或者是纯文本的LexerRule以`LexerRule?`的形式在parserRule中出现,也不会在块中显示
 
 fragment不会被显示
 
@@ -69,5 +71,20 @@ fragment不会被显示
 + BGNL => 块中使文本换行,使用时在规则中填`BGNL?`(Lexer中设定成一个长字符串,如`BGNL : 'aiyuviaurgfuabvar' ;`)
 + 以`_List`结尾的LexerRule => `dropdown`
 
+```
+目前的Int和Number对于antlr有bug,满足Int筛选的值无法被标记为Number,需要手动在antlr实现里改tokens类别,但是这样便于blockly中的使用
+```
 
+## 注:blockly的拼接逻辑
+value块的`output`提供其块的类型数组  
+接受value的针脚的`check`提供能接收的类型数组  
+两者含共同元素便能拼接
+
+statement块的`previousStatement`提供其块的类型数组  
+接受statement的针脚的`check`提供能接收的类型数组  
+两者含共同元素便能拼接
+
+下方statement块的`previousStatement`提供其块的类型数组  
+上方statement块的`nextStatement`提供能接收的类型数组  
+两者含共同元素便能拼接
 

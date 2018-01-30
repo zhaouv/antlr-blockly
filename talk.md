@@ -56,3 +56,4 @@ blockly主要是写配置文件 [motaActionBlocks](http://pppl.pw:23456/blockly/
 
 相当于,为了能够通过写visitor来运行, blockly是编辑每个块的json, antlr只需要写一个.g4就够了,相比之下antlr优雅了无数倍  
 就这个 [motaActionBlocks.js](http://pppl.pw:23456/blockly/motaActionBlocks.js) 而言,应该能够直接用 [MotaAction.g4](http://pppl.pw:23456/blockly/MotaAction.g4) 来生成那些繁琐的部分,从而能够像antlr一样专心写visitor
+

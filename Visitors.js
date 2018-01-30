@@ -1,6 +1,7 @@
 
 var antlr4 = require('./antlr4/index');
-var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').BlocklyGrammerVisitor;
+var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').
+  BlocklyGrammerVisitor;
 
 function SymbolVisitor() {
 	BlocklyGrammerVisitor.call(this);
@@ -23,6 +24,7 @@ SymbolVisitor.prototype.error = function(error) {
 }
 
 SymbolVisitor.prototype.checkSymbol = function() {
+  var checkdict = {}
   var filter_ = function(list,name) {
     for(var ii=0,value;value=list[ii];ii++){
       if (value[0]===name) return value[1];
@@ -31,9 +33,15 @@ SymbolVisitor.prototype.checkSymbol = function() {
   }
   for(var ii=0,statementRule;statementRule=this.statementRules[ii];ii++){
     if (statementRule[1].length>1){
-      for(var jj=0,statname;statname=statementRule[1][jj];jj++){
-        if (filter_(this.statementRules,statname).length>1){
-          this.error(statementRule[0]+' 下的子规则 '+statname+' 包含了"|"');
+      for(var jj=0,statename;statename=statementRule[1][jj];jj++){
+        if (checkdict[statename]) {
+          this.error('语句 '+statename
+          +' 同时在两个语句集合 '+checkdict[statename]
+          +' 和 '+statementRule[0]+' 中出现了');
+        }
+        checkdict[statename] = statementRule[0];
+        if (filter_(this.statementRules,statename).length>1){
+          this.error(statementRule[0]+' 下的子规则 '+statename+' 包含了"|"');
         }
       }
     }
@@ -118,18 +126,21 @@ EvalVisitor.prototype.init = function(symbols) {
   var convert = function(rules){
     var ruledict = {}
     for(var ii=0,rule;rule=rules[ii];ii++){
-      ruledict[rule[0]]={'check':rule[1]}
+      ruledict[rule[0]]={
+        'check':rule[1],
+        'user':{}
+      }
     }
     return ruledict;
   }
   this.statementRules=convert(symbols.statementRules);
   this.expressionRules=convert(symbols.expressionRules);
   this.lexerRules=symbols.lexerRules;
-  this.expression_arithmetic_num_=symbols.expression_arithmetic_num;
+  this.notentry = {}
   this.valueColor='valuecolor_oeusrderehrhnggb';//占位符
   this.statementColor='statementcolor_fuefheishfjawflb';
-  this.valueColorNum=330;
-  this.statementColorNum=160;
+  this.valueColorHue=330;
+  this.statementColorHue=160;
   return this;
 }
 
@@ -138,8 +149,8 @@ EvalVisitor.prototype.getOutputString = function() {
   delete(evisitor_.valueColor);
   delete(evisitor_.statementColor);
   var str_ = JSON.stringify(evisitor_,null,4);
-  str_ = str_.split('"'+this.valueColor+'"').join(this.valueColor);
-  str_ = str_.split('"'+this.statementColor+'"').join(this.statementColorNum);
+  str_ = str_.split('"'+this.valueColor+'"').join(this.valueColorHue);
+  str_ = str_.split('"'+this.statementColor+'"').join(this.statementColorHue);
   return str_;
 }
 
@@ -176,17 +187,23 @@ EvalVisitor.prototype.escapeString = function(string_) {
 }
 
 EvalVisitor.prototype.initAssemble = function(obj) {
-  console.log(obj);
-  //未完成====================
+  //把parserRuleAtom中获取的参数初步组装起来
   var args0 = [];
-  obj.vars = [];
+  obj.vars = [];//会包含null
   for(var ii=0,args,ids={};args=obj.args[ii];ii++){
     var args_ = Object.assign({},args.data);
     if (args.id) {
       ids[args.id]=ids[args.id]?ids[args.id]:0;
       args_.name=args.id+'_'+ids[args.id];
-      if (args.blockType!=='getFieldValue')args_.check=null;
       ids[args.id]++;
+      if (args.blockType!=='getFieldValue') {
+        var childvalue = this.getRule(args.blockType.slice(0,-6),args.id);
+        var check = childvalue.check;
+        args_.check=check.length===1?check[0]:check;
+        childvalue.user[obj.name]=obj.type;
+        this.notentry[args.id]=true;
+        this.setRule(args.blockType.slice(0,-6),args.id,childvalue);
+      }
     }
     obj.vars.push(args_.name?args_.name:null);
     args0.push(args_);
@@ -201,23 +218,49 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   }
   if (args0.length===0){
     delete(blockjs.args0);
-    delete(obj.args);
-    delete(obj.vars);
-  }
-  if (obj.type==='value') {
-    blockjs.colour=this.valueColor;
-    blockjs.output=null
-    //blockjs.output=this.getRule('value',obj.name).check;
-  } else { //statement
-    blockjs.colour=this.statementColor;
-    blockjs.previousStatement=null;
-    blockjs.nextStatement=null;
-    //statement的拼接处理初始化之后再处理
   }
   var value = this.getRule(obj.type,obj.name);
+  var check = value.check;
+  check = check.length===1?check[0]:check;
+  if (obj.type==='value') {
+    blockjs.colour=this.valueColor;
+    blockjs.output=check;
+  } else { //statement
+    blockjs.colour=this.statementColor;
+    blockjs.previousStatement=check;
+    blockjs.nextStatement=check;
+    //statement的拼接处理初始化之后再处理
+  }
   value.blockjs = blockjs;
-  value.obj = obj;
+  value.blockobj = obj;
   this.setRule(obj.type,obj.name,value);
+}
+
+EvalVisitor.prototype.assemble = function() {
+  //第一轮遍历语句:处理语句集合的拼接
+  var rulekeys = Object.keys(this.statementRules);
+  for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
+    if (stateRule.check.length>1){
+      this.notentry[rulekeys[ii]]=true;
+      for(var jj=0,subStateRule;subStateRule=stateRule.check[jj];jj++){
+        var value = this.getRule('statement',subStateRule);
+        value.blockjs.nextStatement = stateRule.check;
+        //此时statement的拼接才是正确的
+        this.setRule('statement',subStateRule,value);
+        this.notentry[subStateRule]=true;
+      }
+    }
+  }
+  //第二轮遍历语句:处理入口方块的拼接
+  for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
+    if(!this.notentry[rulekeys[ii]]) {
+      this.notentry[rulekeys[ii]]=false;
+      delete(stateRule.blockjs.previousStatement);
+      delete(stateRule.blockjs.nextStatement);
+    }
+  }
+  //此时blockjs已经是各方块的完整的描述了
+  //未完成  ==================================================
 }
 
 EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
@@ -264,12 +307,7 @@ EvalVisitor.prototype.visitGrammarFile = function(ctx) {
   this.visit(ctx.statementRule());
   this.expression_arithmetic_num=0;
   this.visit(ctx.expressionRule());
-  if (this.expression_arithmetic_num===this.expression_arithmetic_num_) {
-    delete(this.expression_arithmetic_num_);
-  } else {
-    this.error('运算表达式数量出错: '+this.expression_arithmetic_num
-    +' | '+this.expression_arithmetic_num_);
-  }
+  this.assemble();
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#strings.
@@ -315,7 +353,7 @@ EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
   if (this.SpeicalLexerRule(lexerId)) return;
   var lexervalue = {
     'type': 'field_input',
-    'text': ''
+    'text': lexerId+'_default'
   }
   this.setRule('lexer',lexerId,lexervalue);
 };
@@ -403,7 +441,7 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
     'omitted': ex==='?' || ex==='*',
     'multi': ex==='+' || ex==='*',
     'data': {
-      'type': 'input_value'
+      'type': 'input_'+blockType
     }
   }
   if (blockType==='value' && parservalue.multi) {
@@ -429,7 +467,8 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     parservalue={'data': lexervalue}
   }
   if (typeof(lexervalue)===typeof('')) {
-    this.status.message.push(lexervalue);
+    //没有打'?'的纯文本lexerRule才会显示
+    if (ctx.children.length===1)this.status.message.push(lexervalue);
     return;
   }
   this.status.args.push(parservalue);

@@ -15,7 +15,7 @@ statExprSplit
     ;
 
 statementRule
-    :   ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)* ';' # StatList
+    :   ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)+ ';' # StatList
     |   ParserIdentifier ':' parserRuleAtom* ';' # StatValue
     ;
 
