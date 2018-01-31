@@ -15,6 +15,7 @@ motaAction和blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 不考虑拼接检查的情况下,能产生所有图块的json
 + 产生正确拼接的所有图块的json
 + 产生statement块的visitor代码
++ 产生blockfactory格式的所有块的json和js代码
 
 
 - - -

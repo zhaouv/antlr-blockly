@@ -277,8 +277,10 @@ EvalVisitor.prototype.assemble = function() {
   //此时blockjs已经是各方块的完整的描述了
 
   //生成遍历语法树的函数--statement块部分
+  var temp_xml = [];
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
     if(stateRule.check.length>1)continue;
+    temp_xml.push(stateRule);
     var text = [];
     var pre='';
     var cpre = function(point){
@@ -305,27 +307,96 @@ EvalVisitor.prototype.assemble = function() {
         text.push(" === 'TRUE'");
       }
       text.push(';\n');
+      if (!arg.multi) {//不允许复数个语句
+      }
+      var nextvar = {//不需要考虑省略
+        'field_checkbox':true,
+        'field_dropdown':true,
+        'field_number':true
+      }
+      if (nextvar[arg.data.type]) continue;
       if (!arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
         cpre(1);
-        text.push(pre+"throw new Error('no omitted : "+var_+" at ");
+        text.push(pre+"throw new OmitedError(block,'"+var_+"','");
         text.push(rulekeys[ii]+"');\n");
         cpre(-1);
         text.push(pre+'}\n');
       }
-      if (!arg.multi) {//不允许复数个语句
-      }
     }
     text.push(pre+"var code = '...;\\n';\n");
-    text.push(pre+"return code;\n");
+    text.push(pre+'return code;\n');
     cpre(-1);
     text.push(pre+'}\n');
     stateRule.generFunc=text.join('');
     //a=evisitor.statementRules.setValue_s.generFunc;console.log(a);
   }
+
+  //生成遍历语法树的函数--value块部分
+  rulekeys = Object.keys(this.expressionRules);
+  for(var ii=0,exprRule;exprRule=this.expressionRules[rulekeys[ii]];ii++){
+    if(exprRule.check.length>1)continue;
+    temp_xml.push(exprRule);
+    var text = [];
+    var pre='';
+    var cpre = function(point){
+      if(point>0)pre+=Array(2*point+1).join(' ');
+      if(point<0)pre=pre.slice(0,2*point);
+    }
+    var bl = 'Blockly.'+this.generLanguage+'.';
+    text.push(pre+'function(block) {\n');
+    cpre(1);
+    for(var jj=0,arg;arg=exprRule.blockobj.args[jj];jj++){
+      var var_ = this.varPrefix+exprRule.blockobj.vars[jj];
+      if (!arg.id)continue;
+      if (arg.blockType==='valueToCode'){
+        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+        text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
+      } else if (arg.blockType==='statementToCode') {
+        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+        text.push(var_+"')");
+      } else { // getFieldValue
+        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"('");
+        text.push(var_+"')");
+      }
+      if (arg.data.type==='field_checkbox'){
+        text.push(" === 'TRUE'");
+      }
+      text.push(';\n');
+      if (!arg.multi) {//不允许复数个语句
+      }
+      var nextvar = {//不需要考虑省略
+        'field_checkbox':true,
+        'field_dropdown':true,
+        'field_number':true
+      }
+      if (nextvar[arg.data.type]) continue;
+      if (!arg.omitted) {//不允许省略
+        text.push(pre+'if ('+var_+"==='') {\n");
+        cpre(1);
+        text.push(pre+"throw new OmitedError(block,'"+var_+"','");
+        text.push(rulekeys[ii]+"');\n");
+        cpre(-1);
+        text.push(pre+'}\n');
+      }
+    }
+    text.push(pre+"var code = '...';\n");
+    text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
+    cpre(-1);
+    text.push(pre+'}\n');
+    exprRule.generFunc=text.join('');
+    //a=evisitor.expressionRules.expression_arithmetic_0.generFunc;
+    //console.log(a);
+  }
+
+  //生成构造xmltext的函数
+  for(var ii=0,rule;rule=temp_xml[ii];ii++){
+  }
+  //未完成  ==================================================
   //未完成  ==================================================
   //未完成  ===============--------------------===============
   //未完成  ===============--------------------===============
+  //未完成  ==================================================
   //未完成  ==================================================
 }
 
