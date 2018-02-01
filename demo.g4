@@ -5,9 +5,9 @@ prog
     ;
 
 statement
-    :   printOut
-    |   varDecl
+    :   varDecl
     |   setValue
+    |   printOut
     ;
 
 printOut
@@ -30,9 +30,9 @@ expression
     |   expression Arithmetic_1_List expression
     |   expression Arithmetic_2_List expression
     |   expression Arithmetic_3_List expression
-    |   idString_e
     |   number_e
     |   bool_e
+    |   idString_e
     ;
 
 bracket
@@ -72,7 +72,6 @@ Bool:   'TRUE'
     |   'FALSE'
     ;
 
-Int :   '0' | [1-9][0-9]* ; // no leading zeros
 
 Number
     :   '-'? Int '.' Int EXP?   // 1.35, 1.35E-9, 0.3, -4.5
@@ -80,6 +79,7 @@ Number
     |   '-'? Int                // -3, 45
     ;
 fragment EXP : [Ee] [+\-]? Int ; // \- since - means "range" inside [...]
+fragment Int :   '0' | [1-9][0-9]* ; // no leading zeros
 
 IdString
     :   [a-zA-Z_][0-9a-zA-Z_\-:]*
