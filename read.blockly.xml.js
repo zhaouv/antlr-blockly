@@ -21,6 +21,12 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {}
  */
 Blockly.Xml.domToText = function(dom) {}
 /**
+ * Converts a DOM structure into properly indented text.
+ * @param {!Element} dom A tree of XML elements.
+ * @return {string} Text representation.
+ */
+Blockly.Xml.domToPrettyText = function(dom) {}
+/**
  * Converts plain text into a DOM structure.
  * Throws an error if XML doesn't parse.
  * @param {string} text Text representation.

@@ -60,7 +60,9 @@ antlr中左递归必须直接写在expression里
 引入分隔符`MeaningfulSplit : '=== meaningful ^ ===' ;`,有意义的LexerRule都放置在其上面
 
 只包含形如`'function'`的固定字符串的有意义的LexerRule,直接置入message中  
-也意味着在dsl中需要但是blockly中不需要显示的文本写成LexerRule放置在分隔符下面,或者是纯文本的LexerRule以`LexerRule?`的形式在parserRule中出现,也不会在块中显示
+也意味着在dsl中需要但是blockly中不需要显示的文本写成LexerRule放置在分隔符下方
+
+在dsl中不需要但是blockly中需要显示的文本转换成`LexerRule?`,把LexerRule放置在分隔符上方
 
 fragment不会被显示
 

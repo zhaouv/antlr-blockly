@@ -5,12 +5,12 @@ grammar MotaAction;
 
 //事件  程序入口之一
 event_m
-    :   '事件' BGNL? Newline statement+ BEND
+    :   '事件' BGNL? Newline action+ BEND
     ;
 
 //为了避免关键字冲突,全部加了_s
 //动作
-statement
+action
     :   text_s
     |   tip_s
     |   setValue_s
@@ -151,15 +151,15 @@ lose_s
     ;
 
 if_s
-    :   '如果' ':' expression BGNL? Newline statement+ '否则' ':' Newline statement+ BEND Newline
+    :   '如果' ':' expression BGNL? Newline action+ '否则' ':' BGNL? Newline action+ BEND Newline
     ;
 
 choices_s
-    :   '选项' '标题' EvalString? '图像' IdString? ':' EvalString BGNL? Newline choicesContext+ BEND Newline
+    :   '选项' BGNL? '标题' EvalString? '图像' IdString? ':' EvalString BGNL? Newline choicesContext+ BEND Newline
     ;
 
 choicesContext
-    :   '子选项' EvalString BGNL? Newline statement+
+    :   '子选项' EvalString BGNL? Newline action+
     ;
 
 function_s
@@ -176,10 +176,10 @@ statExprSplit : '=== statment ^ === expression v ===' ;
 expression
     :   expression Arithmetic_List expression
     |   negate_e
-    |   idString_e
-    |   evalString_e
     |   number_e
     |   bool_e
+    |   idString_e
+    |   evalString_e
     ;
 
 negate_e

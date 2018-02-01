@@ -144,29 +144,19 @@ EvalVisitor.prototype.init = function(symbols) {
   this.statementRules=convert(symbols.statementRules);
   this.expressionRules=convert(symbols.expressionRules);
   this.lexerRules=symbols.lexerRules;
-  this.notentry = {}
+  this.notEntry = {}
 
-  this.valueColor='valuecolor_oeusrderehrhnggb';//占位符
-  this.statementColor='statementcolor_fuefheishfjawflb';
-  this.valueColorHue=330;
-  this.statementColorHue=160;
+  this.valueColor=330;
+  this.statementColor=160;
 
   this.generLanguage='JavaScript';
   this.recieveOrder='ORDER_ATOMIC';
   this.sendOrder='ORDER_NONE';
   this.varPrefix='';
 
-  return this;
-}
+  this.blocks='';
 
-EvalVisitor.prototype.getPrintString = function() {
-  var evisitor_ = Object.assign({},evisitor);
-  delete(evisitor_.valueColor);
-  delete(evisitor_.statementColor);
-  var str_ = JSON.stringify(evisitor_,null,4);
-  str_ = str_.split('"'+this.valueColor+'"').join(this.valueColorHue);
-  str_ = str_.split('"'+this.statementColor+'"').join(this.statementColorHue);
-  return str_;
+  return this;
 }
 
 EvalVisitor.prototype.error = function(error) {
@@ -211,13 +201,13 @@ EvalVisitor.prototype.initAssemble = function(obj) {
       ids[args.id]=ids[args.id]?ids[args.id]:0;
       args_.name=args.id+'_'+ids[args.id];
       ids[args.id]++;
-      if (args.blockType!=='getFieldValue') {
-        var childvalue = this.getRule(args.blockType.slice(0,-6),args.id);
+      if (args.blockType!=='field') {
+        var childvalue = this.getRule(args.blockType,args.id);
         var check = childvalue.check;
         args_.check=check.length===1?check[0]:check;
         childvalue.user[obj.name]=obj.type;
-        this.notentry[args.id]=true;
-        this.setRule(args.blockType.slice(0,-6),args.id,childvalue);
+        this.notEntry[args.id]=true;
+        this.setRule(args.blockType,args.id,childvalue);
       }
     }
     obj.vars.push(args_.name?args_.name:null);
@@ -256,20 +246,20 @@ EvalVisitor.prototype.assemble = function() {
   var rulekeys = Object.keys(this.statementRules);
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
     if (stateRule.check.length>1){
-      this.notentry[rulekeys[ii]]=true;
+      this.notEntry[rulekeys[ii]]=true;
       for(var jj=0,subStateRule;subStateRule=stateRule.check[jj];jj++){
         var value = this.getRule('statement',subStateRule);
         value.blockjs.nextStatement = stateRule.check;
         //此时statement的拼接才是正确的
         this.setRule('statement',subStateRule,value);
-        this.notentry[subStateRule]=true;
+        this.notEntry[subStateRule]=true;
       }
     }
   }
   //第二轮遍历语句:处理入口方块的拼接
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
-    if(!this.notentry[rulekeys[ii]]) {
-      this.notentry[rulekeys[ii]]=false;
+    if(!this.notEntry[rulekeys[ii]]) {
+      this.notEntry[rulekeys[ii]]=false;
       delete(stateRule.blockjs.previousStatement);
       delete(stateRule.blockjs.nextStatement);
     }
@@ -278,9 +268,14 @@ EvalVisitor.prototype.assemble = function() {
 
   //生成遍历语法树的函数--statement块部分
   var temp_xml = [];
+  var temp_collection = [];
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
-    if(stateRule.check.length>1)continue;
+    if(stateRule.check.length>1){
+      temp_collection.push([rulekeys[ii],stateRule]);
+      continue;
+    }
     temp_xml.push(stateRule);
+    stateRule.type='statement';
     var text = [];
     var pre='';
     var cpre = function(point){
@@ -293,14 +288,14 @@ EvalVisitor.prototype.assemble = function() {
     for(var jj=0,arg;arg=stateRule.blockobj.args[jj];jj++){
       var var_ = this.varPrefix+stateRule.blockobj.vars[jj];
       if (!arg.id)continue;
-      if (arg.blockType==='valueToCode'){
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+      if (arg.blockType==='value'){
+        text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
         text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
-      } else if (arg.blockType==='statementToCode') {
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+      } else if (arg.blockType==='statement') {
+        text.push(pre+'var '+var_+' = '+bl+'statementToCode'+"(block, '");
         text.push(var_+"')");
-      } else { // getFieldValue
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"('");
+      } else { // field
+        text.push(pre+'var '+var_+' = '+'block.getFieldValue'+"('");
         text.push(var_+"')");
       }
       if (arg.data.type==='field_checkbox'){
@@ -314,8 +309,7 @@ EvalVisitor.prototype.assemble = function() {
         'field_dropdown':true,
         'field_number':true
       }
-      if (nextvar[arg.data.type]) continue;
-      if (!arg.omitted) {//不允许省略
+      if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
         cpre(1);
         text.push(pre+"throw new OmitedError(block,'"+var_+"','");
@@ -323,11 +317,15 @@ EvalVisitor.prototype.assemble = function() {
         cpre(-1);
         text.push(pre+'}\n');
       }
+      if (arg.blockType==='field'){
+        text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
+        text.push(arg.id+"')("+var_+');\n');
+      }
     }
     text.push(pre+"var code = '...;\\n';\n");
     text.push(pre+'return code;\n');
     cpre(-1);
-    text.push(pre+'}\n');
+    text.push(pre+'}');
     stateRule.generFunc=text.join('');
     //a=evisitor.statementRules.setValue_s.generFunc;console.log(a);
   }
@@ -335,8 +333,12 @@ EvalVisitor.prototype.assemble = function() {
   //生成遍历语法树的函数--value块部分
   rulekeys = Object.keys(this.expressionRules);
   for(var ii=0,exprRule;exprRule=this.expressionRules[rulekeys[ii]];ii++){
-    if(exprRule.check.length>1)continue;
+    if(exprRule.check.length>1){
+      temp_collection.push([rulekeys[ii],exprRule]);
+      continue;
+    }
     temp_xml.push(exprRule);
+    exprRule.type='value';
     var text = [];
     var pre='';
     var cpre = function(point){
@@ -349,14 +351,14 @@ EvalVisitor.prototype.assemble = function() {
     for(var jj=0,arg;arg=exprRule.blockobj.args[jj];jj++){
       var var_ = this.varPrefix+exprRule.blockobj.vars[jj];
       if (!arg.id)continue;
-      if (arg.blockType==='valueToCode'){
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+      if (arg.blockType==='value'){
+        text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
         text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
-      } else if (arg.blockType==='statementToCode') {
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"(block, '");
+      } else if (arg.blockType==='statement') {
+        text.push(pre+'var '+var_+' = '+bl+'statementToCode'+"(block, '");
         text.push(var_+"')");
-      } else { // getFieldValue
-        text.push(pre+'var '+var_+' = '+bl+arg.blockType+"('");
+      } else { // field
+        text.push(pre+'var '+var_+' = '+'block.getFieldValue'+"('");
         text.push(var_+"')");
       }
       if (arg.data.type==='field_checkbox'){
@@ -370,8 +372,7 @@ EvalVisitor.prototype.assemble = function() {
         'field_dropdown':true,
         'field_number':true
       }
-      if (nextvar[arg.data.type]) continue;
-      if (!arg.omitted) {//不允许省略
+      if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
         cpre(1);
         text.push(pre+"throw new OmitedError(block,'"+var_+"','");
@@ -379,11 +380,15 @@ EvalVisitor.prototype.assemble = function() {
         cpre(-1);
         text.push(pre+'}\n');
       }
+      if (arg.blockType==='field'){
+        text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
+        text.push(arg.id+"')("+var_+');\n');
+      }
     }
     text.push(pre+"var code = '...';\n");
     text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
     cpre(-1);
-    text.push(pre+'}\n');
+    text.push(pre+'}');
     exprRule.generFunc=text.join('');
     //a=evisitor.expressionRules.expression_arithmetic_0.generFunc;
     //console.log(a);
@@ -391,13 +396,142 @@ EvalVisitor.prototype.assemble = function() {
 
   //生成构造xmltext的函数
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
+    //构造args和argsType
+    rule.args=[];
+    rule.argsType=[];
+    for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
+      if(arg.id){
+        rule.args.push(rule.blockobj.vars[jj]);
+        rule.argsType.push(arg.blockType);
+      }
+    }
+    //构造xmlText
+    var text = [];
+    var pre='';
+    var cpre = function(point){
+      if(point>0)pre+=Array(2*point+1).join(' ');
+      if(point<0)pre=pre.slice(0,2*point);
+    }
+    var grammerName=this.grammerName;
+    var ruleName=rule.check[0];
+    text.push(pre+'function (inputs,isShadow) {\n');
+    cpre(1);
+    text.push(pre+'return '+grammerName+"Functions.xmlText('");
+    text.push(ruleName+"',inputs,isShadow);\n");
+    cpre(-1);
+    text.push(pre+'}');
+    rule.xmlText=text.join('');
   }
-  //未完成  ==================================================
-  //未完成  ==================================================
-  //未完成  ===============--------------------===============
-  //未完成  ===============--------------------===============
-  //未完成  ==================================================
-  //未完成  ==================================================
+  this.temp_xml=temp_xml;
+  this.temp_collection=temp_collection;
+}
+
+/**
+ * 生成grammerName Blocks
+ * 数据结构 以grammerName是Abc为例
+ * AbcBlocks = {
+ *   rule1: rule1_data
+ *   rule2: rule2_data
+ *   ...
+ *   collection1 : ['rulename1',...]
+ *   ...
+ * }
+ * rule1_data = {
+ *   type: '...' 块的类型'value','statment'中的一个
+ *   json: {...} 与blockfactory给出的Block Definition json一致
+ *   generFunc: function(block){...}
+ *              与blockfactory给出的Generator stub JavaScript一致
+ *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
+ *   argsType: [...] 第i个参数的输入类型,'value','statment','field'中的一个
+ *   xmlText: function([...args,next],isShadow){...}
+ *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
+ *            第一个参数的第args.length个元素是其下一个语句的xmlText
+ * }
+ */
+EvalVisitor.prototype.generBlocks = function() {
+  var text = [];
+  var pre='';
+  var cpre = function(point){
+    if(point>0)pre+=Array(2*point+1).join(' ');
+    if(point<0)pre=pre.slice(0,2*point);
+  }
+  temp_xml=this.temp_xml;
+  delete(this.temp_xml);
+  temp_collection=this.temp_collection;
+  delete(this.temp_collection);
+  text.push(pre+this.grammerName+'Blocks = {\n');
+  cpre(1);
+  for(var ii=0,crule;crule=temp_collection[ii];ii++){
+    text.push(pre+'"'+crule[0]+'": ');
+    text.push(
+      JSON.stringify(crule[1].check,null,2).split('\n').join('\n'+pre)
+    );
+    text.push(',\n');
+  }
+  text.pop();
+  text.push('\n');
+  cpre(-1);
+  text.push(pre+'}\n');
+  text.push(pre+this.grammerName+'Blocks = Object.assign(');
+  text.push(this.grammerName+'Blocks,{\n');
+  cpre(1);
+  function renderblockjs(obj,rule,pre) {
+    var blockjs = rule.blockjs;
+    var blockjsstr = JSON.stringify(
+      blockjs,null,2).split('\n').join('\n'+pre);
+    var replaceobj = {};
+    blockjs = JSON.parse(blockjsstr);//复制一份
+    for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
+      if(!arg.id)continue;
+      var usedrule=obj.getRule(arg.blockType,arg.id);
+      if(!usedrule)continue;
+      if(usedrule.check.length===1)continue;
+      blockjs.args0[jj].check='1_fry2_3_inrgv'+arg.id;
+      replaceobj['"1_fry2_3_inrgv'+arg.id+'"']=obj.grammerName+'Blocks.'+arg.id;
+    }
+    if (blockjs.nextStatement) {
+      for(var kk=0,crule;crule=temp_collection[kk];kk++){
+        if (crule[1].check.indexOf(blockjs.type)!==-1){
+          blockjs.nextStatement='1_fry2_3_inrgv'+crule[0];
+          replaceobj['"1_fry2_3_inrgv'+crule[0]+'"']=obj.grammerName+
+            'Blocks.'+crule[0];
+          break;
+        }
+      }
+    }
+    blockjsstr = JSON.stringify(blockjs,null,2).split('\n').join('\n'+pre);
+    for(var key in replaceobj) {
+      blockjsstr=blockjsstr.split(key).join(replaceobj[key]);
+    }
+    return blockjsstr
+  }
+  for(var ii=0,rule;rule=temp_xml[ii];ii++){
+    text.push(pre+'"'+rule.check[0]+'": {\n');
+    cpre(1);
+    text.push(pre+'"type": "'+rule.type+'",\n');
+    text.push(pre+'"json": ');
+    text.push(renderblockjs(this,rule,pre));
+    text.push(',\n');
+    text.push(pre+'"generFunc": ');
+    text.push(rule.generFunc.split('\n').join('\n'+pre));
+    text.push(',\n');
+    text.push(pre+'"args": ');
+    text.push(JSON.stringify(rule.args,null,2).split('\n').join('\n'+pre));
+    text.push(',\n');
+    text.push(pre+'"argsType": ');
+    text.push(JSON.stringify(rule.argsType,null,0));
+    text.push(',\n');
+    text.push(pre+'"xmlText": ');
+    text.push(rule.xmlText.split('\n').join('\n'+pre));
+    text.push('\n');
+    cpre(-1);
+    text.push(pre+'},\n');
+  }
+  text.pop();
+  text.push(pre+'}\n');
+  cpre(-1);
+  text.push(pre+'});\n');
+  this.blocks=text.join('');
 }
 
 EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
@@ -520,7 +654,7 @@ BlocklyGrammerVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
     'args': [
       {
         'id': 'expression',
-        'blockType': 'valueToCode',
+        'blockType': 'value',
         'omitted': false,
         'data': {
           'type': 'input_value'
@@ -556,7 +690,7 @@ EvalVisitor.prototype.visitParserAtomExpr = function(ctx) {
   //'expression' '?'?
   var parservalue={
     'id': 'expression',
-    'blockType': 'valueToCode',
+    'blockType': 'value',
     'omitted': ctx.children.length>1,
     'data': {
       'type': 'input_value'
@@ -574,7 +708,7 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
   var blockType = this.getRule('value',parserId)?'value':'statement';
   var parservalue={
     'id':parserId,
-    'blockType': blockType+'ToCode',
+    'blockType': blockType,
     'omitted': ex==='?' || ex==='*',
     'multi': ex==='+' || ex==='*',
     'data': {
@@ -596,7 +730,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
   if (!lexervalue) return;
   var parservalue={
     'id': lexerId,
-    'blockType': 'getFieldValue',
+    'blockType': 'field',
     'omitted': ctx.children.length>1,
     'data': lexervalue
   }
@@ -604,8 +738,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     parservalue={'data': lexervalue}
   }
   if (typeof(lexervalue)===typeof('')) {
-    //没有打'?'的纯文本lexerRule才会显示
-    if (ctx.children.length===1)this.status.message.push(lexervalue);
+    this.status.message.push(lexervalue);
     return;
   }
   this.status.args.push(parservalue);

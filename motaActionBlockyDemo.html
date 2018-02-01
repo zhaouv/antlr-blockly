@@ -395,6 +395,8 @@ function showXML() {
   var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
   alert(code); */
   xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+  xml_text = Blockly.Xml.domToPrettyText(xml);
+  console.log(xml_text);
   xml_text = Blockly.Xml.domToText(xml);
   console.log(xml_text);
   console.log(xml);

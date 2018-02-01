@@ -5,7 +5,7 @@
 
 转化思路 [convert.md](./convert.md)
 
-motaAction和blockly运行机制的简单介绍 [talk.md](./talk.md)
+motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 [LICENSE](./NOTICE.md)
 
@@ -16,6 +16,8 @@ motaAction和blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 产生正确拼接的所有图块的json
 + 产生statement块的visitor代码
 + 产生blockfactory格式的所有块的json和js代码
++ 生成一个完整的能运行生成的blockly的代码的网页  
+  > index.html点第二个按钮后生成的文件放在此目录下即可运行
 
 
 - - -
@@ -30,9 +32,15 @@ b.getFieldValue()
 b.setFieldValue('NUM',123)
 b.getInputTargetBlock('statements')
 
+
 b=demoWorkspace.getBlockById(event.blockId)
 event.type == Blockly.Events.CHANGE && b.type == 'xxxx'
 ```
 blockly.xml需要仔细研究一下
-
+```
+b = demoWorkspace.newBlock('event_m');
+bx = Blockly.Xml.blockToDom(b,true);
+bt = Blockly.Xml.domToText(bx);
+b.dispose();
+```
 函数声明和变量声明也要再看一看
