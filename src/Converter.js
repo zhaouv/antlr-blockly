@@ -1,6 +1,22 @@
 /**
- * use :
+ * use : 
+ * ---
+ * 
  * converter = new Converter().main(grammerFile);
+ * 
+ * ---
+ * 
+ * converter = new Converter();
+ * converter.main(grammerFile,[function(){
+ *   converter.evisitor.statementColor=230;
+ * }]);
+ * 
+ * ---
+ * 
+ * converter = new Converter().main(grammerFile,[],'Abc.html');
+ * 
+ * ===
+ * @param {!String} grammerFile is [.g4 File] as String
  */
 
 antlr4 = require('./antlr4/index');
@@ -23,10 +39,12 @@ Converter.prototype.init = function () {
   this.toolboxGap=5;
   this.toolboxId='toolbox';
   this.blocklyDivId='blocklyDiv';
+  this.workSpaceName='workspace';
+  this.codeAreaId='codeArea';
   return this;
 }
 
-Converter.prototype.main = function (grammerFile,filename,functions) {
+Converter.prototype.main = function (grammerFile,functions,filename) {
   this.init();
   this.generBlocks(grammerFile,functions);
   this.renderGrammerName();
@@ -62,7 +80,8 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   var evisitor = new EvalVisitor().init(svisitor);
   this.evisitor = evisitor;
 
-  /* functions[0] : 此处可以修改
+  /* functions[0] : 此处是整体修改
+  能够修改以下变量
   converter.evisitor.valueColor=330;
   converter.evisitor.statementColor=160;
 
@@ -70,22 +89,32 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   converter.evisitor.recieveOrder='ORDER_ATOMIC';
   converter.evisitor.sendOrder='ORDER_NONE';
   converter.evisitor.varPrefix='';
+
+  converter.toolboxGap=5;
+  converter.toolboxId='toolbox';
+  converter.blocklyDivId='blocklyDiv';
+  converter.workSpaceName='workspace';
+  converter.codeAreaId='codeArea';
    */
   if(functions[0])functions[0]();
 
   evisitor.visit(tree);
-  /* functions[1] : 此处可以修改
-  各方块的默认值
+  /* functions[1] : 此处修改各个具体方块
+  添加各方块的tooltip和helpUrl,
+  修改inputsInline以及colour和文本域默认值
    */
   if(functions[1])functions[1]();
 
   evisitor.generBlocks();
   console.log(evisitor);
   this.blocks = evisitor.blocks;
-  return this;
-  /* 函数结束后
-  通过对converter.blocks进行replace可以修改各复杂词法规则的默认值
+  
+  /* functions[2] : 此处是整体修改
+  可以通过对converter.blocks进行replace替换,
+  修改各复杂词法规则的默认值
    */
+  if(functions[2])functions[2]();
+  return this;
 }
 
 Converter.prototype.renderGrammerName = function() {
@@ -149,9 +178,9 @@ Converter.prototype.generMainFile = function(){
 
   var grammerName = this.grammerName;
 
-  text.push(this.OmitedError);
-  text.push('\n\n');
   text.push(this.blocks);
+  text.push('\n\n');
+  text.push(this.OmitedError);
   text.push('\n\n');
   text.push(grammerName+'Functions={}');
   text.push('\n\n');
@@ -165,8 +194,8 @@ Converter.prototype.generMainFile = function(){
 
   this.mainFile = this.mainFileTPL(
     grammerName,this.generLanguage,
-    this.blocklyDivId,'codeArea',
-    this.toolbox,'workspace',this.toolboxId,
+    this.blocklyDivId,this.codeAreaId,
+    this.toolbox,this.workSpaceName,this.toolboxId,
     text.join('')
   );
 }

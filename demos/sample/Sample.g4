@@ -1,4 +1,4 @@
-grammar Demo;
+grammar Sample;
 
 prog
     :   statement+

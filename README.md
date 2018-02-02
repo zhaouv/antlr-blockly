@@ -41,7 +41,7 @@ blockly中mutators太过麻烦不适宜自动化,放弃
 可以借助ChangeListener实现
 ```
 b.getFieldValue()
-b.setFieldValue('NUM',123)
+b.setFieldValue(123,'NUM')
 b.getInputTargetBlock('statements')
 
 

@@ -35,18 +35,21 @@ SymbolVisitor.prototype.checkSymbol = function() {
   for(var ii=0,statementRule;statementRule=this.statementRules[ii];ii++){
     if (statementRule[1].length>1){
       for(var jj=0,statename;statename=statementRule[1][jj];jj++){
+        //检查是否有语句出现在了两个语句集合中
         if (checkdict[statename]) {
           this.error('语句 '+statename
           +' 同时在两个语句集合 '+checkdict[statename]
           +' 和 '+statementRule[0]+' 中出现了');
         }
         checkdict[statename] = statementRule[0];
+        //检查语句集合的子规则是否有语句集合
         if (filter_(this.statementRules,statename).length>1){
           this.error(statementRule[0]+' 下的子规则 '+statename+' 包含了"|"');
         }
       }
     }
   }
+  //检查是否有expression之外的表达式集合
   for(var ii=0,expressionRule;expressionRule=this.expressionRules[ii];ii++){
     if (expressionRule[1].length>1 && expressionRule[0]!=='expression'){
       this.error('表达式 '+expressionRule[0]+' 包含了"|"');
@@ -59,17 +62,20 @@ SymbolVisitor.prototype.visitGrammarFile = function(ctx) {
   this.visit(ctx.grammerDecl());
   this.visit(ctx.statementRule());
   this.visit(ctx.expressionRule());
+  //只检查meaningful之前的词法规则
   this.visit(ctx.lexerRuleCollection(0));
   return this;
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#grammerDecl.
 SymbolVisitor.prototype.visitGrammerDecl = function(ctx) {
+  //获取名字
   this.grammerName = ctx.children[1].getText();
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#StatList.
 SymbolVisitor.prototype.visitStatList = function(ctx) {
+  //处理语句集合,statId和pIds分别是集合名字和子规则名字数组
   var pIds = ctx.ParserIdentifier();
   for(var ii=0,value;value=pIds[ii];ii++){
     pIds[ii]=value.getText();
@@ -86,6 +92,8 @@ SymbolVisitor.prototype.visitStatValue = function(ctx) {
 
 // Visit a parse tree produced by BlocklyGrammerParser#ExprList.
 SymbolVisitor.prototype.visitExprList = function(ctx) {
+  //解析表达式的符号,以'expression'开头的,
+  //用expression_arithmetic_[num]来依次命名
   var exprs=[];
   this.expression_arithmetic_num=ctx.arithmeticRuleCollection().length;
   for(var ii=0;ii<this.expression_arithmetic_num;ii++){
@@ -146,6 +154,8 @@ EvalVisitor.prototype.init = function(symbols) {
   this.lexerRules=symbols.lexerRules;
   this.notEntry = {}
 
+  //在Converter的generBlocks的第二个参数可以传入函数来修改以下的值
+  //目前generLanguage:JavaScript还不能修改
   this.valueColor=330;
   this.statementColor=160;
 
@@ -195,6 +205,8 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   //把parserRuleAtom中获取的参数初步组装起来
   var args0 = [];
   obj.vars = [];//会包含null
+  //这个循环中把形如块的各输入命名为形如Int_0,Int_1,expression_0
+  //并额外记录在vars中
   for(var ii=0,args,ids={};args=obj.args[ii];ii++){
     var args_ = Object.assign({},args.data);
     if (args.id) {
@@ -235,6 +247,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
     blockjs.previousStatement=check;
     blockjs.nextStatement=check;
     //statement的拼接处理初始化之后再处理
+    //语句集合的情况nextStatement之后会被修改
   }
   value.blockjs = blockjs;
   value.blockobj = obj;
@@ -251,6 +264,9 @@ EvalVisitor.prototype.assemble = function() {
         var value = this.getRule('statement',subStateRule);
         value.blockjs.nextStatement = stateRule.check;
         //此时statement的拼接才是正确的
+        //然而此处写入的是数组,到输出时
+        //其字符串会被形如AbcBlocks.collection来替换,以避免生成重复的内容
+        //同时方便修改
         this.setRule('statement',subStateRule,value);
         this.notEntry[subStateRule]=true;
       }
@@ -258,6 +274,7 @@ EvalVisitor.prototype.assemble = function() {
   }
   //第二轮遍历语句:处理入口方块的拼接
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
+    //当一个语句方块未被任何块使用过时,视为入口方块
     if(!this.notEntry[rulekeys[ii]]) {
       this.notEntry[rulekeys[ii]]=false;
       delete(stateRule.blockjs.previousStatement);
@@ -327,7 +344,7 @@ EvalVisitor.prototype.assemble = function() {
     cpre(-1);
     text.push(pre+'}');
     stateRule.generFunc=text.join('');
-    //a=evisitor.statementRules.setValue_s.generFunc;console.log(a);
+    //a=evisitor.statementRules.setValue.generFunc;console.log(a);
   }
 
   //生成遍历语法树的函数--value块部分
@@ -394,9 +411,9 @@ EvalVisitor.prototype.assemble = function() {
     //console.log(a);
   }
 
-  //生成构造xmltext的函数
+
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
-    //构造args和argsType
+    //构造args和argsType,所有输入的名字和类型
     rule.args=[];
     rule.argsType=[];
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
@@ -405,7 +422,8 @@ EvalVisitor.prototype.assemble = function() {
         rule.argsType.push(arg.blockType);
       }
     }
-    //构造xmlText
+    //生成构造xmltext的函数
+    //构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
     var text = [];
     var pre='';
     var cpre = function(point){
@@ -447,6 +465,8 @@ EvalVisitor.prototype.assemble = function() {
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
  *            第一个参数的第args.length个元素是其下一个语句的xmlText
  * }
+ * AbcBlocks在构建时会先生成为只含语句集合的对象,用Object.assign来添加方块
+ * 以支持在方块中使用AbcBlocks.collection
  */
 EvalVisitor.prototype.generBlocks = function() {
   var text = [];
@@ -459,6 +479,7 @@ EvalVisitor.prototype.generBlocks = function() {
   delete(this.temp_xml);
   temp_collection=this.temp_collection;
   delete(this.temp_collection);
+  //添加所有语句集合和表达式集合
   text.push(pre+this.grammerName+'Blocks = {\n');
   cpre(1);
   for(var ii=0,crule;crule=temp_collection[ii];ii++){
@@ -472,10 +493,12 @@ EvalVisitor.prototype.generBlocks = function() {
   text.push('\n');
   cpre(-1);
   text.push(pre+'}\n');
+  //添加所有方块
   text.push(pre+this.grammerName+'Blocks = Object.assign(');
   text.push(this.grammerName+'Blocks,{\n');
   cpre(1);
-  //此函数的目的是将块中的语句集合从展开的数组换回AbcBlock.expression的形式
+  //此函数的目的是将块中的语句集合和表达式集合在生成为文件时
+  //从展开的数组换回AbcBlock.expression的形式
   function renderblockjs(obj,rule,pre) {
     var blockjs = rule.blockjs;
     var blockjsstr = JSON.stringify(
@@ -506,22 +529,30 @@ EvalVisitor.prototype.generBlocks = function() {
     }
     return blockjsstr
   }
+  //依次写入各个值
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
+    //方块名
     text.push(pre+'"'+rule.check[0]+'": {\n');
     cpre(1);
+    //类型
     text.push(pre+'"type": "'+rule.type+'",\n');
+    //初始化用的json
     text.push(pre+'"json": ');
     text.push(renderblockjs(this,rule,pre));
     text.push(',\n');
+    //visitor函数
     text.push(pre+'"generFunc": ');
     text.push(rule.generFunc.split('\n').join('\n'+pre));
     text.push(',\n');
+    //块的所有输入的名字
     text.push(pre+'"args": ');
     text.push(JSON.stringify(rule.args,null,2).split('\n').join('\n'+pre));
     text.push(',\n');
+    //块的所有输入的类型
     text.push(pre+'"argsType": ');
     text.push(JSON.stringify(rule.argsType,null,0));
     text.push(',\n');
+    //块生成为xmlText的放法
     text.push(pre+'"xmlText": ');
     text.push(rule.xmlText.split('\n').join('\n'+pre));
     text.push('\n');
@@ -536,6 +567,7 @@ EvalVisitor.prototype.generBlocks = function() {
 }
 
 EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
+  //当识别出特定的语法规格后,生成内容并返回true
   var lexervalue = {};
   if (lexerId==='Bool') {
     lexervalue = {
@@ -575,6 +607,7 @@ EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
 
 // Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
 EvalVisitor.prototype.visitGrammarFile = function(ctx) {
+  //先生成词法规则再组装块.调整了遍历顺序
   this.visit(ctx.lexerRuleCollection(0));
   this.visit(ctx.statementRule());
   this.expression_arithmetic_num=0;
@@ -596,6 +629,7 @@ EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
   var lexerId = ctx.LexerIdentifier(0).getText();
   if (this.SpeicalLexerRule(lexerId)) return;
   var strings = this.visit(ctx.strings(0));
+  //只包含字符串的词法规则直接代入
   this.setRule('lexer',lexerId,strings);
 };
 
@@ -607,6 +641,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     this.visitLexerRuleComplex(ctx);
     return;
   }
+  //以'_List'结尾的'|'分隔的纯字符串,作为下拉菜单
   var strings = ctx.strings();
   for(var ii=0,value;value=strings[ii];ii++){
     var string_ = this.visit(value);
@@ -623,6 +658,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
 EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
   var lexerId = ctx.LexerIdentifier(0).getText();
   if (this.SpeicalLexerRule(lexerId)) return;
+  //复杂词法规则作为文本域让用户输入
   var lexervalue = {
     'type': 'field_input',
     'text': lexerId+'_default'
@@ -735,14 +771,17 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     'omitted': ctx.children.length>1,
     'data': lexervalue
   }
+  //特殊规则BGNL对应换行,没有id和blockType
   if (lexerId==='BGNL') {
     parservalue={'data': lexervalue}
   }
+  //纯字符串的词法规则直接代入
   if (typeof(lexervalue)===typeof('')) {
     this.status.message.push(lexervalue);
     return;
   }
   this.status.args.push(parservalue);
+  //message0中的'%num'是从1开头的
   this.status.message.push('%'+this.status.args.length);
 };
 
@@ -750,6 +789,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
 EvalVisitor.prototype.visitParserAtomStr = function(ctx) {
   //String
   var string_ = this.escapeString(ctx.String().getText());
+  //纯字符串直接代入
   this.status.message.push(string_);
 };
 

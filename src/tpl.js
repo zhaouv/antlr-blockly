@@ -15,11 +15,13 @@ function OmitedError(block, var_, rule, fileName, lineNumber) {
 }
 
 OmitedError.prototype = Object.create(Error.prototype);
-OmitedError.prototype.constructor = OmitedError;`;
+OmitedError.prototype.constructor = OmitedError;
+//处理此错误的omitedcheckUpdateFunction定义在下面`;
 }
 
 var Functions_pre = function(grammerName) {
-  return `${grammerName}Functions.pre = function(LexerId) {
+  return `//返回各LexerRule文本域的预处理函数,方便用来统一转义等等
+  ${grammerName}Functions.pre = function(LexerId) {
   if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {
     return ${grammerName}Functions[LexerId+'_pre'];
   }
@@ -28,7 +30,10 @@ var Functions_pre = function(grammerName) {
 }
 
 var Functions_xmlText = function(grammerName) {
-  return `${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
+  return `//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
+  //inputs的第i个元素是第i个args的xmlText,null或undefined表示空
+  //inputs的第rule.args.length个元素是其下一个语句的xmlText
+  ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
   var rule = ${grammerName}Blocks[ruleName];
   var blocktext = isShadow?'shadow':'block';
   var xmlText = [];
@@ -37,6 +42,8 @@ var Functions_xmlText = function(grammerName) {
   for (var ii=0,inputType;inputType=rule.argsType[ii];ii++) {
     var input = inputs[ii];
     if(input===null || input===undefined){
+      //默认行为是: 如果语句块的备选方块只有一个,直接代入
+      //如果是语句或表达式集合,选最后一个,以阴影的形式代入
       if (inputType!=='field') {
         var subShadow = false;
         //var subShadow = true;
@@ -69,7 +76,8 @@ var Functions_xmlText = function(grammerName) {
 }
 
 var Functions_blocksIniter = function(grammerName,language) {
-  return `${grammerName}Functions.blocksIniter = function(){
+  return `//把各方块的信息注册到Blockly中
+  ${grammerName}Functions.blocksIniter = function(){
   var blocksobj = ${grammerName}Blocks;
   for(var key in blocksobj) {
     var value = blocksobj[key];

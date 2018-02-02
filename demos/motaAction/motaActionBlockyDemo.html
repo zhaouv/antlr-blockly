@@ -9,10 +9,10 @@
   <script src="../../msg/js/zh-hans.js"></script> -->
   <!-- <script src="../../msg/js/en.js"></script> -->
   
-  <script src="blockly_compressed.js"></script>
-  <script src="blocks_compressed.js"></script>
-  <script src="javascript_compressed.js"></script>
-  <script src="zh-hans.js"></script>
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../zh-hans.js"></script>
   <script src="motaActionBlocks.js"></script>
   <style>
     body {
@@ -330,7 +330,7 @@ motaActionBlocks.forEach(function(v){
 //===init===
 
 var demoWorkspace = Blockly.inject('blocklyDiv',{
-  media: 'media/',
+  media: '../../media/',
   toolbox: document.getElementById('toolbox'),
   zoom:{
     controls: true,
