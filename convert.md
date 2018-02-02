@@ -40,6 +40,10 @@ antlr中左递归必须直接写在expression里
 如果语法只用来生成blockly不再用antlr解析,不需要考虑这一点
 ```
 
+```
+允许更多的表达式集合,并且允许一个表达式属于多个表达式集合似乎更合理
+允许左递归的表达式只有expression
+```
 ### 可变形状`? * + |`的处理
 
 目前的blockly的语句拼接的方式,一个blockly的statsment,`statement`或`statement?`大多数情况下是无效的,除非是始终作为某个statementRule的第一个或最后一个子规则(类似`else语句`),并且需要该语句在整个语法中都不能有形式`statement+`或`statement*`出现

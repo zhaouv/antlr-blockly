@@ -158,6 +158,7 @@ EvalVisitor.prototype.init = function(symbols) {
   //目前generLanguage:JavaScript还不能修改
   this.valueColor=330;
   this.statementColor=160;
+  this.entryColor=230;
 
   this.generLanguage='JavaScript';
   this.recieveOrder='ORDER_ATOMIC';
@@ -205,6 +206,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   //把parserRuleAtom中获取的参数初步组装起来
   var args0 = [];
   obj.vars = [];//会包含null
+  var manualWrap = false;
   //这个循环中把形如块的各输入命名为形如Int_0,Int_1,expression_0
   //并额外记录在vars中
   for(var ii=0,args,ids={};args=obj.args[ii];ii++){
@@ -222,20 +224,24 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         this.setRule(args.blockType,args.id,childvalue);
       }
     }
-    obj.vars.push(args_.name?args_.name:null);
+    if (args_.name) {
+      obj.vars.push(args_.name);
+    } else {
+      obj.vars.push(null);
+      manualWrap = true;
+    }
     args0.push(args_);
   }
   var blockjs = {
     'type': obj.name,
     'message0': obj.message.join(' '),
     'args0': args0,
-    'inputsInline': true,
+    'inputsInline': true,//如果有手动换行时,不添加此属性
     'tooltip': '',
     'helpUrl': ''
   }
-  if (args0.length===0){
-    delete(blockjs.args0);
-  }
+  if (args0.length===0) delete(blockjs.args0);
+  if (manualWrap) delete(blockjs.inputsInline);
   var value = this.getRule(obj.type,obj.name);
   var check = value.check;
   check = check.length===1?check[0]:check;
@@ -279,6 +285,8 @@ EvalVisitor.prototype.assemble = function() {
       this.notEntry[rulekeys[ii]]=false;
       delete(stateRule.blockjs.previousStatement);
       delete(stateRule.blockjs.nextStatement);
+      delete(stateRule.blockjs.inputsInline);
+      stateRule.blockjs.colour = this.entryColor;
     }
   }
   //此时blockjs已经是各方块的完整的描述了

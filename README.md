@@ -10,7 +10,7 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 [LICENSE](./NOTICE.md)
 
-## Update
+## v 0.1.0 (Alpha)
 + 能够用 [BlocklyGrammer.g4](./BlocklyGrammer.g4) 解析 [MotaAction.g4](./MotaAction.g4)
 + SymbolVisitor能够解析所有符号
 + 不考虑拼接检查的情况下,能产生所有图块的json
@@ -18,9 +18,15 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 产生statement块的visitor代码
 + 产生blockfactory格式的所有块的json和js代码
 + 生成一个完整的能运行生成的blockly的代码的网页  
-  > index.html点第二个按钮后生成的文件放在此目录下即可运行
+  index.html点`download`后生成的文件放在此目录下即可运行
++ 有手动的换行时不添加inputsInline
 
 ## Todo
+
++ 表达式支持expression之外的集合,只有expression允许左递归
+
++ 把主页做成点`parse`就可以演示blockly的效果
+
 + 文档  
   如何使用这个工具  
   需要对antlr和blockly了解到什么程度  
@@ -30,7 +36,9 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 + 多语言的支持
 
-+ generFunc的代码的嵌入到.g4里
++ colour,tooltip,helpUrl以及  
+  generFunc的代码  
+  嵌入到.g4里
 
 - - -
 

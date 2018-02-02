@@ -84,6 +84,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   能够修改以下变量
   converter.evisitor.valueColor=330;
   converter.evisitor.statementColor=160;
+  converter.evisitor..entryColor=230;
 
   converter.evisitor.generLanguage='JavaScript';
   converter.evisitor.recieveOrder='ORDER_ATOMIC';
@@ -203,6 +204,13 @@ Converter.prototype.generMainFile = function(){
 Converter.prototype.writeMainFile = function(filename) {
   if(!filename)filename=this.grammerName+'index.html';
   this.createAndDownloadFile(this.mainFile, filename, 'html');
+}
+
+Converter.prototype.editBlock = function(blockname) {
+  var obj = this.evisitor.expressionRules[blockname];
+  if(!obj) obj = this.evisitor.statementRules[blockname];
+  if(!obj || obj.checklength===1)return null;
+  return obj.blockjs;
 }
 
 /**
