@@ -3,15 +3,49 @@ grammar MotaAction;
 //===============parser===============
 //===blockly语句===
 
-//事件  程序入口之一
+//事件 事件编辑器入口之一
 event_m
-    :   '事件' BGNL? Newline action+ BEND
+    :   '事件' BGNL? Newline '启用' Bool '不可通行' Bool '显伤' Bool BGNL? Newline action+ BEND
+    ;
+
+//加点 事件编辑器入口之一
+point_m
+    :   '加点' BGNL? Newline choicesContext+ BEND
+    ;
+
+//商店 事件编辑器入口之一
+shop_m
+    :   '商店 id' IdString '标题' EvalString '图标' IdString BGNL? Newline '快捷商店栏中名称' EvalString BGNL? Newline '使用' ShopUse_List '消耗' EvalString BGNL? Newline '显示文字' EvalString BGNL? Newline shopChoices+ BEND
+    ;
+
+shopChoices
+    :   '商店选项' EvalString '消耗' EvalString? BGNL? Newline shopEffect+
+    ;
+
+shopEffect
+    :   idString_e '+=' expression
+    ;
+
+//afterBattle 事件编辑器入口之一
+afterBattle_m
+    :   '战斗结束后' BGNL? Newline action+ BEND
+    ;
+
+//afterGetItem 事件编辑器入口之一
+afterGetItem_m
+    :   '获取道具后' BGNL? Newline action+ BEND
+    ;
+
+//afterOpenDoor 事件编辑器入口之一
+afterOpenDoor_m
+    :   '打开门后' BGNL? Newline action+ BEND
     ;
 
 //为了避免关键字冲突,全部加了_s
 //动作
 action
-    :   text_s
+    :   text_0_s
+    |   text_1_s
     |   tip_s
     |   setValue_s
     |   show_s
@@ -44,7 +78,11 @@ action
     |   pass_s
     ;
 
-text_s
+text_0_s
+    :   '显示文章' ':' EvalString Newline
+    ;
+
+text_1_s
     :   '标题' EvalString? '图像' IdString? ':' EvalString Newline
     ;
 
@@ -155,7 +193,7 @@ if_s
     ;
 
 choices_s
-    :   '选项' BGNL? '标题' EvalString? '图像' IdString? ':' EvalString BGNL? Newline choicesContext+ BEND Newline
+    :   '选项' ':' EvalString BGNL? '标题' EvalString? '图像' IdString? BGNL? Newline choicesContext+ BEND Newline
     ;
 
 choicesContext
@@ -186,23 +224,41 @@ negate_e
     :   '非' expression
     ;
 
-idString_e
-    :   IdString
-    ;
-
-evalString_e
-    :   EvalString
+bool_e
+    :   Bool
     ;
 
 number_e
     :   Number
     ;
 
-bool_e
-    :   Bool
+idString_e
+    :   IdString
+    ;
+
+//在visitor中将其output改成'idString_e'即可
+idString_0_e
+    :   Id_List ':' IdText
+    ;
+
+evalString_e
+    :   EvalString
     ;
 
 //===============lexer===============
+Id_List
+    :   'status' | 'item' | 'flag'
+    ;
+
+//为了被识别为复杂词法规则
+IdText
+    : 'sdeirughvuiyasdeb'+
+    ;
+
+ShopUse_List
+    :   'money' | 'experience'
+    ;
+
 Arithmetic_List
     :   '+'|'-'|'*'|'/'|'^'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
     ;
