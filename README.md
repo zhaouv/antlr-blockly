@@ -1,9 +1,10 @@
-# MotaAction
-项目 [mota-js](https://github.com/ckcz123/mota-js) 的事件编辑器子模块
+# antlr-blockly
 
-同时用来尝试用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly) 的过程
+用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
 
 转化思路 [convert.md](./convert.md)
+
+作为示例MotaAction.g4给项目 [mota-js](https://github.com/ckcz123/mota-js) 提供事件编辑器子模块
 
 motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
