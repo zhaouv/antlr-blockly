@@ -20,6 +20,17 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 生成一个完整的能运行生成的blockly的代码的网页  
   > index.html点第二个按钮后生成的文件放在此目录下即可运行
 
+## Todo
++ 文档  
+  如何使用这个工具  
+  需要对antlr和blockly了解到什么程度  
+  目标是只看这个项目就能高效的搭一个的blockly  
+
++ 优化一些默认值,缺省之类的细节
+
++ 多语言的支持
+
++ generFunc的代码的嵌入到.g4里
 
 - - -
 

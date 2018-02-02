@@ -437,12 +437,12 @@ EvalVisitor.prototype.assemble = function() {
  *   ...
  * }
  * rule1_data = {
- *   type: '...' 块的类型'value','statment'中的一个
+ *   type: '...' 块的类型'value','statement'中的一个
  *   json: {...} 与blockfactory给出的Block Definition json一致
  *   generFunc: function(block){...}
  *              与blockfactory给出的Generator stub JavaScript一致
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
- *   argsType: [...] 第i个参数的输入类型,'value','statment','field'中的一个
+ *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
  *   xmlText: function([...args,next],isShadow){...}
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
  *            第一个参数的第args.length个元素是其下一个语句的xmlText
@@ -475,6 +475,7 @@ EvalVisitor.prototype.generBlocks = function() {
   text.push(pre+this.grammerName+'Blocks = Object.assign(');
   text.push(this.grammerName+'Blocks,{\n');
   cpre(1);
+  //此函数的目的是将块中的语句集合从展开的数组换回AbcBlock.expression的形式
   function renderblockjs(obj,rule,pre) {
     var blockjs = rule.blockjs;
     var blockjsstr = JSON.stringify(

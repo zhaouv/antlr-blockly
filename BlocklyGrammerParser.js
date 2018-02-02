@@ -1,6 +1,6 @@
 // Generated from BlocklyGrammer.g4 by ANTLR 4.7
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+var antlr4 = require('./antlr4/index');
 var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').BlocklyGrammerVisitor;
 
 var grammarFileName = "BlocklyGrammer.g4";
@@ -134,7 +134,7 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ null, "'grammar'", "';'", "'statExprSplit : '=== statment ^ === expression v ===' ;'", 
+var literalNames = [ null, "'grammar'", "';'", "'statExprSplit : '=== statement ^ === expression v ===' ;'", 
                      "':'", "'|'", "'expression'", "'?'", "'+'", "'*'", 
                      "'MeaningfulSplit : '=== meaningful ^ ===' ;'", "'('", 
                      "')'", "'~'", "'.'" ];

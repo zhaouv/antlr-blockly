@@ -11,7 +11,7 @@ grammerDecl
     ;
 
 statExprSplit
-    :   'statExprSplit : \'=== statment ^ === expression v ===\' ;'
+    :   'statExprSplit : \'=== statement ^ === expression v ===\' ;'
     ;
 
 statementRule

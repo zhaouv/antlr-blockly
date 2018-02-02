@@ -170,7 +170,7 @@ pass_s
     :   Newline
     ;
 
-statExprSplit : '=== statment ^ === expression v ===' ;
+statExprSplit : '=== statement ^ === expression v ===' ;
 //===blockly表达式===
 
 expression

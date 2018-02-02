@@ -134,7 +134,11 @@ function omitedcheckUpdateFunction(event) {
     document.getElementById('${codeAreaId}').innerText = code;
   } catch (error) {
     document.getElementById('${codeAreaId}').innerText = String(error);
-    if (error instanceof OmitedError)throw error;
+    if (error instanceof OmitedError){
+      var blockName = error.blockName;
+      var varName = error.varName;
+      var block = error.block;
+    }
     console.log(error);
   }
 }

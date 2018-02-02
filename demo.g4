@@ -22,7 +22,7 @@ setValue
     :   IdString '=' expression
     ;
     
-statExprSplit : '=== statment ^ === expression v ===' ;
+statExprSplit : '=== statement ^ === expression v ===' ;
 
 expression
     :   bracket

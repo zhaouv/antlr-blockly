@@ -9,7 +9,7 @@ parserRule中不允许出现`(`和`)`
 parserRule中的词法,包含`.. | + * ?`以及正则表达式的必须单独作为LexerRule  
 parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需要的场合打包成新的新的LexerRule
 
-引入分隔符`statExprSplit : '=== statment ^ === expression v ===' ;`强制要求blockly的statsment和value分别置于其上下
+引入分隔符`statExprSplit : '=== statement ^ === expression v ===' ;`强制要求blockly的statsment和value分别置于其上下
 
 常规的形如`'function'`的固定字符串直接置入块内的message中
 
@@ -42,7 +42,7 @@ antlr中左递归必须直接写在expression里
 
 ### 可变形状`? * + |`的处理
 
-目前的blockly的语句拼接的方式,一个blockly的statsment,`statment`或`statment?`大多数情况下是无效的,除非是始终作为某个statementRule的第一个或最后一个子规则(类似`else语句`),并且需要该语句在整个语法中都不能有形式`statment+`或`statment*`出现
+目前的blockly的语句拼接的方式,一个blockly的statsment,`statement`或`statement?`大多数情况下是无效的,除非是始终作为某个statementRule的第一个或最后一个子规则(类似`else语句`),并且需要该语句在整个语法中都不能有形式`statement+`或`statement*`出现
 ```
 这种情况暂不提供自动改变blockly形状的拼接支持,通过运行时的检查来实现
 ```
