@@ -90,8 +90,8 @@ SymbolVisitor.prototype.visitStatValue = function(ctx) {
   this.statementRules.push([statId,[statId]]);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
-SymbolVisitor.prototype.visitExprList = function(ctx) {
+// Visit a parse tree produced by BlocklyGrammerParser#ExprExpression.
+SymbolVisitor.prototype.visitExprExpression = function(ctx) {
   //解析表达式的符号,以'expression'开头的,
   //用expression_arithmetic_[num]来依次命名
   var exprs=[];
@@ -137,7 +137,9 @@ EvalVisitor.prototype.constructor = EvalVisitor;
 /**
  * @param {!SymbolVisitor} symbols SymbolVisitor.
  */
-EvalVisitor.prototype.init = function(symbols) {
+EvalVisitor.prototype.init = function(symbols,rawInput) {
+  this.rawInput = rawInput;
+
   var convert = function(rules){
     var ruledict = {}
     for(var ii=0,rule;rule=rules[ii];ii++){
@@ -158,7 +160,7 @@ EvalVisitor.prototype.init = function(symbols) {
   //目前generLanguage:JavaScript还不能修改
   this.valueColor=330;
   this.statementColor=160;
-  this.entryColor=230;
+  this.entryColor=260;
 
   this.generLanguage='JavaScript';
   this.recieveOrder='ORDER_ATOMIC';
@@ -200,6 +202,10 @@ EvalVisitor.prototype.getRule = function(type,name) {
 
 EvalVisitor.prototype.escapeString = function(string_) {
   return eval(string_);
+}
+
+EvalVisitor.prototype.matchInject = function(parserId) {
+  return ''
 }
 
 EvalVisitor.prototype.initAssemble = function(obj) {
@@ -257,6 +263,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   }
   value.blockjs = blockjs;
   value.blockobj = obj;
+  //todo 添加嵌入的支持
   this.setRule(obj.type,obj.name,value);
 }
 

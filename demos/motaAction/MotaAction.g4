@@ -157,7 +157,7 @@ setFg_1_s
     ;
 
 move_s
-    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '立刻消失' Bool BGNL? StepString Newline
+    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '到达后立刻消失' Bool BGNL? StepString Newline
     ;
 
 moveHero_s
@@ -237,7 +237,8 @@ idString_e
     ;
 
 //在visitor中将其output改成'idString_e'即可
-idString_0_e
+//这一条不会被antlr识别,总是会被归到idString_e
+idString_1_e
     :   Id_List ':' IdText
     ;
 

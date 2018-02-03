@@ -98,16 +98,16 @@ var mainFileTPL = function(
   toolboxArea,workspaceName,toolboxId,
   blocklyScripts
 ){
-  return `<!doctype html>
+  return [/*0*/`<!doctype html>
 <head>
 <meta charset="utf-8">
-<title>${grammerName} --antlr-blockly</title>
+<title>${grammerName} --antlr-blockly</title>`,/*1*/`
 <script src="blockly_compressed.js"></script>
 <script src="blocks_compressed.js"></script>
 <script src="javascript_compressed.js"></script>
-<script src="zh-hans.js"></script>
+<script src="zh-hans.js"></script>`,/*2*/`
 </head>
-<body>
+<body>`,/*3*/`
 
 <p>
 <button onclick="showXML()">Show XML</button>
@@ -116,9 +116,9 @@ var mainFileTPL = function(
 <div id="${blocklyDivId}" style="height: 480px; width: 940px;"></div>
 <pre id="${codeAreaId}"></pre>
 ${toolboxArea}
-
+`,/*4*/`
 <script>
-
+`,/*5*/`
 ${blocklyScripts}
 
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
@@ -156,8 +156,7 @@ ${workspaceName}.addChangeListener(omitedcheckUpdateFunction);
 ${workspaceName}.addChangeListener(Blockly.Events.disableOrphans);
 //自动禁用任何未连接到根块的块
 
-</script>
-<script>
+
 function showXML() {
   xml = Blockly.Xml.workspaceToDom(${workspaceName});
   xml_text = Blockly.Xml.domToPrettyText(xml);
@@ -181,11 +180,12 @@ function runCode() {
     alert(e);
   }
 }
+`,/*6*/`
 </script>
 
-</body>
+`,/*7*/`</body>
 </html>
-`
+`]
 }
 
 exports.OmitedError = OmitedError;

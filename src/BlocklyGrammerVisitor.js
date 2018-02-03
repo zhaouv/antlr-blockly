@@ -42,8 +42,8 @@ BlocklyGrammerVisitor.prototype.visitStatValue = function(ctx) {
 };
 
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
-BlocklyGrammerVisitor.prototype.visitExprList = function(ctx) {
+// Visit a parse tree produced by BlocklyGrammerParser#ExprExpression.
+BlocklyGrammerVisitor.prototype.visitExprExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 

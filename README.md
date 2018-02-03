@@ -20,12 +20,11 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 生成一个完整的能运行生成的blockly的代码的网页  
   index.html点`download`后生成的文件放在此目录下即可运行
 + 有手动的换行时不添加inputsInline
++ 主页点`Run`就可以运行生成的blockly
 
 ## Todo
 
 + 表达式支持expression之外的集合,只有expression允许左递归
-
-+ 把主页做成点`parse`就可以演示blockly的效果
 
 + 文档  
   如何使用这个工具  
@@ -37,6 +36,7 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 + 多语言的支持
 
 + colour,tooltip,helpUrl以及  
+  默认值的设置和
   generFunc的代码  
   嵌入到.g4里
 

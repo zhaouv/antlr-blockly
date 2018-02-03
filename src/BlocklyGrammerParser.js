@@ -646,18 +646,18 @@ ExpressionRuleContext.prototype.copyFrom = function(ctx) {
 };
 
 
-function ExprListContext(parser, ctx) {
+function ExprExpressionContext(parser, ctx) {
 	ExpressionRuleContext.call(this, parser);
     ExpressionRuleContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-ExprListContext.prototype = Object.create(ExpressionRuleContext.prototype);
-ExprListContext.prototype.constructor = ExprListContext;
+ExprExpressionContext.prototype = Object.create(ExpressionRuleContext.prototype);
+ExprExpressionContext.prototype.constructor = ExprExpressionContext;
 
-BlocklyGrammerParser.ExprListContext = ExprListContext;
+BlocklyGrammerParser.ExprExpressionContext = ExprExpressionContext;
 
-ExprListContext.prototype.arithmeticRuleCollection = function(i) {
+ExprExpressionContext.prototype.arithmeticRuleCollection = function(i) {
     if(i===undefined) {
         i = null;
     }
@@ -668,7 +668,7 @@ ExprListContext.prototype.arithmeticRuleCollection = function(i) {
     }
 };
 
-ExprListContext.prototype.ParserIdentifier = function(i) {
+ExprExpressionContext.prototype.ParserIdentifier = function(i) {
 	if(i===undefined) {
 		i = null;
 	}
@@ -679,9 +679,9 @@ ExprListContext.prototype.ParserIdentifier = function(i) {
     }
 };
 
-ExprListContext.prototype.accept = function(visitor) {
+ExprExpressionContext.prototype.accept = function(visitor) {
     if ( visitor instanceof BlocklyGrammerVisitor ) {
-        return visitor.visitExprList(this);
+        return visitor.visitExprExpression(this);
     } else {
         return visitor.visitChildren(this);
     }
@@ -735,7 +735,7 @@ BlocklyGrammerParser.prototype.expressionRule = function() {
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case BlocklyGrammerParser.T__5:
-            localctx = new ExprListContext(this, localctx);
+            localctx = new ExprExpressionContext(this, localctx);
             this.enterOuterAlt(localctx, 1);
             this.state = 69;
             this.match(BlocklyGrammerParser.T__5);

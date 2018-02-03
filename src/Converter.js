@@ -77,7 +77,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
 
   svisitor.checkSymbol();
 
-  var evisitor = new EvalVisitor().init(svisitor);
+  var evisitor = new EvalVisitor().init(svisitor,grammerFile);
   this.evisitor = evisitor;
 
   /* functions[0] : 此处是整体修改
@@ -203,7 +203,7 @@ Converter.prototype.generMainFile = function(){
 
 Converter.prototype.writeMainFile = function(filename) {
   if(!filename)filename=this.grammerName+'index.html';
-  this.createAndDownloadFile(this.mainFile, filename, 'html');
+  this.createAndDownloadFile(this.mainFile.join(''), filename, 'html');
 }
 
 Converter.prototype.editBlock = function(blockname) {
