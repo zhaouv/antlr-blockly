@@ -24,6 +24,10 @@ return `${grammerName}Functions.Int_pre = function(intstr) {
   return parseInt(intstr);
 }
 
+${grammerName}Functions.Number_pre = function(intstr) {
+  return parseFloat(intstr);
+}
+
 //返回各LexerRule文本域的预处理函数,方便用来统一转义等等
   ${grammerName}Functions.pre = function(LexerId) {
   if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {

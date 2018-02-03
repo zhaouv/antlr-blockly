@@ -204,19 +204,49 @@ EvalVisitor.prototype.escapeString = function(string_) {
   return eval(string_);
 }
 
-EvalVisitor.prototype.matchInject = function(parserId) {
-  return ''
+EvalVisitor.prototype.matchInject = function(IdString) {
+  var pattern = new RegExp('/\\*\\s*'+IdString+'[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
+  var value = this.rawInput.match(pattern);
+  if(!value) return '';
+  return value[1];
+}
+
+EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default']
+
+EvalVisitor.prototype.loadInject = function(injectStr) {
+  if(!injectStr)return {'default':[]};
+  var obj = {};
+  for(var ii=0,inject;inject=this.inject[ii];ii++){
+    var pattern = new RegExp(
+      '^\\s*'+inject+'\\s*:\\s*([^\\r\\n]*)\\s*?[\\r\\n]+','m');
+    var value = injectStr.match(pattern);
+    if(!value)continue;
+    obj[inject]=value[1]
+    injectStr=injectStr.slice(0,value.index)+injectStr.slice(
+      value.index+value[0].length);
+  }
+  if(obj.default){
+    obj.default=eval(obj.default);
+  } else {
+    obj.default=[];
+  }
+  obj.generFunc = injectStr;
+  return obj;
 }
 
 EvalVisitor.prototype.initAssemble = function(obj) {
   //把parserRuleAtom中获取的参数初步组装起来
+  obj.inject = this.loadInject(this.matchInject(obj.name));
   var args0 = [];
   obj.vars = [];//会包含null
+  obj.fieldDefault = [];
   var manualWrap = false;
+  var fieldNum_ = 0;
   //这个循环中把形如块的各输入命名为形如Int_0,Int_1,expression_0
   //并额外记录在vars中
   for(var ii=0,args,ids={};args=obj.args[ii];ii++){
-    var args_ = Object.assign({},args.data);
+    var args_ = JSON.parse(JSON.stringify(args.data));
+    var default_ = null;
     if (args.id) {
       ids[args.id]=ids[args.id]?ids[args.id]:0;
       args_.name=args.id+'_'+ids[args.id];
@@ -228,6 +258,20 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         childvalue.user[obj.name]=obj.type;
         this.notEntry[args.id]=true;
         this.setRule(args.blockType,args.id,childvalue);
+      } else {
+        var key = ({
+          'field_input':'text',
+          'field_number':'value',
+          'field_dropdown':'options',
+          'field_checkbox':'checked'
+        })[args_.type];
+        default_ = obj.inject.default[fieldNum_];
+        if (default_===undefined)default_=null;
+        if (default_!==null){
+          args_[key]=default_;
+        }
+        if (key==='options')default_=args_[key][0][1];
+        fieldNum_++;
       }
     }
     if (args_.name) {
@@ -236,6 +280,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
       obj.vars.push(null);
       manualWrap = true;
     }
+    obj.fieldDefault.push(default_);
     args0.push(args_);
   }
   var blockjs = {
@@ -243,8 +288,8 @@ EvalVisitor.prototype.initAssemble = function(obj) {
     'message0': obj.message.join(' '),
     'args0': args0,
     'inputsInline': true,//如果有手动换行时,不添加此属性
-    'tooltip': '',
-    'helpUrl': ''
+    'tooltip': obj.inject.tooltip||'',
+    'helpUrl': obj.inject.helpUrl||''
   }
   if (args0.length===0) delete(blockjs.args0);
   if (manualWrap) delete(blockjs.inputsInline);
@@ -252,10 +297,10 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   var check = value.check;
   check = check.length===1?check[0]:check;
   if (obj.type==='value') {
-    blockjs.colour=this.valueColor;
+    blockjs.colour=obj.inject.colour||this.valueColor;
     blockjs.output=check;
   } else { //statement
-    blockjs.colour=this.statementColor;
+    blockjs.colour=obj.inject.colour||this.statementColor;
     blockjs.previousStatement=check;
     blockjs.nextStatement=check;
     //statement的拼接处理初始化之后再处理
@@ -263,7 +308,6 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   }
   value.blockjs = blockjs;
   value.blockobj = obj;
-  //todo 添加嵌入的支持
   this.setRule(obj.type,obj.name,value);
 }
 
@@ -354,8 +398,14 @@ EvalVisitor.prototype.assemble = function() {
         text.push(arg.id+"')("+var_+');\n');
       }
     }
-    text.push(pre+"var code = '1111111111;\\n';\n");
-    text.push(pre+'return code;\n');
+    if (stateRule.blockobj.inject.generFunc) {
+      text.push(pre+
+        stateRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
+      text.push('\n');
+    } else {
+      text.push(pre+"var code = '1111111111;\\n';\n");
+      text.push(pre+'return code;\n');
+    }
     cpre(-1);
     text.push(pre+'}');
     stateRule.generFunc=text.join('');
@@ -417,8 +467,14 @@ EvalVisitor.prototype.assemble = function() {
         text.push(arg.id+"')("+var_+');\n');
       }
     }
-    text.push(pre+"var code = 0000000000;\n");
-    text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
+    if (exprRule.blockobj.inject.generFunc) {
+      text.push(pre+
+        exprRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
+      text.push('\n');
+    } else {
+      text.push(pre+"var code = 0000000000;\n");
+      text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
+    }
     cpre(-1);
     text.push(pre+'}');
     exprRule.generFunc=text.join('');
@@ -428,13 +484,15 @@ EvalVisitor.prototype.assemble = function() {
 
 
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
-    //构造args和argsType,所有输入的名字和类型
+    //构造args和argsType和fieldDefault,所有输入的名字和类型以及域的默认值
     rule.args=[];
     rule.argsType=[];
+    rule.fieldDefault=[];
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
       if(arg.id){
         rule.args.push(rule.blockobj.vars[jj]);
         rule.argsType.push(arg.blockType);
+        rule.fieldDefault.push(rule.blockobj.fieldDefault[jj]);
       }
     }
     //生成构造xmltext的函数
@@ -476,6 +534,7 @@ EvalVisitor.prototype.assemble = function() {
  *              与blockfactory给出的Generator stub JavaScript一致
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
  *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
+ *   fieldDefault: [...] 第i个参数的输入如果是field,其默认值,非field时是null
  *   xmlText: function([...args,next],isShadow){...}
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
  *            第一个参数的第args.length个元素是其下一个语句的xmlText
@@ -516,8 +575,7 @@ EvalVisitor.prototype.generBlocks = function() {
   //从展开的数组换回AbcBlock.expression的形式
   function renderblockjs(obj,rule,pre) {
     var blockjs = rule.blockjs;
-    var blockjsstr = JSON.stringify(
-      blockjs,null,2).split('\n').join('\n'+pre);
+    var blockjsstr = JSON.stringify(blockjs).split('\n').join('\n'+pre);
     var replaceobj = {};
     blockjs = JSON.parse(blockjsstr);//复制一份
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
@@ -567,7 +625,11 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'"argsType": ');
     text.push(JSON.stringify(rule.argsType,null,0));
     text.push(',\n');
-    //块生成为xmlText的放法
+    //块的所有域的默认值,非域是null
+    text.push(pre+'"fieldDefault": ');
+    text.push(JSON.stringify(rule.fieldDefault,null,0));
+    text.push(',\n');
+    //块生成为xmlText的方法
     text.push(pre+'"xmlText": ');
     text.push(rule.xmlText.split('\n').join('\n'+pre));
     text.push('\n');

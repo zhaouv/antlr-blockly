@@ -97,13 +97,13 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   converter.workSpaceName='workspace';
   converter.codeAreaId='codeArea';
    */
+  eval(this.evisitor.matchInject('Function_0'));
   if(functions[0])functions[0]();
 
   evisitor.visit(tree);
   /* functions[1] : 此处修改各个具体方块
-  添加各方块的tooltip和helpUrl,
-  修改inputsInline以及colour和文本域默认值
    */
+  eval(this.evisitor.matchInject('Function_1'));
   if(functions[1])functions[1]();
 
   evisitor.generBlocks();
@@ -114,6 +114,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   可以通过对converter.blocks进行replace替换,
   修改各复杂词法规则的默认值
    */
+  eval(this.evisitor.matchInject('Function_2'));
   if(functions[2])functions[2]();
   return this;
 }
@@ -171,11 +172,6 @@ Converter.prototype.generToolbox = function() {
 
 Converter.prototype.generMainFile = function(){
   var text = [];
-  var pre='';
-  var cpre = function(point){
-    if(point>0)pre+=Array(2*point+1).join(' ');
-    if(point<0)pre=pre.slice(0,2*point);
-  }
 
   var grammerName = this.grammerName;
 
@@ -183,7 +179,8 @@ Converter.prototype.generMainFile = function(){
   text.push('\n\n');
   text.push(this.OmitedError);
   text.push('\n\n');
-  text.push(grammerName+'Functions={}');
+  text.push(grammerName+'Functions={}\n\n');
+  text.push(this.evisitor.matchInject('Functions'));
   text.push('\n\n');
   text.push(this.Functions_pre);
   text.push('\n\n');
