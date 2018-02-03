@@ -32,6 +32,8 @@ expressionRule中只有`expression`能包含`|`
 `expression`中不以`expression`开头的全部要求是新的expressionRule  
 建立一个名为`expression`的数组存放  
 以`expression`开头的生成为类似四则运算的块  
+从上到下以`expression_arithmetic_0`,`expression_arithmetic_1`...依次命名
+
 ```
 实现上,没有做多层的expressionRule导致的左递归的检查,形如
 expression : expression '+' expression | a_e ;
@@ -94,3 +96,27 @@ statement块的`previousStatement`提供其块的类型数组
 上方statement块的`nextStatement`提供能接收的类型数组  
 两者含共同元素便能拼接
 
+- - -
+
+blockly中mutators太过麻烦不适宜自动化,放弃
+
+> blockly中`numeric imput`的机制待研究.
+
+可以借助ChangeListener实现
+```
+b.getFieldValue()
+b.setFieldValue(123,'NUM')
+b.getInputTargetBlock('statements')
+
+
+b=demoWorkspace.getBlockById(event.blockId)
+event.type == Blockly.Events.CHANGE && b.type == 'xxxx'
+```
+blockly.xml需要仔细研究一下
+```
+b = demoWorkspace.newBlock('event_m');
+bx = Blockly.Xml.blockToDom(b,true);
+bt = Blockly.Xml.domToText(bx);
+b.dispose();
+```
+函数声明和变量声明也要再看一看

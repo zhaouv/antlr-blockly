@@ -354,7 +354,7 @@ EvalVisitor.prototype.assemble = function() {
         text.push(arg.id+"')("+var_+');\n');
       }
     }
-    text.push(pre+"var code = '...;\\n';\n");
+    text.push(pre+"var code = '1111111111;\\n';\n");
     text.push(pre+'return code;\n');
     cpre(-1);
     text.push(pre+'}');
@@ -417,7 +417,7 @@ EvalVisitor.prototype.assemble = function() {
         text.push(arg.id+"')("+var_+');\n');
       }
     }
-    text.push(pre+"var code = '...';\n");
+    text.push(pre+"var code = 0000000000;\n");
     text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
     cpre(-1);
     text.push(pre+'}');

@@ -1,7 +1,7 @@
 # === Extra Rules
 *\[abc\]*
 .vscode
-
+src/.antlr
 
 # =========================
 # Operating System Files

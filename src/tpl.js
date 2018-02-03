@@ -1,5 +1,5 @@
 var OmitedError = function(){ 
-  return `//生成代码中,当一个不允许省略的值或块省略时,会抛出这个错误
+return `//生成代码中,当一个不允许省略的值或块省略时,会抛出这个错误
 function OmitedError(block, var_, rule, fileName, lineNumber) {
   var message = 'no omitted '+var_+' at '+rule;
   var instance = new Error(message, fileName, lineNumber);
@@ -20,7 +20,11 @@ OmitedError.prototype.constructor = OmitedError;
 }
 
 var Functions_pre = function(grammerName) {
-  return `//返回各LexerRule文本域的预处理函数,方便用来统一转义等等
+return `${grammerName}Functions.Int_pre = function(intstr) {
+  return parseInt(intstr);
+}
+
+//返回各LexerRule文本域的预处理函数,方便用来统一转义等等
   ${grammerName}Functions.pre = function(LexerId) {
   if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {
     return ${grammerName}Functions[LexerId+'_pre'];
@@ -30,7 +34,7 @@ var Functions_pre = function(grammerName) {
 }
 
 var Functions_xmlText = function(grammerName) {
-  return `//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
+return `//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
   //inputs的第i个元素是第i个args的xmlText,null或undefined表示空
   //inputs的第rule.args.length个元素是其下一个语句的xmlText
   ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
@@ -76,7 +80,7 @@ var Functions_xmlText = function(grammerName) {
 }
 
 var Functions_blocksIniter = function(grammerName,language) {
-  return `//把各方块的信息注册到Blockly中
+return `//把各方块的信息注册到Blockly中
   ${grammerName}Functions.blocksIniter = function(){
   var blocksobj = ${grammerName}Blocks;
   for(var key in blocksobj) {
@@ -98,7 +102,7 @@ var mainFileTPL = function(
   toolboxArea,workspaceName,toolboxId,
   blocklyScripts
 ){
-  return [/*0*/`<!doctype html>
+return [/*0*/`<!doctype html>
 <head>
 <meta charset="utf-8">
 <title>${grammerName} --antlr-blockly</title>`,/*1*/`
