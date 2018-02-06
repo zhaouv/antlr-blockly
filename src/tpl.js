@@ -29,7 +29,7 @@ ${grammerName}Functions.Number_pre = function(intstr) {
 }
 
 //返回各LexerRule文本域的预处理函数,方便用来统一转义等等
-  ${grammerName}Functions.pre = function(LexerId) {
+${grammerName}Functions.pre = function(LexerId) {
   if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {
     return ${grammerName}Functions[LexerId+'_pre'];
   }
@@ -39,9 +39,9 @@ ${grammerName}Functions.Number_pre = function(intstr) {
 
 var Functions_xmlText = function(grammerName) {
 return `//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
-  //inputs的第i个元素是第i个args的xmlText,null或undefined表示空
-  //inputs的第rule.args.length个元素是其下一个语句的xmlText
-  ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
+//inputs的第i个元素是第i个args的xmlText,null或undefined表示空
+//inputs的第rule.args.length个元素是其下一个语句的xmlText
+${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
   var rule = ${grammerName}Blocks[ruleName];
   var blocktext = isShadow?'shadow':'block';
   var xmlText = [];
@@ -49,33 +49,34 @@ return `//构造这个方法是为了能够不借助workspace,从语法树直接
   if(!inputs)inputs=[];
   for (var ii=0,inputType;inputType=rule.argsType[ii];ii++) {
     var input = inputs[ii];
-    if(input===null || input===undefined){
-      //默认行为是: 如果语句块的备选方块只有一个,直接代入
-      //如果是语句或表达式集合,选最后一个,以阴影的形式代入
-      if (inputType!=='field') {
-        var subShadow = false;
-        //var subShadow = true;
-        var subrulename = rule.args[ii];
-        subrulename=subrulename.split('_').slice(0,-1).join('_');
-        var subrule = ${grammerName}Blocks[subrulename];
-        if (subrule instanceof Array) {
-          subrulename=subrule[subrule.length-1];
-          subrule = ${grammerName}Blocks[subrulename];
-          subShadow = true;
-          //continue;
-        }
-        input = subrule.xmlText([],subShadow);
-      } else { //field
-        continue;
+    var _input = '';
+    var noinput = (input===null || input===undefined);
+    if(noinput && inputType==='field') continue;
+    if(noinput) input = '';
+    if(inputType!=='field') {
+      var subList = false;
+      var subrulename = rule.args[ii];
+      subrulename=subrulename.split('_').slice(0,-1).join('_');
+      var subrule = ${grammerName}Blocks[subrulename];
+      if (subrule instanceof Array) {
+        subrulename=subrule[subrule.length-1];
+        subrule = ${grammerName}Blocks[subrulename];
+        subList = true;
+      }
+      _input = subrule.xmlText([],true);
+      if(noinput && !subList && !isShadow) {
+        //无输入的默认行为是: 如果语句块的备选方块只有一个,直接代入方块
+        input = subrule.xmlText();
       }
     }
     xmlText.push('<'+inputType+' name="'+rule.args[ii]+'">');
-    xmlText.push(input);
+    xmlText.push(_input+input);
     xmlText.push('</'+inputType+'>');
   }
-  if (inputs.length>rule.args.length) {//next
+  var next = inputs[rule.args.length];
+  if (next) {//next
     xmlText.push('<next>');
-    xmlText.push(inputs[rule.args.length]);
+    xmlText.push(next);
     xmlText.push('</next>');
   }
   xmlText.push('</'+blocktext+'>');
@@ -85,7 +86,7 @@ return `//构造这个方法是为了能够不借助workspace,从语法树直接
 
 var Functions_blocksIniter = function(grammerName,language) {
 return `//把各方块的信息注册到Blockly中
-  ${grammerName}Functions.blocksIniter = function(){
+${grammerName}Functions.blocksIniter = function(){
   var blocksobj = ${grammerName}Blocks;
   for(var key in blocksobj) {
     var value = blocksobj[key];

@@ -84,7 +84,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   能够修改以下变量
   converter.evisitor.valueColor=330;
   converter.evisitor.statementColor=160;
-  converter.evisitor..entryColor=230;
+  converter.evisitor.entryColor=230;
 
   converter.evisitor.generLanguage='JavaScript';
   converter.evisitor.recieveOrder='ORDER_ATOMIC';

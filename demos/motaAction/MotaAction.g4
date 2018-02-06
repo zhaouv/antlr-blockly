@@ -179,10 +179,10 @@ default : ["小妖精","fairy","欢迎使用事件编辑器"]
 var title='';
 if (EvalString_0==''){
     if (IdString_0=='')title='';
-    else title='\t['+IdString_0+']';
+    else title='\\t['+IdString_0+']';
 } else {
-    if (IdString_0=='')title='\t['+EvalString_0+']';
-    else title='\t['+EvalString_0+','+IdString_0+']';
+    if (IdString_0=='')title='\\t['+EvalString_0+']';
+    else title='\\t['+EvalString_0+','+IdString_0+']';
 }
 var code =  '"'+title+EvalString_1+'",\n';
 return code;
@@ -549,10 +549,10 @@ default : ["提示文字:选择一种钥匙","流浪者","woman"]
 var title='';
 if (EvalString_1==''){
     if (IdString_0=='')title='';
-    else title='\t['+IdString_0+']';
+    else title='\\t['+IdString_0+']';
 } else {
-    if (IdString_0=='')title='\t['+EvalString_1+']';
-    else title='\t['+EvalString_1+','+IdString_0+']';
+    if (IdString_0=='')title='\\t['+EvalString_1+']';
+    else title='\\t['+EvalString_1+','+IdString_0+']';
 }
 var code = ['{"type": "choices", "text": "',title+EvalString_0,'", "choices": [\n',
     choicesContext_0,
@@ -581,7 +581,7 @@ function_s
 tooltip : function: 自定义JS脚本
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=function-%e8%87%aa%e5%ae%9a%e4%b9%89js%e8%84%9a%e6%9c%ac
 default : ["alert(core.getStatus(\"atk\"));"]
-var code = '{"type": "function", "function": `function(){\n'+EvalString_0+'\n}`},\n';
+var code = '{"type": "function", "function": "function(){\\n'+JSON.stringify(EvalString_0).slice(1,-1)+'\\n}"},\n';
 return code;
 */
 
@@ -792,6 +792,9 @@ LineComment
 
 /* Function_0
 //converter.evisitor.recieveOrder='ORDER_NONE';
+converter.evisitor.valueColor=330;
+converter.evisitor.statementColor=160;
+converter.evisitor.entryColor=230;
 */
 
 /* Function_1
@@ -801,6 +804,285 @@ converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
 */
 
 /* Functions
+
+function ActionParser(){
+}
+
+ActionParser.prototype.parse = function (obj,type) {
+  switch (type) {
+    case 'event':
+      if(obj instanceof Array) obj={'data':obj};
+      return MotaActionBlocks['event_m'].xmlText([
+        obj.enable,obj.noPass,obj.displayDamage,this.parseList(obj.data)
+      ]);
+
+    case 'point':
+      var text_choices = null;
+      for(var ii=obj.choices.length-1,choice;choice=obj.choices[ii];ii--) {
+        var text_effect = null;
+        var effectList = choice.effect.split(';');
+        for(var jj=effectList.length-1,effect;effect=effectList[jj];jj--) {
+          text_effect=MotaActionBlocks['shopEffect'].xmlText([
+            MotaActionBlocks['idString_e'].xmlText([effect.split('+=')[0]]),
+            MotaActionBlocks['evalString_e'].xmlText([effect.split('+=')[1]]),
+            text_effect]);
+        }
+        text_choices=MotaActionBlocks['shopChoices'].xmlText([
+          choice.text,choice.need||'',text_effect,text_choices]);
+      }
+      return MotaActionBlocks['point_m'].xmlText([text_choices]);
+    
+    default:
+      return MotaActionBlocks[type+'_m'].xmlText([this.parseList(obj)]);
+  }
+}
+
+////// 开始解析一系列自定义事件 //////
+ActionParser.prototype.parseList = function (list) {
+  if (!this.isset(list)) return MotaActionBlocks['pass_s'].xmlText([],true);
+  if (!(list instanceof Array)) {
+    list = [list];
+  }
+  if (list.length===0) return MotaActionBlocks['pass_s'].xmlText([],true);
+  this.event = {'id': 'action', 'data': {
+    'list': list
+  }}
+  this.next = null;
+  this.result = null;
+  this.parseAction();
+  return this.result;
+}
+
+////// 解析当前自定义事件列表中的最后一个事件 //////
+ActionParser.prototype.parseAction = function() {
+
+  // 事件处理完毕
+  if (this.event.data.list.length==0) {
+    this.result = this.next;
+    this.next = null;
+    return;
+  }
+
+  var data = this.event.data.list.pop();
+  this.event.data.current = data;
+
+  // 不同种类的事件
+
+  // 如果是文字：显示
+  if (typeof data == "string") {
+      data={"type": "text", "data": data}
+  }
+  this.event.data.type=data.type;
+  switch (data.type) {
+    case "_next":
+      this.result = this.next;
+      this.next = data.next;
+      return;
+    case "text": // 文字/对话
+      this.next = MotaActionBlocks['text_0_s'].xmlText([
+        this.EvalString(data.data),this.next]);
+      break;
+    case "tip":
+      this.next = MotaActionBlocks['tip_s'].xmlText([
+        data.data,this.next]);
+      this.parseAction();
+      break;
+    case "show": // 显示
+      this.next = MotaActionBlocks['show_s'].xmlText([
+        data.loc[0],data.loc[1],data.floorId||'',data.time||0,this.next]);
+      break;
+    case "hide": // 消失
+      data.loc=data.loc||[];
+      this.next = MotaActionBlocks['hide_s'].xmlText([
+        data.loc[0]||'',data.loc[1],data.floorId||'',data.time||0,this.next]);
+      break;
+    case "move": // 移动事件
+      data.loc=data.loc||[];
+      this.next = MotaActionBlocks['move_s'].xmlText([
+        data.loc[0]||'',data.loc[1]||'',data.time||0,data.immediateHide,this.StepString(data.steps),this.next]);
+      break;
+    case "moveHero":
+      this.next = MotaActionBlocks['moveHero_s'].xmlText([
+        data.time||0,this.StepString(data.steps),this.next]);
+      break;
+    case "changeFloor": // 楼层转换
+      this.next = MotaActionBlocks['changeFloor_s'].xmlText([
+        data.floorId,data.loc[0],data.loc[1],this.Direction(data.direction),this.next]);
+      break;
+    case "changePos": // 直接更换勇士位置，不切换楼层
+      if(this.isset(data.loc)){
+        this.next = MotaActionBlocks['changePos_0_s'].xmlText([
+          data.loc[0],data.loc[1],this.Direction(data.direction),data.time||0,this.next]);
+      } else {
+        this.next = MotaActionBlocks['changePos_1_s'].xmlText([
+          this.Direction(data.direction),data.time||0,this.next]);
+      }
+      break;
+    case "setFg": // 颜色渐变
+      if(this.isset(data.color)){
+        this.next = MotaActionBlocks['setFg_0_s'].xmlText([
+          data.color[0],data.color[1],data.color[2],data.color[3]||1,data.time||0,this.next]);
+      } else {
+        this.next = MotaActionBlocks['setFg_1_s'].xmlText([
+          data.time||0,this.next]);
+      }
+      break;
+    case "openDoor": // 开一个门，包括暗墙
+      this.next = MotaActionBlocks['openDoor_s'].xmlText([
+        data.loc[0],data.loc[1],data.floorId||'',this.next]);
+      break;
+    case "openShop": // 打开一个全局商店
+      this.next = MotaActionBlocks['openShop_s'].xmlText([
+        data.id,this.next]);
+      break;
+    case "disableShop": // 禁用一个全局商店
+      this.next = MotaActionBlocks['disableShop_s'].xmlText([
+        data.id,this.next]);
+      break;
+    case "battle": // 强制战斗
+      this.next = MotaActionBlocks['battle_s'].xmlText([
+        data.id,this.next]);
+      break;
+    case "trigger": // 触发另一个事件；当前事件会被立刻结束。需要另一个地点的事件是有效的
+      this.next = MotaActionBlocks['trigger_s'].xmlText([
+        data.loc[0],data.loc[1],this.next]);
+      break;
+    case "playSound":
+      this.next = MotaActionBlocks['playSound_s'].xmlText([
+        data.name,this.next]);
+      break;
+    case "playBgm":
+      this.next = MotaActionBlocks['playBgm_s'].xmlText([
+        data.name,this.next]);
+      break
+    case "pauseBgm":
+      this.next = MotaActionBlocks['pauseBgm_s'].xmlText([
+        this.next]);
+      break
+    case "resumeBgm":
+      this.next = MotaActionBlocks['resumeBgm_s'].xmlText([
+        this.next]);
+      break
+    case "setValue":
+      this.next = MotaActionBlocks['setValue_s'].xmlText([
+        MotaActionBlocks['idString_e'].xmlText([data.name]),
+        MotaActionBlocks['evalString_e'].xmlText([data.value]),
+        this.next]);
+      break;
+    case "if": // 条件判断
+      this.next = MotaActionBlocks['if_s'].xmlText([
+        MotaActionBlocks['evalString_e'].xmlText([data.condition]),
+        this.insertActionList(data["true"]),
+        this.insertActionList(data["false"]),
+        this.next]);
+      break;
+    case "choices": // 提供选项
+      var text_choices = null;
+      for(var ii=data.choices.length-1,choice;choice=data.choices[ii];ii--) {
+        text_choices=MotaActionBlocks['choicesContext'].xmlText([
+          choice.text,this.insertActionList(choice.action),text_choices]);
+      }
+      this.next = MotaActionBlocks['choices_s'].xmlText([
+        this.EvalString(data.text),'','',text_choices,this.next]);
+      break;
+    case "win":
+      this.next = MotaActionBlocks['win_s'].xmlText([
+        data.reason,this.next]);
+      break;
+    case "lose":
+      this.next = MotaActionBlocks['lose_s'].xmlText([
+        data.reason,this.next]);
+      break;
+    case "function":
+      var func = data["function"];
+      func=func.split('{').slice(1).join('{').split('}').slice(0,-1).join('}').trim();
+      this.next = MotaActionBlocks['function_s'].xmlText([
+        this.EvalString(func),this.next]);
+      break;
+    case "update":
+      this.next = MotaActionBlocks['update_s'].xmlText([
+        this.next]);
+      break;
+    case "sleep": // 等待多少毫秒
+      this.next = MotaActionBlocks['sleep_s'].xmlText([
+        data.time,this.next]);
+      break;
+    case "revisit": // 立刻重新执行该事件
+      this.next = MotaActionBlocks['revisit_s'].xmlText([
+        this.next]);
+      break;
+    case "exit": // 立刻结束事件
+      this.next = MotaActionBlocks['exit_s'].xmlText([
+        this.next]);
+      break;
+    default:
+      throw new Error("[警告]出错啦！\n"+data.type+" 事件不被支持...");
+  }
+  this.parseAction();
+  return;
+}
+
+////// 往当前事件列表之后添加一个事件组 //////
+ActionParser.prototype.insertActionList = function (actionList) {
+  if (actionList.length===0) return null;
+  this.event.data.list.push({"type": "_next", "next": this.next});
+  this.event.data.list=this.event.data.list.concat(actionList);
+  this.next = null;
+  this.parseAction();
+  return this.result;
+}
+
+////// 判断某对象是否不为undefined也不会null //////
+ActionParser.prototype.isset = function (val) {
+    if (val === undefined || val === null) {
+        return false;
+    }
+    return true
+}
+
+ActionParser.prototype.StepString = function(steplist) {
+  var stepchar = {
+    'up': '上',
+    'down': '下',
+    'left': '左',
+    'right': '右'
+  }
+  var StepString = [];
+  for(var ii=0,obj;obj=steplist[ii];ii++) {
+    if(typeof(obj)===typeof('')) {
+      StepString.push(stepchar[obj]);
+    } else {
+      StepString.push(stepchar[obj['direction']]);
+      StepString.push(obj['value']);
+    }
+  }
+  return StepString.join('');
+}
+
+ActionParser.prototype.Direction = function(Direction) {
+  var stepchar = {
+    'up': '上',
+    'down': '下',
+    'left': '左',
+    'right': '右'
+  }
+  Direction=stepchar[Direction];
+  if(!Direction)Direction='不变';
+  return Direction;
+}
+
+ActionParser.prototype.EvalString = function(EvalString) {
+  return EvalString.split('\b').join('\\b').split('\t').join('\\t').split('\n').join('\\n');
+}
+
+MotaActionFunctions.actionParser = new ActionParser();
+
+MotaActionFunctions.parse = function(obj,type) {
+  workspace.clear();
+  xml_text = MotaActionFunctions.actionParser.parse(obj,type||'event');
+  xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
+  Blockly.Xml.domToWorkspace(xml, workspace);
+}
 
 MotaActionFunctions.EvalString_pre = function(EvalString){
   return EvalString.split('\\n').join('\n');

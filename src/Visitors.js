@@ -205,7 +205,7 @@ EvalVisitor.prototype.escapeString = function(string_) {
 }
 
 EvalVisitor.prototype.matchInject = function(IdString) {
-  var pattern = new RegExp('/\\*\\s*'+IdString+'[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
+  var pattern = new RegExp('/\\*[^\\S\\r\\n]*'+IdString+'[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
   var value = this.rawInput.match(pattern);
   if(!value) return '';
   return value[1];
@@ -225,6 +225,7 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
     injectStr=injectStr.slice(0,value.index)+injectStr.slice(
       value.index+value[0].length);
   }
+  if(obj.colour) obj.colour=eval(obj.colour);
   if(obj.default){
     obj.default=eval(obj.default);
   } else {
@@ -270,6 +271,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         if (default_!==null){
           args_[key]=default_;
         }
+        default_=args_[key];
         if (key==='options')default_=args_[key][0][1];
         fieldNum_++;
       }
