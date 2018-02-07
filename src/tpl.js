@@ -183,7 +183,7 @@ function runCode() {
   code = Blockly.${language}.workspaceToCode(${workspaceName});
   Blockly.${language}.INFINITE_LOOP_TRAP = null;
   try {
-    eval('obj=' + code.split('\\n').join(''));
+    eval('obj=' + code);
     console.log(obj);
   } catch (e) {
     alert(e);

@@ -133,8 +133,8 @@ toolboxObj = {
         '&lt;label text="获取用户输入的字符串">&lt;/label>',
         MotaActionFunctions.actionParser.parseList([
             {"type": "setValue", "name": "flag:inputMsg", "value": "请输入密码"},
-            {"type": "function", "function": "function(){\ncore.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx'))\n}"},
-            {"type": "if", "condition": "flag:input == 123456","true": [],"false": []},
+            {"type": "function", "function": "function(){core.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx')||'')}"},
+            {"type": "if", "condition": 'flag:input == "123456"',"true": [],"false": []},
         ]),
         '&lt;label text="战前剧情">&lt;/label>',
         MotaActionFunctions.actionParser.parse({ 
@@ -142,11 +142,22 @@ toolboxObj = {
             "displayDamage": true, 
             "data": [ 
                 ' ... 战前剧情',
-                {"type": "battle", "id": "xxx"},
-                ' ... 战后剧情；请注意上面的强制战斗不会使怪物消失，需要调动{"type": "hide"}',
+                {"type": "battle", "id": "greenSlime"},
+                ' ... 战后剧情；请注意上面的强制战斗不会使怪物消失',
+                '需要下一句来调用{"type": "hide"}来隐藏事件',
                 {"type": "hide"},
             ]
         },'event'),
+        '&lt;label text="打怪开门">&lt;/label>',
+        MotaActionFunctions.actionParser.parse([
+            {"type": "setValue", "name": "flag:__door_name__", "value": "flag:__door_name__+1"},
+            {"type": "if", "condition": "flag:__door_name__==2", 
+                "true": [
+                    {"type": "openDoor", "loc": [10,5]}
+                ],
+                "false": [] 
+            },
+        ],'afterBattle'),
     ],
 }
 var toolboxgap = '&lt;sep gap="5">&lt;/sep>'
@@ -254,7 +265,7 @@ function runCode() {
   code = Blockly.JavaScript.workspaceToCode(workspace);
   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
   try {
-    eval('obj=' + code.split('\n').join(''));
+    eval('obj=' + code);
     console.log(obj);
   } catch (e) {
     alert(e);
@@ -263,7 +274,7 @@ function runCode() {
 
 function parse() {
     MotaActionFunctions.parse(
-        eval('obj=' + document.getElementById('codeArea').value.split('\n').join('')),
+        eval('obj=' + document.getElementById('codeArea').value),
         document.getElementById('entryType').value
     );
 }

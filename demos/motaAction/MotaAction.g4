@@ -670,7 +670,6 @@ bool_e
     ;
 
 /* bool_e
-colour : 330
 var code = Bool_0;
 return [code, Blockly.JavaScript.ORDER_ATOMIC];
 */
@@ -681,7 +680,7 @@ idString_e
     ;
 
 /* idString_e
-colour : 310
+colour : this.idstring_eColor
 default : ["status:hp"]
 var code = IdString_0;
 return [code, Blockly.JavaScript.ORDER_ATOMIC];
@@ -693,7 +692,7 @@ idString_1_e
     ;
 
 /* idString_1_e
-colour : 310
+colour : this.idstring_eColor
 default : [null,"自定义flag"]
 //todo 将其output改成'idString_e'
 var code = Id_List_0+':'+IdText_0;
@@ -706,7 +705,7 @@ idString_2_e
     ;
 
 /* idString_2_e
-colour : 310
+colour : this.idstring_eColor
 //todo 将其output改成'idString_e'
 var code = FixedId_List_0;
 return [code, Blockly.JavaScript.ORDER_ATOMIC];
@@ -819,6 +818,7 @@ converter.evisitor.valueColor=330;
 converter.evisitor.statementColor=70;
 converter.evisitor.entryColor=250;
 
+converter.evisitor.idstring_eColor=310;
 converter.evisitor.subColor=190;
 converter.evisitor.printColor=70;
 converter.evisitor.heroColor=130;
@@ -1128,7 +1128,15 @@ MotaActionFunctions.parse = function(obj,type) {
 }
 
 MotaActionFunctions.EvalString_pre = function(EvalString){
-  return EvalString.split('\\n').join('\n');
+  if (EvalString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门，则使用flag:MT1_3_3作为开门变量');
+  return EvalString.replace(/([^\\])"/g,'$1\\"').replace(/^"/g,'\\"').replace(/""/g,'"\\"');
+}
+
+MotaActionFunctions.IdString_pre = function(IdString){
+  if (IdString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门，则使用flag:MT1_3_3作为开门变量');
+  if (!(new RegExp('[a-zA-Z_][0-9a-zA-Z_\\-:]*').test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - :之外的字符');
+  //这里不用/../形式是因为'*' '/'和注释的格式冲突了
+  return IdString;
 }
 
 MotaActionFunctions.StepString_pre = function(StepString){

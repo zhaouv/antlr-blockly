@@ -22,6 +22,9 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 + 表达式支持expression之外的集合,(只有expression允许左递归)
 
++ override,嵌入`override : true`则用嵌入的函数整个覆盖generFunc,不保留原有的变量获取部分的代码,  
+  可以用来改变valueToCode的优先级recieveOrder或者遍历   
+
 + 文档  
   如何使用这个工具  
   需要对antlr和blockly了解到什么程度  
