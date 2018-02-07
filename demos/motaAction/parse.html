@@ -1,299 +1,272 @@
 <!doctype html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>MotaAction --antlr-blockly</title>
 </head><body>
-<script>
-input_=String.raw`grammar MotaAction;
 
-//===============parser===============
-//===blockly语句===
+<p>
+<button onclick="showXML()">Show XML</button>
+<button onclick="runCode()">console.log(obj=code)</button>
+<select id="entryType">
+    <option value="event">event</option>
+    <option value="point">point</option>
+    <option value="shop">shop</option>
+    <option value="afterBattle">afterBattle</option>
+    <option value="afterGetItem">afterGetItem</option>
+    <option value="afterOpenDoor">afterOpenDoor</option>
+</select>
+<button onclick="parse()">parse</button>
+</p>
+<div id="blocklyDiv" style="height: 480px; width: 940px;"></div>
+<textarea id="codeArea" style="width: 100%; height: 17.2em;overflow:y;/* resize:none; */" spellcheck="false"></textarea>
 
-//事件  程序入口之一
-event_m
-    :   '事件' BGNL? Newline action+ BEND
-    ;
+<xml id="toolbox" style="display:none">
+    <category name="entry"></category>
+    <category name="statement"></category>
+    <category name="value"></category>
+    <category name="template"></category>
+</xml>
 
-//为了避免关键字冲突,全部加了_s
-//动作
-action
-    :   text_s
-    |   tip_s
-    |   setValue_s
-    |   show_s
-    |   hide_s
-    |   trigger_s
-    |   revisit_s
-    |   exit_s
-    |   update_s
-    |   sleep_s
-    |   battle_s
-    |   openDoor_s
-    |   changeFloor_s
-    |   changePos_0_s
-    |   changePos_1_s
-    |   openShop_s
-    |   disableShop_s
-    |   setFg_0_s
-    |   setFg_1_s
-    |   move_s
-    |   moveHero_s
-    |   playBgm_s
-    |   pauseBgm_s
-    |   resumeBgm_s
-    |   playSound_s
-    |   win_s
-    |   lose_s
-    |   if_s
-    |   choices_s
-    |   function_s
-    |   pass_s
-    ;
 
-text_s
-    :   '标题' EvalString? '图像' IdString? ':' EvalString Newline
-    ;
+<xml id='initscript' style="display:none">
 
-tip_s
-    :   '显示提示' ':' EvalString Newline
-    ;
-
-setValue_s
-    :   '变量操作' ':' '名称' idString_e '值' expression Newline
-    ;
-
-show_s
-    :   '显示事件' 'x' Int ',' 'y' Int '楼层' IdString? '动画时间' Int? Newline
-    ;
-
-hide_s
-    :   '隐藏事件' 'x' Int? ',' 'y' Int? '楼层' IdString? '动画时间' Int? Newline
-    ;
-
-trigger_s
-    :   '触发事件' 'x' Int ',' 'y' Int Newline
-    ;
-
-revisit_s
-    :   '重启当前事件' Newline
-    ;
-
-exit_s
-    :   '立刻结束当前事件' Newline
-    ;
-
-update_s
-    :   '更新状态栏和地图显伤' Newline
-    ;
-
-sleep_s
-    :   '等待' Int '毫秒' Newline
-    ;
-
-battle_s
-    :   '强制战斗' IdString Newline
-    ;
-
-openDoor_s
-    :   '开门' 'x' Int ',' 'y' Int '楼层' IdString? Newline
-    ;
-
-changeFloor_s
-    :   '楼层切换' IdString 'x' Int ',' 'y' Int '朝向' DirectionEx_List '动画时间' Int? Newline
-    ;
-
-changePos_0_s
-    :   '位置切换' 'x' Int ',' 'y' Int '朝向' DirectionEx_List Newline
-    ;
-changePos_1_s
-    :   '勇士转向' Direction_List Newline
-    ;
-
-openShop_s
-    :   '打开全局商店' IdString Newline
-    ;
-
-disableShop_s
-    :   '禁用全局商店' IdString Newline
-    ;
-
-setFg_0_s
-    :   '更改画面色调' Number ',' Number ',' Number ',' Number '动画时间' Int? Newline
-    ;
-setFg_1_s
-    :   '恢复画面色调' '动画时间' Int? Newline
-    ;
-
-move_s
-    :   '移动事件' 'x' Int? ',' 'y' Int? '动画时间' Int? '立刻消失' Bool BGNL? StepString Newline
-    ;
-
-moveHero_s
-    :   '移动勇士' '动画时间' Int? BGNL? StepString Newline
-    ;
-
-playBgm_s
-    :   '播放背景音乐' EvalString Newline
-    ;
-
-pauseBgm_s
-    :   '暂停背景音乐' Newline
-    ;
-
-resumeBgm_s
-    :   '恢复背景音乐' Newline
-    ;
-
-playSound_s
-    :   '播放音效' EvalString Newline
-    ;
-
-win_s
-    :   '游戏胜利,原因' ':' EvalString Newline
-    ;
-
-lose_s
-    :   '游戏失败,原因' ':' EvalString Newline
-    ;
-
-if_s
-    :   '如果' ':' expression BGNL? Newline action+ '否则' ':' BGNL? Newline action+ BEND Newline
-    ;
-
-choices_s
-    :   '选项' BGNL? '标题' EvalString? '图像' IdString? ':' EvalString BGNL? Newline choicesContext+ BEND Newline
-    ;
-
-choicesContext
-    :   '子选项' EvalString BGNL? Newline action+
-    ;
-
-function_s
-    :   '自定义JS脚本' BGNL? Newline EvalString Newline BEND Newline
-    ;
-
-pass_s
-    :   Newline
-    ;
-
-statExprSplit : '=== statement ^ === expression v ===' ;
-//===blockly表达式===
-
-expression
-    :   expression Arithmetic_List expression
-    |   negate_e
-    |   number_e
-    |   bool_e
-    |   idString_e
-    |   evalString_e
-    ;
-
-negate_e
-    :   '非' expression
-    ;
-
-idString_e
-    :   IdString
-    ;
-
-evalString_e
-    :   EvalString
-    ;
-
-number_e
-    :   Number
-    ;
-
-bool_e
-    :   Bool
-    ;
-
-//===============lexer===============
-Arithmetic_List
-    :   '+'|'-'|'*'|'/'|'^'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
-    ;
-
-Bool:   'TRUE' 
-    |   'FALSE'
-    ;
-
-Int :   '0' | [1-9][0-9]* ; // no leading zeros
-
-Number
-    :   '-'? Int '.' Int EXP?   // 1.35, 1.35E-9, 0.3, -4.5
-    |   '-'? Int EXP            // 1e10 -3e4
-    |   '-'? Int                // -3, 45
-    ;
-fragment EXP : [Ee] [+\-]? Int ; // \- since - means "range" inside [...]
-
-Direction_List
-    :   '上'|'下'|'左'|'右'
-    ;
-
-DirectionEx_List
-    :   '不变'|'上'|'下'|'左'|'右'
-    ;
-
-StepString
-    :   (Direction_List Int?)+
-    ;
-
-IdString
-    :   [a-zA-Z_][0-9a-zA-Z_\-:]*
-    ;
-
-//转blockly后不准备保留需要加"
-EvalString
-    :   Equote_double (ESC_double | ~["\\])* Equote_double
-    ;
-
-fragment ESC_double :   '\\' (["\\/bfnrt] | UNICODE) ;
-fragment UNICODE : 'u' HEX HEX HEX HEX ;
-fragment HEX : [0-9a-fA-F] ;
-
-BGNL
-    :   'BGNLaergayergfuybgv'
-    ;
-
-MeaningfulSplit : '=== meaningful ^ ===' ;
-
-fragment Equote_double : '"' ;
-
-BSTART
-    :   '开始'
-    ;
-
-BEND:   '结束'
-    ;
-
-Newline
-    :   ('\r' '\n'?| '\n')// -> skip
-    ;
-
-WhiteSpace
-    :   [ \t]+ -> skip
-    ;
-
-BlockComment
-    :   '/*' .*? '*/' -> skip
-    ;
-
-LineComment
-    :   '//' ~[\r\n]* -> skip
-    ;`;
-</script>
-<script src="../../Converter.bundle.min.js"></script>
-<script>
-var grammerFile = input_;
-converter = new Converter();
-converter.main(grammerFile,[
-function(){
-  converter.evisitor.statementColor=230;
+var getCategory = function(name){
+  for(var node of document.getElementById('toolbox').children) {
+    if(node.getAttribute('name')==name) return node;
+  }
 }
-]);
+
+toolboxObj = {
+    'entry':[
+        MotaActionFunctions.actionParser.parse([
+            "欢迎使用事件编辑器",
+            "本事件触发一次后会消失",
+            {"type": "hide", "time": 500},
+        ],'event'),
+        MotaActionFunctions.actionParser.parse({"type": "choices", "choices": [
+            {"text": "攻击+${point}", "action": [
+                {"type": "setValue", "name": "status:atk", "value": "status:atk+${point}"},
+            ]},
+            {"text": "防御+${2*point}", "action": [
+                {"type": "setValue", "name": "status:def", "value": "status:def+${2*point}"},
+            ]},
+            {"text": "生命+${200*point}", "action": [
+                {"type": "setValue", "name": "status:hp", "value": "status:hp+${200*point}"},
+            ]},
+        ]},'point'),
+        MotaActionFunctions.actionParser.parse({
+            "id": "moneyShop1",
+            "name": "贪婪之神", 
+            "icon": "blueShop",
+            "textInList": "1F金币商店", 
+            "use": "money",
+            "need": "20+10*times*(times+1)",  
+            "text": "勇敢的武士啊，给我${need}金币就可以：", 
+            "choices": [ 
+                {"text": "生命+800", "effect": "status:hp+=800"},
+                {"text": "攻击+4", "effect": "status:atk+=4"},
+                {"text": "防御+4", "effect": "status:def+=4"},
+                {"text": "魔防+10", "effect": "status:mdef+=10"}
+            ]
+        },'shop'),
+        MotaActionBlocks['afterBattle_m'].xmlText(),
+        MotaActionBlocks['afterGetItem_m'].xmlText(),
+        MotaActionBlocks['afterOpenDoor_m'].xmlText(),
+    ],
+    'statement':[
+        '&lt;label text="显示文字">&lt;/label>',
+        MotaActionBlocks['text_0_s'].xmlText(),
+        MotaActionBlocks['text_1_s'].xmlText(),
+        MotaActionBlocks['tip_s'].xmlText(),
+        MotaActionBlocks['openShop_s'].xmlText(),
+        MotaActionBlocks['win_s'].xmlText(),
+        MotaActionBlocks['lose_s'].xmlText(),
+        MotaActionBlocks['choices_s'].xmlText([
+            '选择剑或者盾','流浪者','man',MotaActionBlocks['choicesContext'].xmlText([
+                '剑',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [3,3]}]),
+                MotaActionBlocks['choicesContext'].xmlText([
+                    '盾',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [9,3]}]),
+                ])
+            ])
+        ]),
+        '&lt;label text="勇士相关">&lt;/label>',
+        MotaActionBlocks['setValue_s'].xmlText(),
+        MotaActionBlocks['update_s'].xmlText(),
+        MotaActionBlocks['moveHero_s'].xmlText(),
+        MotaActionBlocks['changeFloor_s'].xmlText(),
+        MotaActionBlocks['changePos_0_s'].xmlText(),
+        MotaActionBlocks['changePos_1_s'].xmlText(),
+        MotaActionBlocks['battle_s'].xmlText(),
+        MotaActionBlocks['openDoor_s'].xmlText(),
+        '&lt;label text="事件控制">&lt;/label>',
+        MotaActionBlocks['if_s'].xmlText(),
+        MotaActionBlocks['revisit_s'].xmlText(),
+        MotaActionBlocks['exit_s'].xmlText(),
+        MotaActionBlocks['show_s'].xmlText(),
+        MotaActionBlocks['hide_s'].xmlText(),
+        MotaActionBlocks['trigger_s'].xmlText(),
+        MotaActionBlocks['move_s'].xmlText(),
+        MotaActionBlocks['disableShop_s'].xmlText(),
+        '&lt;label text="画面声音">&lt;/label>',
+        MotaActionBlocks['sleep_s'].xmlText(),
+        MotaActionBlocks['setFg_0_s'].xmlText(),
+        MotaActionBlocks['setFg_1_s'].xmlText(),
+        MotaActionBlocks['playBgm_s'].xmlText(),
+        MotaActionBlocks['pauseBgm_s'].xmlText(),
+        MotaActionBlocks['resumeBgm_s'].xmlText(),
+        MotaActionBlocks['playSound_s'].xmlText(),
+        '&lt;label text="其他">&lt;/label>',
+        MotaActionBlocks['function_s'].xmlText(),
+    ],
+    'value':[
+        MotaActionBlocks['setValue_s'].xmlText(),
+        MotaActionBlocks['expression_arithmetic_0'].xmlText(),
+        MotaActionBlocks['negate_e'].xmlText(),
+        MotaActionBlocks['bool_e'].xmlText(),
+        MotaActionBlocks['idString_e'].xmlText(),
+        MotaActionBlocks['idString_1_e'].xmlText(),
+        MotaActionBlocks['idString_2_e'].xmlText(),
+        MotaActionBlocks['evalString_e'].xmlText(),
+    ],
+    'template':[
+        '&lt;label text="获取用户输入的字符串">&lt;/label>',
+        MotaActionFunctions.actionParser.parseList([
+            {"type": "setValue", "name": "flag:inputMsg", "value": "请输入密码"},
+            {"type": "function", "function": "function(){\ncore.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx'))\n}"},
+            {"type": "if", "condition": "flag:input == 123456","true": [],"false": []},
+        ]),
+        '&lt;label text="战前剧情">&lt;/label>',
+        MotaActionFunctions.actionParser.parse({ 
+            "trigger": "action", 
+            "displayDamage": true, 
+            "data": [ 
+                ' ... 战前剧情',
+                {"type": "battle", "id": "xxx"},
+                ' ... 战后剧情；请注意上面的强制战斗不会使怪物消失，需要调动{"type": "hide"}',
+                {"type": "hide"},
+            ]
+        },'event'),
+    ],
+}
+var toolboxgap = '&lt;sep gap="5">&lt;/sep>'
+//xml_text = MotaActionFunctions.actionParser.parse(obj,type||'event')
+//MotaActionBlocks['idString_e'].xmlText()
+
+for (var name in toolboxObj){
+    getCategory(name).innerHTML = toolboxObj[name].join(toolboxgap);
+}
+
+var workspace = Blockly.inject('blocklyDiv',{
+  media: '../../media/',
+  toolbox: document.getElementById('toolbox'),
+  zoom:{
+    controls: true,
+    wheel: true,//false
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.08
+  },
+  trashcan: false,
+});
+
+function omitedcheckUpdateFunction(event) {
+  console.log(event);
+  try {
+    var code = Blockly.JavaScript.workspaceToCode(workspace);
+    document.getElementById('codeArea').value = code;
+  } catch (error) {
+    document.getElementById('codeArea').value = String(error);
+    if (error instanceof OmitedError){
+      var blockName = error.blockName;
+      var varName = error.varName;
+      var block = error.block;
+    }
+    console.log(error);
+  }
+}
+
+workspace.addChangeListener(omitedcheckUpdateFunction);
+
+workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+</xml>
+
+
+<!-- <script src="../../src/lib/require.js"></script>
+<script>
+Converter = require('../../src/Converter').Converter;
+</script> -->
+<script src="../../Converter.bundle.min.js"></script>
+
+<script src="../../blockly_compressed.js"></script>
+<script src="../../blocks_compressed.js"></script>
+<script src="../../javascript_compressed.js"></script>
+<script src="../../zh-hans.js"></script>
+<script>
+input_='';
+function runOne(){
+    printf = console.log;
+    var grammerFile = input_;
+    converter = new Converter().init();
+    converter.generBlocks(grammerFile,[]);
+    printf(converter.blocks);
+    converter.renderGrammerName();
+    converter.generToolbox();
+    converter.generMainFile();
+    printf(converter.mainFile.join(''));
+    console.log(converter);
 
 
 
+    var script = document.createElement('script');
+    script.innerHTML = converter.mainFile[5]+document.getElementById('initscript').innerText;
+    document.body.appendChild(script);
+}
+var xhr=new XMLHttpRequest();
+xhr.onreadystatechange = function (){
+    if(xhr.readyState!=4) return;
+    if(xhr.status!=200) {
+        alert("无法在file://下加载");
+        return;
+    }
+    input_=xhr.responseText;
+    runOne();
+}
+xhr.open('GET','../../demos/motaAction/MotaAction.g4',true);
+xhr.send(null);
+
+function showXML() {
+  xml = Blockly.Xml.workspaceToDom(workspace);
+  xml_text = Blockly.Xml.domToPrettyText(xml);
+  console.log(xml_text);
+  xml_text = Blockly.Xml.domToText(xml);
+  console.log(xml_text);
+  console.log(xml);
+}
+
+function runCode() {
+  // Generate JavaScript code and run it.
+  window.LoopTrap = 1000;
+  Blockly.JavaScript.INFINITE_LOOP_TRAP =
+    'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+  code = Blockly.JavaScript.workspaceToCode(workspace);
+  Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+  try {
+    eval('obj=' + code.split('\n').join(''));
+    console.log(obj);
+  } catch (e) {
+    alert(e);
+  }
+}
+
+function parse() {
+    MotaActionFunctions.parse(
+        eval('obj=' + document.getElementById('codeArea').value.split('\n').join('')),
+        document.getElementById('entryType').value
+    );
+}
 </script>
 </body>
 </html>

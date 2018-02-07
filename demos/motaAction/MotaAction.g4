@@ -32,7 +32,7 @@ point_m
 /* point_m
 tooltip : 加点事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=%e5%8a%a0%e7%82%b9%e4%ba%8b%e4%bb%b6
-var code = '{"type": "choices", "choices": [\n'+choicesContext_0+']},\n';
+var code = '{"type": "choices", "choices": [\n'+choicesContext_0+']}\n';
 return code;
 */
 
@@ -67,7 +67,7 @@ shopChoices
 tooltip : 商店选项,商店消耗是-1时,这里的消耗对应各自选项的消耗,商店消耗不是-1时这里的消耗不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=%e5%85%a8%e5%b1%80%e5%95%86%e5%ba%97
 default : ["攻击+1",""]
-colour : 130
+colour : this.subColor
 EvalString_1 = EvalString_1 && (', "need": "'+EvalString_1+'"');
 var code = '{"text": "'+EvalString_0+'"'+EvalString_1+', "effect": "'+shopEffect_0.slice(2,-1)+'"},\n';
 return code;
@@ -78,7 +78,7 @@ shopEffect
     ;
 
 /* shopEffect
-colour : 130
+colour : this.subColor
 var code = idString_e_0+'+='+expression_0+';'
 return code;
 */
@@ -207,6 +207,7 @@ setValue_s
 /* setValue_s
 tooltip : setValue：设置勇士的某个属性、道具个数，或某个变量/Flag的值
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=text%ef%bc%9a%e6%98%be%e7%a4%ba%e4%b8%80%e6%ae%b5%e6%96%87%e5%ad%97%ef%bc%88%e5%89%a7%e6%83%85%ef%bc%89
+colour : this.heroColor
 var code = '{"type": "setValue", "name": "'+idString_e_0+'", "value": "'+expression_0+'"},\n';
 return code;
 */
@@ -219,6 +220,7 @@ show_s
 tooltip : show: 将一个禁用事件启用,楼层和动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=show-%e5%b0%86%e4%b8%80%e4%b8%aa%e7%a6%81%e7%94%a8%e4%ba%8b%e4%bb%b6%e5%90%af%e7%94%a8
 default : [0,0,"",500]
+colour : this.eventColor
 IdString_0 = IdString_0 && (', "floorId": "'+IdString_0+'"');
 Int_2 = Int_2 ?(', "time": '+Int_2):'';
 var code = '{"type": "show", "loc": ['+Int_0+','+Int_1+']'+IdString_0+''+Int_2+'},\n';
@@ -233,6 +235,7 @@ hide_s
 tooltip : hide: 将一个启用事件禁用,所有参数均可不填,代表禁用事件自身
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=hide-%e5%b0%86%e4%b8%80%e4%b8%aa%e5%90%af%e7%94%a8%e4%ba%8b%e4%bb%b6%e7%a6%81%e7%94%a8
 default : ["","","",500]
+colour : this.eventColor
 var floorstr = '';
 if (EvalString_0 && EvalString_1) {
     floorstr = ', "loc": ['+EvalString_0+','+EvalString_1+']';
@@ -251,6 +254,7 @@ trigger_s
 tooltip : trigger: 立即触发另一个地点的事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=trigger-%e7%ab%8b%e5%8d%b3%e8%a7%a6%e5%8f%91%e5%8f%a6%e4%b8%80%e4%b8%aa%e5%9c%b0%e7%82%b9%e7%9a%84%e4%ba%8b%e4%bb%b6
 default : [0,0]
+colour : this.eventColor
 var code = '{"type": "trigger", "loc": ['+Int_0+','+Int_1+']},\n';
 return code;
 */
@@ -262,6 +266,7 @@ revisit_s
 /* revisit_s
 tooltip : revisit: 立即重启当前事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=revisit-%e7%ab%8b%e5%8d%b3%e9%87%8d%e5%90%af%e5%bd%93%e5%89%8d%e4%ba%8b%e4%bb%b6
+colour : this.eventColor
 var code = '{"type": "revisit"},\n';
 return code;
 */
@@ -273,6 +278,7 @@ exit_s
 /* exit_s
 tooltip : exit: 立刻结束当前事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=exit-%e7%ab%8b%e5%88%bb%e7%bb%93%e6%9d%9f%e5%bd%93%e5%89%8d%e4%ba%8b%e4%bb%b6
+colour : this.eventColor
 var code = '{"type": "exit"},\n';
 return code;
 */
@@ -284,6 +290,7 @@ update_s
 /* update_s
 tooltip : update: 立刻更新状态栏和地图显伤
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=update-%e7%ab%8b%e5%88%bb%e6%9b%b4%e6%96%b0%e7%8a%b6%e6%80%81%e6%a0%8f%e5%92%8c%e5%9c%b0%e5%9b%be%e6%98%be%e4%bc%a4
+colour : this.heroColor
 var code = '{"type": "update"},\n';
 return code;
 */
@@ -296,6 +303,7 @@ sleep_s
 tooltip : sleep: 等待多少毫秒
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=sleep-%e7%ad%89%e5%be%85%e5%a4%9a%e5%b0%91%e6%af%ab%e7%a7%92
 default : [500]
+colour : this.soundColor
 var code = '{"type": "sleep", "time": '+Int_0+'},\n';
 return code;
 */
@@ -308,6 +316,7 @@ battle_s
 tooltip : battle: 强制战斗
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=battle-%e5%bc%ba%e5%88%b6%e6%88%98%e6%96%97
 default : ["greenSlime"]
+colour : this.heroColor
 var code = '{"type": "battle", "id": "'+IdString_0+'"},\n';
 return code;
 */
@@ -320,6 +329,7 @@ openDoor_s
 tooltip : openDoor: 开门,楼层可不填表示当前层
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=opendoor-%e5%bc%80%e9%97%a8
 default : [0,0,""]
+colour : this.heroColor
 IdString_0 = IdString_0 && (', "floorId": "'+IdString_0+'"');
 var code = '{"type": "openDoor", "loc": ['+Int_0+','+Int_1+']'+IdString_0+'},\n';
 return code;
@@ -333,6 +343,7 @@ changeFloor_s
 tooltip : changeFloor: 楼层切换,动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changefloor-%e6%a5%bc%e5%b1%82%e5%88%87%e6%8d%a2
 default : ["MT1",0,0,null,500]
+colour : this.heroColor
 DirectionEx_List_0 = DirectionEx_List_0=='不变'?'':DirectionEx_List_0;
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 Int_2 = Int_2 ?(', "time": '+Int_2):'';
@@ -348,6 +359,7 @@ changePos_0_s
 tooltip : changePos: 当前位置切换
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changepos-%e5%bd%93%e5%89%8d%e4%bd%8d%e7%bd%ae%e5%88%87%e6%8d%a2%e5%8b%87%e5%a3%ab%e8%bd%ac%e5%90%91
 default : [0,0,null]
+colour : this.heroColor
 DirectionEx_List_0 = DirectionEx_List_0=='不变'?'':DirectionEx_List_0;
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 var code = '{"type": "changePos", "loc": ['+Int_0+','+Int_1+']'+DirectionEx_List_0+'},\n';
@@ -361,6 +373,7 @@ changePos_1_s
 /* changePos_1_s
 tooltip : changePos: 勇士转向
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changepos-%e5%bd%93%e5%89%8d%e4%bd%8d%e7%bd%ae%e5%88%87%e6%8d%a2%e5%8b%87%e5%a3%ab%e8%bd%ac%e5%90%91
+colour : this.heroColor
 var code = '{"type": "changePos", "direction": "'+Direction_List_0+'"},\n';
 return code;
 */
@@ -385,6 +398,7 @@ disableShop_s
 tooltip : 全局商店
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=%e5%85%a8%e5%b1%80%e5%95%86%e5%ba%97
 default : ["shop1"]
+colour : this.eventColor
 var code = '{"type": "disableShop", "id": "'+IdString_0+'"},\n';
 return code;
 */
@@ -397,6 +411,7 @@ setFg_0_s
 tooltip : setFg: 更改画面色调,动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=setfg-%e6%9b%b4%e6%94%b9%e7%94%bb%e9%9d%a2%e8%89%b2%e8%b0%83
 default : [255,255,255,1,500]
+colour : this.soundColor
 var limit = function(v,min,max) {
     if(v>max) return max;
     if(v<min) return min;
@@ -419,19 +434,21 @@ setFg_1_s
 tooltip : setFg: 恢复画面色调,动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=setfg-%e6%9b%b4%e6%94%b9%e7%94%bb%e9%9d%a2%e8%89%b2%e8%b0%83
 default : [500]
+colour : this.soundColor
 Int_0 = Int_0 ?(', "time": '+Int_0):'';
 var code = '{"type": "setFg"'+Int_0 +'},\n';
 return code;
 */
 
 move_s
-    :   '移动事件' 'x' EvalString? ',' 'y' EvalString? '动画时间' Int? '到达后立刻消失' Bool BGNL? StepString Newline
+    :   '移动事件' 'x' EvalString? ',' 'y' EvalString? '动画时间' Int? '消失时无动画时间' Bool BGNL? StepString Newline
     ;
 
 /* move_s
 tooltip : move: 让某个NPC/怪物移动,位置可不填代表当前事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=move-%e8%ae%a9%e6%9f%90%e4%b8%aanpc%e6%80%aa%e7%89%a9%e7%a7%bb%e5%8a%a8
 default : ["","",500,null,"上右3下2左上左2"]
+colour : this.eventColor
 var floorstr = '';
 if (EvalString_0 && EvalString_1) {
     floorstr = ', "loc": ['+EvalString_0+','+EvalString_1+']';
@@ -449,6 +466,7 @@ moveHero_s
 tooltip : moveHero：移动勇士,用这种方式移动勇士的过程中将无视一切地形，无视一切事件，中毒状态也不会扣血
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=movehero%ef%bc%9a%e7%a7%bb%e5%8a%a8%e5%8b%87%e5%a3%ab
 default : [500,"上右3下2左上左2"]
+colour : this.heroColor
 Int_0 = Int_0 ?(', "time": '+Int_0):'';
 var code = '{"type": "moveHero"'+Int_0+', "steps": '+JSON.stringify(StepString_0)+'},\n';
 return code;
@@ -462,6 +480,7 @@ playBgm_s
 tooltip : playBgm: 播放背景音乐
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=playbgm-%e6%92%ad%e6%94%be%e8%83%8c%e6%99%af%e9%9f%b3%e4%b9%90
 default : ["bgm.mp3"]
+colour : this.soundColor
 var code = '{"type": "playBgm", "name": "'+EvalString_0+'"},\n';
 return code;
 */
@@ -473,6 +492,7 @@ pauseBgm_s
 /* pauseBgm_s
 tooltip : pauseBgm: 暂停背景音乐
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=pausebgm-%e6%9a%82%e5%81%9c%e8%83%8c%e6%99%af%e9%9f%b3%e4%b9%90
+colour : this.soundColor
 var code = '{"type": "pauseBgm"},\n';
 return code;
 */
@@ -484,6 +504,7 @@ resumeBgm_s
 /* resumeBgm_s
 tooltip : resumeBgm: 恢复背景音乐
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=resumebgm-%e6%81%a2%e5%a4%8d%e8%83%8c%e6%99%af%e9%9f%b3%e4%b9%90
+colour : this.soundColor
 var code = '{"type": "resumeBgm"},\n';
 return code;
 */
@@ -496,6 +517,7 @@ playSound_s
 tooltip : playSound: 播放音效
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=playsound-%e6%92%ad%e6%94%be%e9%9f%b3%e6%95%88
 default : ["item.ogg"]
+colour : this.soundColor
 var code = '{"type": "playSound", "name": "'+EvalString_0+'"},\n';
 return code;
 */
@@ -531,6 +553,7 @@ if_s
 /* if_s
 tooltip : if: 条件判断
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=if-%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad
+colour : this.eventColor
 var code = ['{"type": "if", "condition": "',expression_0,'",\n',
     '"true": [\n',action_0,'],\n',
     '"false": [\n',action_1,']\n',
@@ -568,7 +591,7 @@ choicesContext
 tooltip : 选项的选择
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=choices-%e7%bb%99%e7%94%a8%e6%88%b7%e6%8f%90%e4%be%9b%e9%80%89%e9%a1%b9
 default : ["提示文字:红钥匙"]
-colour : 130
+colour : this.subColor
 var code = '{"text": "'+EvalString_0+'", "action": [\n'+action_0+']},\n';
 return code;
 */
@@ -793,8 +816,14 @@ LineComment
 /* Function_0
 //converter.evisitor.recieveOrder='ORDER_NONE';
 converter.evisitor.valueColor=330;
-converter.evisitor.statementColor=160;
-converter.evisitor.entryColor=230;
+converter.evisitor.statementColor=70;
+converter.evisitor.entryColor=250;
+
+converter.evisitor.subColor=190;
+converter.evisitor.printColor=70;
+converter.evisitor.heroColor=130;
+converter.evisitor.eventColor=220;
+converter.evisitor.soundColor=20;
 */
 
 /* Function_1
@@ -811,6 +840,7 @@ function ActionParser(){
 ActionParser.prototype.parse = function (obj,type) {
   switch (type) {
     case 'event':
+      if(typeof(obj)===typeof('')) obj={'data':[obj]};
       if(obj instanceof Array) obj={'data':obj};
       return MotaActionBlocks['event_m'].xmlText([
         obj.enable,obj.noPass,obj.displayDamage,this.parseList(obj.data)
@@ -819,9 +849,20 @@ ActionParser.prototype.parse = function (obj,type) {
     case 'point':
       var text_choices = null;
       for(var ii=obj.choices.length-1,choice;choice=obj.choices[ii];ii--) {
+        text_choices=MotaActionBlocks['choicesContext'].xmlText([
+          choice.text,this.parseList(choice.action),text_choices]);
+      }
+      return MotaActionBlocks['point_m'].xmlText([text_choices]);
+
+    case 'shop':
+      var text_choices = null;
+      for(var ii=obj.choices.length-1,choice;choice=obj.choices[ii];ii--) {
         var text_effect = null;
         var effectList = choice.effect.split(';');
         for(var jj=effectList.length-1,effect;effect=effectList[jj];jj--) {
+          if(effect.split('+=').length!==2){
+            throw new Error('一个商店效果中必须包含恰好一个"+="');
+          }
           text_effect=MotaActionBlocks['shopEffect'].xmlText([
             MotaActionBlocks['idString_e'].xmlText([effect.split('+=')[0]]),
             MotaActionBlocks['evalString_e'].xmlText([effect.split('+=')[1]]),
@@ -830,7 +871,9 @@ ActionParser.prototype.parse = function (obj,type) {
         text_choices=MotaActionBlocks['shopChoices'].xmlText([
           choice.text,choice.need||'',text_effect,text_choices]);
       }
-      return MotaActionBlocks['point_m'].xmlText([text_choices]);
+      return MotaActionBlocks['shop_m'].xmlText([
+        obj.id,obj.name,obj.icon,obj.textInList,obj.use,obj.need,this.EvalString(obj.text),text_choices
+      ]);
     
     default:
       return MotaActionBlocks[type+'_m'].xmlText([this.parseList(obj)]);

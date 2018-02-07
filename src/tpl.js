@@ -129,7 +129,7 @@ ${toolboxArea}
 <script>
 `,/*5*/`
 ${blocklyScripts}
-
+`,/*6*/`
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
   media: 'media/',
   toolbox: document.getElementById('${toolboxId}'),
@@ -164,7 +164,7 @@ ${workspaceName}.addChangeListener(omitedcheckUpdateFunction);
 
 ${workspaceName}.addChangeListener(Blockly.Events.disableOrphans);
 //自动禁用任何未连接到根块的块
-
+`,/*7*/`
 
 function showXML() {
   xml = Blockly.Xml.workspaceToDom(${workspaceName});
@@ -189,10 +189,10 @@ function runCode() {
     alert(e);
   }
 }
-`,/*6*/`
+`,/*8*/`
 </script>
 
-`,/*7*/`</body>
+`,/*9*/`</body>
 </html>
 `]
 }
