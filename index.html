@@ -116,7 +116,7 @@
 </input> 
 <br/>
 
-<textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="语法文件.g4"></textarea>
+<textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="input_B"></textarea>
 <br/>
 
 <input type="button" value="Parse" onclick="func_Parse()" />
@@ -184,7 +184,7 @@ function func_Run(){
                     loadjs('zh-hans.js',function(){
                         loadlib[0]=true;
                         var script = document.createElement('script');
-                        script.innerHTML = converter.mainFile[5];
+                        script.innerHTML = converter.mainFile.slice(5,8).join('');
                         document.body.appendChild(script);
                     });
                 });
@@ -192,7 +192,7 @@ function func_Run(){
         });
     } else {
         var script = document.createElement('script');
-        script.innerHTML = converter.mainFile[5];
+        script.innerHTML = converter.mainFile.slice(5,8).join('');
         document.body.appendChild(script);
     }
     //暂时只支持点一次
@@ -251,6 +251,7 @@ xhr.onreadystatechange = function (){
 }
 xhr.open('GET','./demos/motaAction/MotaAction.g4',true);
 xhr.send(null);
+
 </script>
 </body>
 </html>
