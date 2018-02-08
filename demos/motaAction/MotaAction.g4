@@ -44,7 +44,7 @@ shop_m
 /* shop_m
 tooltip : 全局商店,消耗填-1表示每个选项的消耗不同,正数表示消耗数值
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=%e5%85%a8%e5%b1%80%e5%95%86%e5%ba%97
-default : ["shop1","贪婪之神","blueShop","1F金币商店",null,"20+10*times*(times+1)","勇敢的武士啊，给我${need}金币就可以："]
+default : ["shop1","贪婪之神","blueShop","1F金币商店",null,"20+10*times*(times+1)","勇敢的武士啊, 给我${need}金币就可以："]
 var code = {
     'id': IdString_0,
     'name': EvalString_0,
@@ -119,6 +119,36 @@ var code = '[\n'+action_0+']\n';
 return code;
 */
 
+//firstArrive 事件编辑器入口之一
+firstArrive_m
+    :   '首次到达楼层' BGNL? Newline action+ BEND
+    ;
+
+/* firstArrive_m
+tooltip : 首次到达楼层
+helpUrl : https://ckcz123.github.io/mota-js/#/event?id=%e7%b3%bb%e7%bb%9f%e5%bc%95%e5%8f%91%e7%9a%84%e8%87%aa%e5%ae%9a%e4%b9%89%e4%ba%8b%e4%bb%b6
+var code = '[\n'+action_0+']\n';
+return code;
+*/
+
+//changeFloor 事件编辑器入口之一
+changeFloor_m
+    :   '楼梯, 传送门' BGNL? Newline '目标楼层' IdString Stair_List 'x' Int ',' 'y' Int '朝向' DirectionEx_List '动画时间' Int? '允许穿透' Bool BEND
+    ;
+
+/* changeFloor_m
+tooltip : 楼梯, 传送门, 如果目标楼层有多个楼梯, 写upFloor或downFloor可能会导致到达的楼梯不确定, 这时候请使用loc方式来指定具体的点位置
+helpUrl : https://ckcz123.github.io/mota-js/#/element?id=%e8%b7%af%e9%9a%9c%ef%bc%8c%e6%a5%bc%e6%a2%af%ef%bc%8c%e4%bc%a0%e9%80%81%e9%97%a8
+default : ["MT1",null,0,0,null,500,null]
+var loc = ', "loc": ['+Int_0+', '+Int_1+']';
+if (Stair_List_0!=='loc')loc = ', "stair": "'+Stair_List_0+'"';
+DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
+Int_2 = Int_2 ?(', "time": '+Int_2):'';
+Bool_0 = Bool_0 ?'':(', "portalWithoutTrigger": false');
+var code = '{"floorId": "'+IdString_0+'"'+loc+DirectionEx_List_0+Int_2+Bool_0+' }\n';
+return code;
+*/
+
 //为了避免关键字冲突,全部加了_s
 //动作
 action
@@ -142,6 +172,7 @@ action
     |   disableShop_s
     |   setFg_0_s
     |   setFg_1_s
+    |   setWeather_s
     |   move_s
     |   moveHero_s
     |   playBgm_s
@@ -169,13 +200,13 @@ return code;
 */
 
 text_1_s
-    :   '标题' EvalString? '图像' IdString? ':' EvalString Newline
+    :   '标题' EvalString? '图像' IdString? '对话框效果' EvalString? ':' EvalString Newline
     ;
 
 /* text_1_s
-tooltip : text：显示一段文字（剧情）
+tooltip : text：显示一段文字（剧情）,选项较多请右键点击帮助
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=text%ef%bc%9a%e6%98%be%e7%a4%ba%e4%b8%80%e6%ae%b5%e6%96%87%e5%ad%97%ef%bc%88%e5%89%a7%e6%83%85%ef%bc%89
-default : ["小妖精","fairy","欢迎使用事件编辑器"]
+default : ["小妖精","fairy","","欢迎使用事件编辑器"]
 var title='';
 if (EvalString_0==''){
     if (IdString_0=='')title='';
@@ -184,7 +215,11 @@ if (EvalString_0==''){
     if (IdString_0=='')title='\\t['+EvalString_0+']';
     else title='\\t['+EvalString_0+','+IdString_0+']';
 }
-var code =  '"'+title+EvalString_1+'",\n';
+if(EvalString_1 && !(/^(up|down)(,hero)?(,([0-9]|1[0-2]),([0-9]|1[0-2]))?$/.test(EvalString_1))) {
+  throw new Error('对话框效果的用法请右键点击帮助');
+}
+EvalString_1 = EvalString_1 && ('\\b['+EvalString_1+']');
+var code =  '"'+title+EvalString_1+EvalString_2+'",\n';
 return code;
 */
 
@@ -205,7 +240,7 @@ setValue_s
     ;
 
 /* setValue_s
-tooltip : setValue：设置勇士的某个属性、道具个数，或某个变量/Flag的值
+tooltip : setValue：设置勇士的某个属性、道具个数, 或某个变量/Flag的值
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=text%ef%bc%9a%e6%98%be%e7%a4%ba%e4%b8%80%e6%ae%b5%e6%96%87%e5%ad%97%ef%bc%88%e5%89%a7%e6%83%85%ef%bc%89
 colour : this.heroColor
 var code = '{"type": "setValue", "name": "'+idString_e_0+'", "value": "'+expression_0+'"},\n';
@@ -344,10 +379,9 @@ tooltip : changeFloor: 楼层切换,动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changefloor-%e6%a5%bc%e5%b1%82%e5%88%87%e6%8d%a2
 default : ["MT1",0,0,null,500]
 colour : this.heroColor
-DirectionEx_List_0 = DirectionEx_List_0=='不变'?'':DirectionEx_List_0;
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 Int_2 = Int_2 ?(', "time": '+Int_2):'';
-var code = '{"type": "changeFloor", "floorId": "'+IdString_0+'"，"loc": ['+Int_0+', '+Int_1+']'+DirectionEx_List_0+Int_2+' },\n';
+var code = '{"type": "changeFloor", "floorId": "'+IdString_0+'", "loc": ['+Int_0+', '+Int_1+']'+DirectionEx_List_0+Int_2+' },\n';
 return code;
 */
 
@@ -360,7 +394,6 @@ tooltip : changePos: 当前位置切换
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changepos-%e5%bd%93%e5%89%8d%e4%bd%8d%e7%bd%ae%e5%88%87%e6%8d%a2%e5%8b%87%e5%a3%ab%e8%bd%ac%e5%90%91
 default : [0,0,null]
 colour : this.heroColor
-DirectionEx_List_0 = DirectionEx_List_0=='不变'?'':DirectionEx_List_0;
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 var code = '{"type": "changePos", "loc": ['+Int_0+','+Int_1+']'+DirectionEx_List_0+'},\n';
 return code;
@@ -440,6 +473,21 @@ var code = '{"type": "setFg"'+Int_0 +'},\n';
 return code;
 */
 
+setWeather_s
+    :   '更改天气' Weather_List '强度' Int Newline
+    ;
+
+/* setWeather_s
+tooltip : setWeather：更改天气
+helpUrl : https://ckcz123.github.io/mota-js/#/event?id=setweather%ef%bc%9a%e6%9b%b4%e6%94%b9%e5%a4%a9%e6%b0%94
+default : [null,1]
+colour : this.soundColor
+if(Int_0<1 || Int_0>10) throw new Error('天气的强度等级, 在1-10之间');
+var code = '{"type": "setWeather", "name": "'+Weather_List_0+'", "level": '+Int_0+'},\n';
+if(Weather_List_0==='无')code = '{"type": "setWeather"},\n';
+return code;
+*/
+
 move_s
     :   '移动事件' 'x' EvalString? ',' 'y' EvalString? '动画时间' Int? '消失时无动画时间' Bool BGNL? StepString Newline
     ;
@@ -463,7 +511,7 @@ moveHero_s
     ;
 
 /* moveHero_s
-tooltip : moveHero：移动勇士,用这种方式移动勇士的过程中将无视一切地形，无视一切事件，中毒状态也不会扣血
+tooltip : moveHero：移动勇士,用这种方式移动勇士的过程中将无视一切地形, 无视一切事件, 中毒状态也不会扣血
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=movehero%ef%bc%9a%e7%a7%bb%e5%8a%a8%e5%8b%87%e5%a3%ab
 default : [500,"上右3下2左上左2"]
 colour : this.heroColor
@@ -527,7 +575,7 @@ win_s
     ;
 
 /* win_s
-tooltip : win: 获得胜利, 该事件会显示获胜页面，并重新游戏
+tooltip : win: 获得胜利, 该事件会显示获胜页面, 并重新游戏
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=win-%e8%8e%b7%e5%be%97%e8%83%9c%e5%88%a9
 default : [" "]
 var code = '{"type": "win", "reason": "'+EvalString_0+'"},\n';
@@ -539,7 +587,7 @@ lose_s
     ;
 
 /* lose_s
-tooltip : lose: 游戏失败, 该事件会显示失败页面，并重新开始游戏
+tooltip : lose: 游戏失败, 该事件会显示失败页面, 并重新开始游戏
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=lose-%e6%b8%b8%e6%88%8f%e5%a4%b1%e8%b4%a5
 default : [" "]
 var code = '{"type": "lose", "reason": "'+EvalString_0+'"},\n';
@@ -724,7 +772,11 @@ return [code, Blockly.JavaScript.ORDER_ATOMIC];
 //===============lexer===============
 
 IdText
-    : 'sdeirughvuiyasdeb'+ //为了被识别为复杂词法规则
+    :   'sdeirughvuiyasdeb'+ //为了被识别为复杂词法规则
+    ;
+
+Stair_List
+    :   'loc'|'upFloor'|'downFloor'
     ;
 
 ShopUse_List
@@ -733,6 +785,10 @@ ShopUse_List
 
 Arithmetic_List
     :   '+'|'-'|'*'|'/'|'^'|'=='|'!='|'>'|'<'|'>='|'<='|'和'|'或'
+    ;
+
+Weather_List
+    :   '无'|'rain'|'snow'
     ;
 
 Bool:   'TRUE' 
@@ -845,6 +901,12 @@ ActionParser.prototype.parse = function (obj,type) {
       return MotaActionBlocks['event_m'].xmlText([
         obj.enable,obj.noPass,obj.displayDamage,this.parseList(obj.data)
       ]);
+    
+    case 'changeFloor':
+      if(!this.isset(obj.loc))obj.loc=[0,0];
+      return MotaActionBlocks['changeFloor_m'].xmlText([
+        obj.floorId,obj.stair||'loc',obj.loc[0],obj.loc[1],this.Direction(obj.direction),obj.time||0,!this.isset(obj.portalWithoutTrigger)
+      ]);
 
     case 'point':
       var text_choices = null;
@@ -950,15 +1012,15 @@ ActionParser.prototype.parseAction = function() {
       break;
     case "changeFloor": // 楼层转换
       this.next = MotaActionBlocks['changeFloor_s'].xmlText([
-        data.floorId,data.loc[0],data.loc[1],this.Direction(data.direction),this.next]);
+        data.floorId,data.loc[0],data.loc[1],this.Direction(data.direction),this.time||0,this.next]);
       break;
-    case "changePos": // 直接更换勇士位置，不切换楼层
+    case "changePos": // 直接更换勇士位置, 不切换楼层
       if(this.isset(data.loc)){
         this.next = MotaActionBlocks['changePos_0_s'].xmlText([
-          data.loc[0],data.loc[1],this.Direction(data.direction),data.time||0,this.next]);
+          data.loc[0],data.loc[1],this.Direction(data.direction),this.next]);
       } else {
         this.next = MotaActionBlocks['changePos_1_s'].xmlText([
-          this.Direction(data.direction),data.time||0,this.next]);
+          this.Direction(data.direction),this.next]);
       }
       break;
     case "setFg": // 颜色渐变
@@ -970,7 +1032,11 @@ ActionParser.prototype.parseAction = function() {
           data.time||0,this.next]);
       }
       break;
-    case "openDoor": // 开一个门，包括暗墙
+    case "setWeather": // 更改天气
+      this.next = MotaActionBlocks['setWeather_s'].xmlText([
+        data.name||'无',data.level||1,this.next]);
+      break;
+    case "openDoor": // 开一个门, 包括暗墙
       this.next = MotaActionBlocks['openDoor_s'].xmlText([
         data.loc[0],data.loc[1],data.floorId||'',this.next]);
       break;
@@ -1128,16 +1194,30 @@ MotaActionFunctions.parse = function(obj,type) {
 }
 
 MotaActionFunctions.EvalString_pre = function(EvalString){
-  if (EvalString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门，则使用flag:MT1_3_3作为开门变量');
+  if (EvalString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门, 则使用flag:MT1_3_3作为开门变量');
   return EvalString.replace(/([^\\])"/g,'$1\\"').replace(/^"/g,'\\"').replace(/""/g,'"\\"');
 }
 
 MotaActionFunctions.IdString_pre = function(IdString){
-  if (IdString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门，则使用flag:MT1_3_3作为开门变量');
-  if (!(new RegExp('[a-zA-Z_][0-9a-zA-Z_\\-:]*').test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - :之外的字符');
+  if (IdString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门, 则使用flag:MT1_3_3作为开门变量');
+  if (IdString && !(new RegExp('[a-zA-Z_][0-9a-zA-Z_\\-:]*').test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - :之外的字符');
   //这里不用/../形式是因为'*' '/'和注释的格式冲突了
   return IdString;
 }
+
+MotaActionFunctions.DirectionEx_List_pre = function(DirectionEx_List){
+  var directionchar = {
+    '上': 'up',
+    '下': 'down',
+    '左': 'left',
+    '右': 'right'
+  }
+  Direction=directionchar[DirectionEx_List];
+  if(!Direction)Direction='';
+  return Direction;
+}
+
+MotaActionFunctions.Direction_List_pre = MotaActionFunctions.DirectionEx_List_pre
 
 MotaActionFunctions.StepString_pre = function(StepString){
   //StepString='上右3下2左上左2'

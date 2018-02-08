@@ -10,6 +10,7 @@
 <button onclick="runCode()">console.log(obj=code)</button>
 <select id="entryType">
     <option value="event">event</option>
+    <option value="changeFloor">changeFloor</option>
     <option value="point">point</option>
     <option value="shop">shop</option>
     <option value="afterBattle">afterBattle</option>
@@ -44,6 +45,7 @@ toolboxObj = {
             "本事件触发一次后会消失",
             {"type": "hide", "time": 500},
         ],'event'),
+        MotaActionBlocks['changeFloor_m'].xmlText(),
         MotaActionFunctions.actionParser.parse({"type": "choices", "choices": [
             {"text": "攻击+${point}", "action": [
                 {"type": "setValue", "name": "status:atk", "value": "status:atk+${point}"},
@@ -73,6 +75,7 @@ toolboxObj = {
         MotaActionBlocks['afterBattle_m'].xmlText(),
         MotaActionBlocks['afterGetItem_m'].xmlText(),
         MotaActionBlocks['afterOpenDoor_m'].xmlText(),
+        MotaActionBlocks['firstArrive_m'].xmlText(),
     ],
     'statement':[
         '&lt;label text="显示文字">&lt;/label>',
@@ -112,6 +115,7 @@ toolboxObj = {
         MotaActionBlocks['sleep_s'].xmlText(),
         MotaActionBlocks['setFg_0_s'].xmlText(),
         MotaActionBlocks['setFg_1_s'].xmlText(),
+        MotaActionBlocks['setWeather_s'].xmlText(),
         MotaActionBlocks['playBgm_s'].xmlText(),
         MotaActionBlocks['pauseBgm_s'].xmlText(),
         MotaActionBlocks['resumeBgm_s'].xmlText(),
