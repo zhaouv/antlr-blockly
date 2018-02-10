@@ -96,7 +96,7 @@ toolboxObj = {
                 ])
             ])
         ]),
-        '&lt;label text="勇士相关">&lt;/label>',
+        '&lt;label text="数据相关">&lt;/label>',
         MotaActionBlocks['setValue_s'].xmlText(),
         MotaActionBlocks['update_s'].xmlText(),
         MotaActionBlocks['moveHero_s'].xmlText(),
@@ -105,6 +105,7 @@ toolboxObj = {
         MotaActionBlocks['changePos_1_s'].xmlText(),
         MotaActionBlocks['battle_s'].xmlText(),
         MotaActionBlocks['openDoor_s'].xmlText(),
+        MotaActionBlocks['setBlock_s'].xmlText(),
         '&lt;label text="事件控制">&lt;/label>',
         MotaActionBlocks['if_s'].xmlText(),
         MotaActionBlocks['revisit_s'].xmlText(),
@@ -138,12 +139,6 @@ toolboxObj = {
         MotaActionBlocks['evalString_e'].xmlText(),
     ],
     'template':[
-        '&lt;label text="获取用户输入的字符串">&lt;/label>',
-        MotaActionFunctions.actionParser.parseList([
-            {"type": "setValue", "name": "flag:inputMsg", "value": "请输入密码"},
-            {"type": "function", "function": "function(){core.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx')||'')}"},
-            {"type": "if", "condition": 'flag:input == "123456"',"true": [],"false": []},
-        ]),
         '&lt;label text="战前剧情">&lt;/label>',
         MotaActionFunctions.actionParser.parse({ 
             "trigger": "action", 
@@ -156,6 +151,12 @@ toolboxObj = {
                 {"type": "hide"},
             ]
         },'event'),
+        '&lt;label text="打怪掉落道具">&lt;/label>',
+        MotaActionFunctions.actionParser.parse([
+            '怪物变成了黄钥匙(黄钥匙idnum是21)',
+            '打怪变成可对话的NPC: https://ckcz123.github.io/mota-js/#/event?id=%e6%89%93%e6%80%aa%e5%8f%98%e6%88%90%e5%8f%af%e5%af%b9%e8%af%9d%e7%9a%84npc%ef%bc%88%e6%80%aa%e7%89%a9-gtnpc%ef%bc%89',
+            {"type": "setBlock", "number": 21}
+        ],'afterBattle'),
         '&lt;label text="打怪开门">&lt;/label>',
         MotaActionFunctions.actionParser.parse([
             {"type": "setValue", "name": "flag:__door_name__", "value": "flag:__door_name__+1"},
@@ -166,6 +167,27 @@ toolboxObj = {
                 "false": [] 
             },
         ],'afterBattle'),
+        '&lt;label text="获得圣水后变成墙">&lt;/label>',
+        MotaActionFunctions.actionParser.parse({
+            "trigger": "action", 
+            "noPass": true, 
+            "data": [
+                {"type": "if", "condition": "flag:hasSuperPotion", 
+                    "true": [], 
+                    "false": [
+                        {"type":"setValue", "name":"status:hp", "value":"status:hp*2"}, 
+                        {"type":"setBlock", "number": 1}, 
+                        {"type":"setValue", "name":"flag:hasSuperPotion", "value": "true"} 
+                    ]
+                }
+            ]
+        },'event'),
+        '&lt;label text="获取用户输入的字符串">&lt;/label>',
+        MotaActionFunctions.actionParser.parseList([
+            {"type": "setValue", "name": "flag:inputMsg", "value": "请输入密码"},
+            {"type": "function", "function": "function(){core.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx')||'')}"},
+            {"type": "if", "condition": 'flag:input == "123456"',"true": [],"false": []},
+        ]),
     ],
 }
 var toolboxgap = '&lt;sep gap="5">&lt;/sep>'
@@ -190,8 +212,19 @@ var workspace = Blockly.inject('blocklyDiv',{
   trashcan: false,
 });
 
+var doubleClickCheck=[[0,'abc']];
 function omitedcheckUpdateFunction(event) {
   console.log(event);
+  if(event.type==='ui'){
+      var newClick = [new Date().getTime(),event.blockId];
+      var lastClick = doubleClickCheck.shift();
+      doubleClickCheck.push(newClick);
+      if(newClick[0]-lastClick[0]&lt;500){
+          if(newClick[1]===lastClick[1]){
+              doubleClickBlock(newClick[1]);
+          }
+      }
+  }
   try {
     var code = Blockly.JavaScript.workspaceToCode(workspace);
     document.getElementById('codeArea').value = code;
@@ -285,6 +318,22 @@ function parse() {
         eval('obj=' + document.getElementById('codeArea').value.replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];})),
         document.getElementById('entryType').value
     );
+}
+
+function doubleClickBlock(blockId){
+    var b=workspace.getBlockById(blockId);
+    console.log(b);
+    var textStringDict = {
+        'text_0_s':'EvalString_0',
+        'text_1_s':'EvalString_2',
+        'choices_s':'EvalString_0',
+        'function_s':'RawEvalString_0',
+    }
+    var f=textStringDict[b];
+    if(f){
+        var value = b.getFieldValue(f);
+        //func(value,function(newvalue,b,f){b.setFieldValue(newvalue,f);})
+    }
 }
 </script>
 </body>

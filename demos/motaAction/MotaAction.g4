@@ -162,6 +162,7 @@ action
     |   trigger_s
     |   revisit_s
     |   exit_s
+    |   setBlock_s
     |   update_s
     |   sleep_s
     |   battle_s
@@ -272,7 +273,7 @@ setValue_s
 /* setValue_s
 tooltip : setValue：设置勇士的某个属性、道具个数, 或某个变量/Flag的值
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=text%ef%bc%9a%e6%98%be%e7%a4%ba%e4%b8%80%e6%ae%b5%e6%96%87%e5%ad%97%ef%bc%88%e5%89%a7%e6%83%85%ef%bc%89
-colour : this.heroColor
+colour : this.dataColor
 var code = '{"type": "setValue", "name": "'+idString_e_0+'", "value": "'+expression_0+'"},\n';
 return code;
 */
@@ -348,6 +349,24 @@ var code = '{"type": "exit"},\n';
 return code;
 */
 
+setBlock_s
+    :   '转变图块为' Int 'x' EvalString? ',' 'y' EvalString? '楼层' IdString? Newline
+    ;
+
+/* setBlock_s
+tooltip : setBlock：设置某个图块,忽略坐标楼层则为当前事件
+helpUrl : https://ckcz123.github.io/mota-js/#/event?id=setblock%ef%bc%9a%e8%ae%be%e7%bd%ae%e6%9f%90%e4%b8%aa%e5%9b%be%e5%9d%97
+colour : this.dataColor
+default : [0,"","",""]
+var floorstr = '';
+if (EvalString_0 && EvalString_1) {
+    floorstr = ', "loc": ['+EvalString_0+','+EvalString_1+']';
+}
+IdString_0 = IdString_0 && (', "floorId": "'+IdString_0+'"');
+var code = '{"type": "setBlock", "number":'+Int_0+floorstr+IdString_0+'},\n';
+return code;
+*/
+
 update_s
     :   '更新状态栏和地图显伤' Newline
     ;
@@ -355,7 +374,7 @@ update_s
 /* update_s
 tooltip : update: 立刻更新状态栏和地图显伤
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=update-%e7%ab%8b%e5%88%bb%e6%9b%b4%e6%96%b0%e7%8a%b6%e6%80%81%e6%a0%8f%e5%92%8c%e5%9c%b0%e5%9b%be%e6%98%be%e4%bc%a4
-colour : this.heroColor
+colour : this.dataColor
 var code = '{"type": "update"},\n';
 return code;
 */
@@ -381,7 +400,7 @@ battle_s
 tooltip : battle: 强制战斗
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=battle-%e5%bc%ba%e5%88%b6%e6%88%98%e6%96%97
 default : ["greenSlime"]
-colour : this.heroColor
+colour : this.dataColor
 var code = '{"type": "battle", "id": "'+IdString_0+'"},\n';
 return code;
 */
@@ -394,7 +413,7 @@ openDoor_s
 tooltip : openDoor: 开门,楼层可不填表示当前层
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=opendoor-%e5%bc%80%e9%97%a8
 default : [0,0,""]
-colour : this.heroColor
+colour : this.dataColor
 IdString_0 = IdString_0 && (', "floorId": "'+IdString_0+'"');
 var code = '{"type": "openDoor", "loc": ['+Int_0+','+Int_1+']'+IdString_0+'},\n';
 return code;
@@ -408,7 +427,7 @@ changeFloor_s
 tooltip : changeFloor: 楼层切换,动画时间可不填
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changefloor-%e6%a5%bc%e5%b1%82%e5%88%87%e6%8d%a2
 default : ["MT1",0,0,null,500]
-colour : this.heroColor
+colour : this.dataColor
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 Int_2 = Int_2 ?(', "time": '+Int_2):'';
 var code = '{"type": "changeFloor", "floorId": "'+IdString_0+'", "loc": ['+Int_0+', '+Int_1+']'+DirectionEx_List_0+Int_2+' },\n';
@@ -423,7 +442,7 @@ changePos_0_s
 tooltip : changePos: 当前位置切换
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changepos-%e5%bd%93%e5%89%8d%e4%bd%8d%e7%bd%ae%e5%88%87%e6%8d%a2%e5%8b%87%e5%a3%ab%e8%bd%ac%e5%90%91
 default : [0,0,null]
-colour : this.heroColor
+colour : this.dataColor
 DirectionEx_List_0 = DirectionEx_List_0 && (', "direction": "'+DirectionEx_List_0+'"');
 var code = '{"type": "changePos", "loc": ['+Int_0+','+Int_1+']'+DirectionEx_List_0+'},\n';
 return code;
@@ -436,7 +455,7 @@ changePos_1_s
 /* changePos_1_s
 tooltip : changePos: 勇士转向
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=changepos-%e5%bd%93%e5%89%8d%e4%bd%8d%e7%bd%ae%e5%88%87%e6%8d%a2%e5%8b%87%e5%a3%ab%e8%bd%ac%e5%90%91
-colour : this.heroColor
+colour : this.dataColor
 var code = '{"type": "changePos", "direction": "'+Direction_List_0+'"},\n';
 return code;
 */
@@ -591,7 +610,7 @@ moveHero_s
 tooltip : moveHero：移动勇士,用这种方式移动勇士的过程中将无视一切地形, 无视一切事件, 中毒状态也不会扣血
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=movehero%ef%bc%9a%e7%a7%bb%e5%8a%a8%e5%8b%87%e5%a3%ab
 default : [500,"上右3下2左上左2"]
-colour : this.heroColor
+colour : this.dataColor
 Int_0 = Int_0 ?(', "time": '+Int_0):'';
 var code = '{"type": "moveHero"'+Int_0+', "steps": '+JSON.stringify(StepString_0)+'},\n';
 return code;
@@ -729,7 +748,7 @@ function_s
 tooltip : function: 自定义JS脚本
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=function-%e8%87%aa%e5%ae%9a%e4%b9%89js%e8%84%9a%e6%9c%ac
 default : ["alert(core.getStatus(\"atk\"));"]
-colour : this.heroColor
+colour : this.dataColor
 var code = '{"type": "function", "function": "function(){\\n'+JSON.stringify(RawEvalString_0).slice(1,-1)+'\\n}"},\n';
 return code;
 */
@@ -963,7 +982,7 @@ converter.evisitor.entryColor=250;
 converter.evisitor.idstring_eColor=310;
 converter.evisitor.subColor=190;
 converter.evisitor.printColor=70;
-converter.evisitor.heroColor=130;
+converter.evisitor.dataColor=130;
 converter.evisitor.eventColor=220;
 converter.evisitor.soundColor=20;
 */
@@ -1093,7 +1112,12 @@ ActionParser.prototype.parseAction = function() {
     case "hide": // 消失
       data.loc=data.loc||[];
       this.next = MotaActionBlocks['hide_s'].xmlText([
-        data.loc[0]||'',data.loc[1],data.floorId||'',data.time||0,this.next]);
+        data.loc[0]||'',data.loc[1]||'',data.floorId||'',data.time||0,this.next]);
+      break;
+    case "setBlock": // 设置图块
+      data.loc=data.loc||[];
+      this.next = MotaActionBlocks['setBlock_s'].xmlText([
+        data.number||0,data.loc[0]||'',data.loc[1]||'',data.floorId||'',this.next]);
       break;
     case "move": // 移动事件
       data.loc=data.loc||[];
@@ -1309,8 +1333,7 @@ MotaActionFunctions.EvalString_pre = function(EvalString){
 
 MotaActionFunctions.IdString_pre = function(IdString){
   if (IdString.indexOf('__door_name__')!==-1) throw new Error('请修改__door_name__,建议如开MT1层的[3,3]点的门, 则使用flag:MT1_3_3作为开门变量');
-  if (IdString && !(new RegExp('[a-zA-Z_][0-9a-zA-Z_\\-:]*').test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - :之外的字符');
-  //这里不用/../形式是因为'*' '/'和注释的格式冲突了
+  if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-:]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - :之外的字符');
   return IdString;
 }
 
