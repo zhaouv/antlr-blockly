@@ -2,6 +2,7 @@
 *\[abc\]*
 .vscode
 src/.antlr
+.antlr
 
 # =========================
 # Operating System Files

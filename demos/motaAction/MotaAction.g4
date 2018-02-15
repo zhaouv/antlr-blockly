@@ -1001,6 +1001,7 @@ function ActionParser(){
 ActionParser.prototype.parse = function (obj,type) {
   switch (type) {
     case 'event':
+      if(!obj)obj={};
       if(typeof(obj)===typeof('')) obj={'data':[obj]};
       if(obj instanceof Array) obj={'data':obj};
       return MotaActionBlocks['event_m'].xmlText([
@@ -1008,12 +1009,14 @@ ActionParser.prototype.parse = function (obj,type) {
       ]);
     
     case 'changeFloor':
+      if(!obj)obj={};
       if(!this.isset(obj.loc))obj.loc=[0,0];
       return MotaActionBlocks['changeFloor_m'].xmlText([
         obj.floorId,obj.stair||'loc',obj.loc[0],obj.loc[1],this.Direction(obj.direction),obj.time||0,!this.isset(obj.portalWithoutTrigger)
       ]);
 
     case 'point':
+      if(!obj)obj={};
       var text_choices = null;
       for(var ii=obj.choices.length-1,choice;choice=obj.choices[ii];ii--) {
         text_choices=MotaActionBlocks['choicesContext'].xmlText([
@@ -1319,11 +1322,13 @@ ActionParser.prototype.EvalString = function(EvalString) {
 
 MotaActionFunctions.actionParser = new ActionParser();
 
+MotaActionFunctions.workspace = function(){return workspace}
+
 MotaActionFunctions.parse = function(obj,type) {
-  workspace.clear();
+  MotaActionFunctions.workspace().clear();
   xml_text = MotaActionFunctions.actionParser.parse(obj,type||'event');
   xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
-  Blockly.Xml.domToWorkspace(xml, workspace);
+  Blockly.Xml.domToWorkspace(xml, MotaActionFunctions.workspace());
 }
 
 MotaActionFunctions.EvalString_pre = function(EvalString){

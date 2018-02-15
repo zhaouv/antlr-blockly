@@ -13,12 +13,13 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 ## v 0.1.0 (Alpha)
 + 主页点`Run`就可以运行生成的blockly
 + 主页点`Download`后产生一个能运行生成的blockly的代码的网页(放在此目录下)
-+ 支持colour,tooltip,helpUrl  
+
+## Todo
+
++ [x] 支持colour,tooltip,helpUrl  
   默认值default的设置  
   generFunc的代码  
   嵌入到.g4里
-
-## Todo
 
 + 表达式支持expression之外的集合,(只有expression允许左递归)
 
