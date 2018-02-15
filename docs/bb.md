@@ -4,6 +4,6 @@
 
 bbbbb
 
-[main](#)  
+[main](/)  
 [aaa](aa)  
 [bbb](bb)

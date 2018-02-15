@@ -14,37 +14,37 @@
   <div id="app"></div>
   <script>
     window.$docsify = {
-      homepage: 'index.md',
+      homepage: 'README.md',
       loadSidebar: true,
       name: 'antlr-blockly',
       repo: 'https://github.com/zhaouv/antlr-blockly/',
-      // basepath: '../docs/',
+      // basepath: '/docs/',
       
         // Search Support
       // search: {
-      //   maxAge: 43200000, // 过期时间，单位毫秒，默认一天
+      //   maxAge: 86400000, // 过期时间，单位毫秒，默认一天
       //   paths: 'auto',
       //   placeholder: {
-      //     '/en/': 'Search',
+      //     // '/en/': 'Search',
       //     '/': '搜索',
       //   },
       //   noData: {
-      //     '/en/': 'No Results',
+      //     // '/en/': 'No Results',
       //     '/': '找不到结果',
       //   },
       // },
 
        // load sidebar from _sidebar.md
-      loadSidebar: '_sidebar.md',
-      subMaxLevel: 2,
+      loadSidebar: 'sidebar.md',
+      subMaxLevel: 3,
       autoHeader: true,
       auto2top: true,
       mergeNavbar: true,
       formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}',
     }
-    if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('serviceWorker.js')
-    }
+    // if (typeof navigator.serviceWorker !== 'undefined') {
+    //     navigator.serviceWorker.register('serviceWorker.js')
+    // }
   </script>
   <script src="https://cdn.bootcss.com/docsify/4.5.5/docsify.min.js"></script>
 </body>

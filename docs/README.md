@@ -4,6 +4,6 @@
 
 mmmm
 
-[main](#)  
+[main](/)  
 [aaa](aa)  
 [bbb](bb)
