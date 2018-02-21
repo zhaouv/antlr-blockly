@@ -6,8 +6,8 @@
 </head><body>
 
 <p>
-<button onclick="showXML()">Show XML</button>
-<button onclick="runCode()">console.log(obj=code)</button>
+<button onclick="editor_blockly.showXML()">Show XML</button>
+<button onclick="editor_blockly.runCode()">console.log(obj=code)</button>
 <select id="entryType">
     <option value="event">event</option>
     <option value="changeFloor">changeFloor</option>
@@ -18,7 +18,7 @@
     <option value="afterOpenDoor">afterOpenDoor</option>
     <option value="firstArrive">firstArrive</option>
 </select>
-<button onclick="parse()">parse</button>
+<button onclick="editor_blockly.parse()">parse</button>
 </p>
 <div id="blocklyDiv" style="height: 480px; width: 940px;"></div>
 <textarea id="codeArea" style="width: 100%; height: 17.2em;overflow:y;/* resize:none; */" spellcheck="false"></textarea>
@@ -31,223 +31,6 @@
 </xml>
 
 
-<script>
-initscript=String.raw`
-
-    var getCategory = function(name){
-    for(var node of document.getElementById('toolbox').children) {
-        if(node.getAttribute('name')==name) return node;
-    }
-    }
-
-    toolboxObj = {
-        'entry':[
-            MotaActionFunctions.actionParser.parse([
-                "欢迎使用事件编辑器",
-                "本事件触发一次后会消失",
-                {"type": "hide", "time": 500},
-            ],'event'),
-            MotaActionBlocks['changeFloor_m'].xmlText(),
-            MotaActionFunctions.actionParser.parse({"type": "choices", "choices": [
-                {"text": "攻击+\${point}", "action": [
-                    {"type": "setValue", "name": "status:atk", "value": "status:atk+\${point}"},
-                ]},
-                {"text": "防御+\${2*point}", "action": [
-                    {"type": "setValue", "name": "status:def", "value": "status:def+\${2*point}"},
-                ]},
-                {"text": "生命+\${200*point}", "action": [
-                    {"type": "setValue", "name": "status:hp", "value": "status:hp+\${200*point}"},
-                ]},
-            ]},'point'),
-            MotaActionFunctions.actionParser.parse({
-                "id": "moneyShop1",
-                "name": "贪婪之神", 
-                "icon": "blueShop",
-                "textInList": "1F金币商店", 
-                "use": "money",
-                "need": "20+10*times*(times+1)",  
-                "text": "勇敢的武士啊，给我\${need}金币就可以：", 
-                "choices": [ 
-                    {"text": "生命+800", "effect": "status:hp+=800"},
-                    {"text": "攻击+4", "effect": "status:atk+=4"},
-                    {"text": "防御+4", "effect": "status:def+=4"},
-                    {"text": "魔防+10", "effect": "status:mdef+=10"}
-                ]
-            },'shop'),
-            MotaActionBlocks['afterBattle_m'].xmlText(),
-            MotaActionBlocks['afterGetItem_m'].xmlText(),
-            MotaActionBlocks['afterOpenDoor_m'].xmlText(),
-            MotaActionBlocks['firstArrive_m'].xmlText(),
-        ],
-        'statement':[
-            '<label text="显示文字"></label>',
-            MotaActionBlocks['text_0_s'].xmlText(),
-            MotaActionBlocks['text_1_s'].xmlText(),
-            MotaActionBlocks['setText_s'].xmlText(),
-            MotaActionBlocks['showImage_0_s'].xmlText(),
-            MotaActionBlocks['showImage_1_s'].xmlText(),
-            MotaActionBlocks['tip_s'].xmlText(),
-            MotaActionBlocks['openShop_s'].xmlText(),
-            MotaActionBlocks['win_s'].xmlText(),
-            MotaActionBlocks['lose_s'].xmlText(),
-            MotaActionBlocks['choices_s'].xmlText([
-                '选择剑或者盾','流浪者','man',MotaActionBlocks['choicesContext'].xmlText([
-                    '剑',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [3,3]}]),
-                    MotaActionBlocks['choicesContext'].xmlText([
-                        '盾',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [9,3]}]),
-                    ])
-                ])
-            ]),
-            '<label text="数据相关"></label>',
-            MotaActionBlocks['setValue_s'].xmlText(),
-            MotaActionBlocks['update_s'].xmlText(),
-            MotaActionBlocks['moveHero_s'].xmlText(),
-            MotaActionBlocks['changeFloor_s'].xmlText(),
-            MotaActionBlocks['changePos_0_s'].xmlText(),
-            MotaActionBlocks['changePos_1_s'].xmlText(),
-            MotaActionBlocks['battle_s'].xmlText(),
-            MotaActionBlocks['openDoor_s'].xmlText(),
-            MotaActionBlocks['setBlock_s'].xmlText(),
-            '<label text="事件控制"></label>',
-            MotaActionBlocks['if_s'].xmlText(),
-            MotaActionBlocks['revisit_s'].xmlText(),
-            MotaActionBlocks['exit_s'].xmlText(),
-            MotaActionBlocks['show_s'].xmlText(),
-            MotaActionBlocks['hide_s'].xmlText(),
-            MotaActionBlocks['trigger_s'].xmlText(),
-            MotaActionBlocks['move_s'].xmlText(),
-            MotaActionBlocks['disableShop_s'].xmlText(),
-            '<label text="特效/声音"></label>',
-            MotaActionBlocks['sleep_s'].xmlText(),
-            MotaActionBlocks['animate_s'].xmlText(),
-            MotaActionBlocks['setFg_0_s'].xmlText(),
-            MotaActionBlocks['setFg_1_s'].xmlText(),
-            MotaActionBlocks['setWeather_s'].xmlText(),
-            MotaActionBlocks['playBgm_s'].xmlText(),
-            MotaActionBlocks['pauseBgm_s'].xmlText(),
-            MotaActionBlocks['resumeBgm_s'].xmlText(),
-            MotaActionBlocks['playSound_s'].xmlText(),
-            '<label text="其他"></label>',
-            MotaActionBlocks['function_s'].xmlText(),
-        ],
-        'value':[
-            MotaActionBlocks['setValue_s'].xmlText(),
-            MotaActionBlocks['expression_arithmetic_0'].xmlText(),
-            MotaActionBlocks['negate_e'].xmlText(),
-            MotaActionBlocks['bool_e'].xmlText(),
-            MotaActionBlocks['idString_e'].xmlText(),
-            MotaActionBlocks['idString_1_e'].xmlText(),
-            MotaActionBlocks['idString_2_e'].xmlText(),
-            MotaActionBlocks['evalString_e'].xmlText(),
-        ],
-        'template':[
-            '<label text="战前剧情"></label>',
-            MotaActionFunctions.actionParser.parse({ 
-                "trigger": "action", 
-                "displayDamage": true, 
-                "data": [ 
-                    ' ... 战前剧情',
-                    {"type": "battle", "id": "greenSlime"},
-                    ' ... 战后剧情；请注意上面的强制战斗不会使怪物消失',
-                    '需要下一句来调用{"type": "hide"}来隐藏事件',
-                    {"type": "hide"},
-                ]
-            },'event'),
-            '<label text="打怪掉落道具"></label>',
-            MotaActionFunctions.actionParser.parse([
-                '怪物变成了黄钥匙(黄钥匙idnum是21)',
-                '打怪变成可对话的NPC: https://ckcz123.github.io/mota-js/#/event?id=%e6%89%93%e6%80%aa%e5%8f%98%e6%88%90%e5%8f%af%e5%af%b9%e8%af%9d%e7%9a%84npc%ef%bc%88%e6%80%aa%e7%89%a9-gtnpc%ef%bc%89',
-                {"type": "setBlock", "number": 21}
-            ],'afterBattle'),
-            '<label text="打怪开门"></label>',
-            MotaActionFunctions.actionParser.parse([
-                {"type": "setValue", "name": "flag:__door_name__", "value": "flag:__door_name__+1"},
-                {"type": "if", "condition": "flag:__door_name__==2", 
-                    "true": [
-                        {"type": "openDoor", "loc": [10,5]}
-                    ],
-                    "false": [] 
-                },
-            ],'afterBattle'),
-            '<label text="获得圣水后变成墙"></label>',
-            MotaActionFunctions.actionParser.parse({
-                "trigger": "action", 
-                "noPass": true, 
-                "data": [
-                    {"type": "if", "condition": "flag:hasSuperPotion", 
-                        "true": [], 
-                        "false": [
-                            {"type":"setValue", "name":"status:hp", "value":"status:hp*2"}, 
-                            {"type":"setBlock", "number": 1}, 
-                            {"type":"setValue", "name":"flag:hasSuperPotion", "value": "true"} 
-                        ]
-                    }
-                ]
-            },'event'),
-            '<label text="获取用户输入的字符串"></label>',
-            MotaActionFunctions.actionParser.parseList([
-                {"type": "setValue", "name": "flag:inputMsg", "value": "请输入密码"},
-                {"type": "function", "function": "function(){core.setFlag('input',prompt(core.getFlag('inputMsg','请输入字符串'),'xxx')||'')}"},
-                {"type": "if", "condition": 'flag:input == "123456"',"true": [],"false": []},
-            ]),
-        ],
-    }
-    var toolboxgap = '<sep gap="5"></sep>'
-    //xml_text = MotaActionFunctions.actionParser.parse(obj,type||'event')
-    //MotaActionBlocks['idString_e'].xmlText()
-
-    for (var name in toolboxObj){
-        getCategory(name).innerHTML = toolboxObj[name].join(toolboxgap);
-    }
-
-    var workspace = Blockly.inject('blocklyDiv',{
-    media: '../../media/',
-    toolbox: document.getElementById('toolbox'),
-    zoom:{
-        controls: true,
-        wheel: true,//false
-        startScale: 1.0,
-        maxScale: 3,
-        minScale: 0.3,
-        scaleSpeed: 1.08
-    },
-    trashcan: false,
-    });
-
-    var doubleClickCheck=[[0,'abc']];
-    function omitedcheckUpdateFunction(event) {
-    console.log(event);
-    if(event.type==='ui'){
-        var newClick = [new Date().getTime(),event.blockId];
-        var lastClick = doubleClickCheck.shift();
-        doubleClickCheck.push(newClick);
-        if(newClick[0]-lastClick[0]<500){
-            if(newClick[1]===lastClick[1]){
-                doubleClickBlock(newClick[1]);
-            }
-        }
-    }
-    try {
-        var code = Blockly.JavaScript.workspaceToCode(workspace);
-        document.getElementById('codeArea').value = code;
-    } catch (error) {
-        document.getElementById('codeArea').value = String(error);
-        if (error instanceof OmitedError){
-        var blockName = error.blockName;
-        var varName = error.varName;
-        var block = error.block;
-        }
-        console.log(error);
-    }
-    }
-
-    workspace.addChangeListener(omitedcheckUpdateFunction);
-
-    workspace.addChangeListener(Blockly.Events.disableOrphans);
-
-`;
-</script>
-
 <!-- <script src="../../src/lib/require.js"></script>
 <script>
 Converter = require('../../src/Converter').Converter;
@@ -259,9 +42,229 @@ Converter = require('../../src/Converter').Converter;
 <script src="../../javascript_compressed.js"></script>
 <script src="../../zh-hans.js"></script>
 <script>
-input_='';
-function runOne(){
-    printf = console.log;
+__all__=['editor_blockly','MotaActionBlocks','MotaActionFunctions','ActionParser','converter'];
+editor_blockly = function(){
+editor_blockly = {};
+editor_blockly.initscript=String.raw`
+(function(){
+  var getCategory = function(name){
+  for(var node of document.getElementById('toolbox').children) {
+    if(node.getAttribute('name')==name) return node;
+  }
+  }
+
+  var toolboxObj = {
+    'entry':[
+      MotaActionFunctions.actionParser.parse([
+        "欢迎使用事件编辑器",
+        "本事件触发一次后会消失",
+        {"type": "hide", "time": 500},
+      ],'event'),
+      MotaActionBlocks['changeFloor_m'].xmlText(),
+      MotaActionFunctions.actionParser.parse({"type": "choices", "choices": [
+        {"text": "攻击+\${point}", "action": [
+          {"type": "setValue", "name": "status:atk", "value": "status:atk+\${point}"},
+        ]},
+        {"text": "防御+\${2*point}", "action": [
+          {"type": "setValue", "name": "status:def", "value": "status:def+\${2*point}"},
+        ]},
+        {"text": "生命+\${200*point}", "action": [
+          {"type": "setValue", "name": "status:hp", "value": "status:hp+\${200*point}"},
+        ]},
+      ]},'point'),
+      MotaActionFunctions.actionParser.parse({
+        "id": "moneyShop1",
+        "name": "贪婪之神", 
+        "icon": "blueShop",
+        "textInList": "1F金币商店", 
+        "use": "money",
+        "need": "20+10*times*(times+1)",  
+        "text": "勇敢的武士啊，给我\${need}金币就可以：", 
+        "choices": [ 
+          {"text": "生命+800", "effect": "status:hp+=800"},
+          {"text": "攻击+4", "effect": "status:atk+=4"},
+          {"text": "防御+4", "effect": "status:def+=4"},
+          {"text": "魔防+10", "effect": "status:mdef+=10"}
+        ]
+      },'shop'),
+      MotaActionBlocks['afterBattle_m'].xmlText(),
+      MotaActionBlocks['afterGetItem_m'].xmlText(),
+      MotaActionBlocks['afterOpenDoor_m'].xmlText(),
+      MotaActionBlocks['firstArrive_m'].xmlText(),
+    ],
+    'statement':[
+      '<label text="显示文字"></label>',
+      MotaActionBlocks['text_0_s'].xmlText(),
+      MotaActionBlocks['text_1_s'].xmlText(),
+      MotaActionBlocks['setText_s'].xmlText(),
+      MotaActionBlocks['showImage_0_s'].xmlText(),
+      MotaActionBlocks['showImage_1_s'].xmlText(),
+      MotaActionBlocks['tip_s'].xmlText(),
+      MotaActionBlocks['openShop_s'].xmlText(),
+      MotaActionBlocks['win_s'].xmlText(),
+      MotaActionBlocks['lose_s'].xmlText(),
+      MotaActionBlocks['choices_s'].xmlText([
+        '选择剑或者盾','流浪者','man',MotaActionBlocks['choicesContext'].xmlText([
+          '剑',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [3,3]}]),
+          MotaActionBlocks['choicesContext'].xmlText([
+            '盾',MotaActionFunctions.actionParser.parseList([{"type": "openDoor", "loc": [9,3]}]),
+          ])
+        ])
+      ]),
+      '<label text="数据相关"></label>',
+      MotaActionBlocks['setValue_s'].xmlText(),
+      MotaActionBlocks['input_s'].xmlText(),
+      MotaActionBlocks['update_s'].xmlText(),
+      MotaActionBlocks['moveHero_s'].xmlText(),
+      MotaActionBlocks['changeFloor_s'].xmlText(),
+      MotaActionBlocks['changePos_0_s'].xmlText(),
+      MotaActionBlocks['changePos_1_s'].xmlText(),
+      MotaActionBlocks['battle_s'].xmlText(),
+      MotaActionBlocks['openDoor_s'].xmlText(),
+      MotaActionBlocks['setBlock_s'].xmlText(),
+      '<label text="事件控制"></label>',
+      MotaActionBlocks['if_s'].xmlText(),
+      MotaActionBlocks['revisit_s'].xmlText(),
+      MotaActionBlocks['exit_s'].xmlText(),
+      MotaActionBlocks['show_s'].xmlText(),
+      MotaActionBlocks['hide_s'].xmlText(),
+      MotaActionBlocks['trigger_s'].xmlText(),
+      MotaActionBlocks['move_s'].xmlText(),
+      MotaActionBlocks['disableShop_s'].xmlText(),
+      '<label text="特效/声音"></label>',
+      MotaActionBlocks['sleep_s'].xmlText(),
+      MotaActionBlocks['animate_s'].xmlText(),
+      MotaActionBlocks['setFg_0_s'].xmlText(),
+      MotaActionBlocks['setFg_1_s'].xmlText(),
+      MotaActionBlocks['setWeather_s'].xmlText(),
+      MotaActionBlocks['playBgm_s'].xmlText(),
+      MotaActionBlocks['pauseBgm_s'].xmlText(),
+      MotaActionBlocks['resumeBgm_s'].xmlText(),
+      MotaActionBlocks['playSound_s'].xmlText(),
+      '<label text="其他"></label>',
+      MotaActionBlocks['function_s'].xmlText(),
+    ],
+    'value':[
+      MotaActionBlocks['setValue_s'].xmlText(),
+      MotaActionBlocks['expression_arithmetic_0'].xmlText(),
+      MotaActionBlocks['negate_e'].xmlText(),
+      MotaActionBlocks['bool_e'].xmlText(),
+      MotaActionBlocks['idString_e'].xmlText(),
+      MotaActionBlocks['idString_1_e'].xmlText(),
+      MotaActionBlocks['idString_2_e'].xmlText(),
+      MotaActionBlocks['evalString_e'].xmlText(),
+    ],
+    'template':[
+      '<label text="战前剧情"></label>',
+      MotaActionFunctions.actionParser.parse({ 
+        "trigger": "action", 
+        "displayDamage": true, 
+        "data": [ 
+          ' ... 战前剧情',
+          {"type": "battle", "id": "greenSlime"},
+          ' ... 战后剧情；请注意上面的强制战斗不会使怪物消失',
+          '需要下一句来调用{"type": "hide"}来隐藏事件',
+          {"type": "hide"},
+        ]
+      },'event'),
+      '<label text="打怪掉落道具"></label>',
+      MotaActionFunctions.actionParser.parse([
+        '怪物变成了黄钥匙(黄钥匙idnum是21)',
+        '打怪变成可对话的NPC: https://ckcz123.github.io/mota-js/#/event?id=%e6%89%93%e6%80%aa%e5%8f%98%e6%88%90%e5%8f%af%e5%af%b9%e8%af%9d%e7%9a%84npc%ef%bc%88%e6%80%aa%e7%89%a9-gtnpc%ef%bc%89',
+        {"type": "setBlock", "number": 21}
+      ],'afterBattle'),
+      '<label text="打怪开门"></label>',
+      MotaActionFunctions.actionParser.parse([
+        {"type": "setValue", "name": "flag:__door_name__", "value": "flag:__door_name__+1"},
+        {"type": "if", "condition": "flag:__door_name__==2", 
+          "true": [
+            {"type": "openDoor", "loc": [10,5]}
+          ],
+          "false": [] 
+        },
+      ],'afterBattle'),
+      '<label text="获得圣水后变成墙"></label>',
+      MotaActionFunctions.actionParser.parse({
+        "trigger": "action", 
+        "noPass": true, 
+        "data": [
+          {"type": "if", "condition": "flag:hasSuperPotion", 
+            "true": [], 
+            "false": [
+              {"type":"setValue", "name":"status:hp", "value":"status:hp*2"}, 
+              {"type":"setBlock", "number": 1}, 
+              {"type":"setValue", "name":"flag:hasSuperPotion", "value": "true"} 
+            ]
+          }
+        ]
+      },'event'),
+
+    ],
+  }
+  var toolboxgap = '<sep gap="5"></sep>'
+  //xml_text = MotaActionFunctions.actionParser.parse(obj,type||'event')
+  //MotaActionBlocks['idString_e'].xmlText()
+
+  for (var name in toolboxObj){
+    getCategory(name).innerHTML = toolboxObj[name].join(toolboxgap);
+  }
+
+  var workspace = Blockly.inject('blocklyDiv',{
+  media: '../../media/',
+  toolbox: document.getElementById('toolbox'),
+  zoom:{
+    controls: true,
+    wheel: true,//false
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.08
+  },
+  trashcan: false,
+  });
+
+  var doubleClickCheck=[[0,'abc']];
+  function omitedcheckUpdateFunction(event) {
+  console.log(event);
+  if(event.type==='ui'){
+    var newClick = [new Date().getTime(),event.blockId];
+    var lastClick = doubleClickCheck.shift();
+    doubleClickCheck.push(newClick);
+    if(newClick[0]-lastClick[0]<500){
+      if(newClick[1]===lastClick[1]){
+        editor_blockly.doubleClickBlock(newClick[1]);
+      }
+    }
+  }
+  try {
+    var code = Blockly.JavaScript.workspaceToCode(workspace);
+    document.getElementById('codeArea').value = code;
+  } catch (error) {
+    document.getElementById('codeArea').value = String(error);
+    if (error instanceof OmitedError){
+    var blockName = error.blockName;
+    var varName = error.varName;
+    var block = error.block;
+    }
+    console.log(error);
+  }
+  }
+
+  workspace.addChangeListener(omitedcheckUpdateFunction);
+
+  workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+  editor_blockly.workspace = workspace;
+
+  MotaActionFunctions.workspace = function(){
+    return editor_blockly.workspace;
+  }
+})();
+`;
+
+var input_='';
+editor_blockly.runOne = function (){
+    var printf = console.log;
     var grammerFile = input_;
     converter = new Converter().init();
     converter.generBlocks(grammerFile,[]);
@@ -276,7 +279,7 @@ function runOne(){
 
     var script = document.createElement('script');
     //var initscript = document.getElementById('initscript').innerText;
-    script.innerHTML = converter.mainFile[5]+initscript;
+    script.innerHTML = converter.mainFile[5]+editor_blockly.initscript;
     document.body.appendChild(script);
 }
 var xhr=new XMLHttpRequest();
@@ -287,13 +290,13 @@ xhr.onreadystatechange = function (){
         return;
     }
     input_=xhr.responseText;
-    runOne();
+    editor_blockly.runOne();
 }
 xhr.open('GET','../../demos/motaAction/MotaAction.g4',true);
 xhr.send(null);
 
-function showXML() {
-  xml = Blockly.Xml.workspaceToDom(workspace);
+editor_blockly.showXML = function () {
+  xml = Blockly.Xml.workspaceToDom(editor_blockly.workspace);
   xml_text = Blockly.Xml.domToPrettyText(xml);
   console.log(xml_text);
   xml_text = Blockly.Xml.domToText(xml);
@@ -301,12 +304,12 @@ function showXML() {
   console.log(xml);
 }
 
-function runCode() {
+editor_blockly.runCode = function () {
   // Generate JavaScript code and run it.
   window.LoopTrap = 1000;
   Blockly.JavaScript.INFINITE_LOOP_TRAP =
     'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-  code = Blockly.JavaScript.workspaceToCode(workspace);
+  code = Blockly.JavaScript.workspaceToCode(editor_blockly.workspace);
   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
   try {
     eval('obj=' + code);
@@ -316,15 +319,15 @@ function runCode() {
   }
 }
 
-function parse() {
+editor_blockly.parse = function () {
     MotaActionFunctions.parse(
         eval('obj=' + document.getElementById('codeArea').value.replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];})),
         document.getElementById('entryType').value
     );
 }
 
-function doubleClickBlock(blockId){
-    var b=workspace.getBlockById(blockId);
+editor_blockly.doubleClickBlock = function (blockId){
+    var b=editor_blockly.workspace.getBlockById(blockId);
     console.log(b);
     var textStringDict = {
         'text_0_s':'EvalString_0',
@@ -338,6 +341,10 @@ function doubleClickBlock(blockId){
         //func(value,function(newvalue,b,f){b.setFieldValue(newvalue,f);})
     }
 }
+
+return editor_blockly;
+}
+editor_blockly=editor_blockly();
 </script>
 </body>
 </html>

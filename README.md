@@ -2,6 +2,8 @@
 
 用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
 
+~~[文档](./docs/README.md) (尚未完成)~~
+
 转化思路 [convert.md](./convert.md)
 
 作为示例MotaAction.g4给项目 [mota-js](https://github.com/ckcz123/mota-js) 提供事件编辑器子模块
