@@ -29,6 +29,8 @@ SymbolVisitor=Visitors.SymbolVisitor;
 EvalVisitor=Visitors.EvalVisitor;
 tpl = require('./tpl');
 
+//__all__=['converter','Converter','antlr4','BlocklyGrammerVisitor','BlocklyGrammerLexer','BlocklyGrammerParser','Visitors','SymbolVisitor','EvalVisitor','tpl'];
+
 function Converter() {
   return this;
 }

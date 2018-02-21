@@ -1,8 +1,3 @@
-# Get Start
-
-Get Start
-
-```antlr
 grammar AddSubMulDiv;
 
 prog:   stat+ ; 
@@ -38,4 +33,3 @@ MeaningfulSplit : '=== meaningful ^ ===' ;
 
 NEWLINE:'\r'? '\n' ;             // return newlines to parser (is end-statement signal)
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
-```

@@ -42,7 +42,7 @@ b = 6
 a+b*2
 (1+2)*3
 ```
-![exprimg](img/expr_parse_tree.png)  
+![parse_tree](./img/expr_parse_tree.png)  
 
 > 注:此项目使用的是antlr4的语法规则的一个子集,也就是放到antlr4中能够工作的弱化版,用到了更高级特性的`.g4`文件此项目无法识别,这部分后面会有详细说明
 
