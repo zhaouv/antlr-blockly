@@ -10,7 +10,7 @@ blockly主要是写配置文件 [motaActionBlocks](http://pppl.pw:23456/blockly/
 过程是两部分,对每个块
 
 1. 描述规则,用`message`和`args`描述语法树,这个例子描述了`if_s`包含一个`EvalString`的值和两个`actionList`的子规则  
-```json
+``` json
   {
     "type": "if_s",
     "message0": "如果 %1 %2 否则 %3 %4",
@@ -41,7 +41,7 @@ blockly主要是写配置文件 [motaActionBlocks](http://pppl.pw:23456/blockly/
 2. 写visitor  
 例如此函数前三行获取所有子节点生成的字符串,到目前都是可以借助 [blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) 来拖拽生成的  
 之后有了子代生成的字符串,就和写antlr4的visitor的过程几乎一样了,生成字符串返回给父代
-```javascript
+``` javaScript
     function(block) {
       var value_evalstring = Blockly.JavaScript.valueToCode(block, 'EvalString', Blockly.JavaScript.ORDER_NONE)||EvalString_CHECK;
       var statements_actionlist = Blockly.JavaScript.statementToCode(block, 'actionList')||'[]';

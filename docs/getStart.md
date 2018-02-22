@@ -2,7 +2,7 @@
 
 Get Start
 
-```antlr
+``` antlr
 grammar AddSubMulDiv;
 
 prog:   stat+ ; 
