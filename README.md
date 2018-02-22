@@ -2,7 +2,7 @@
 
 用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
 
-~~[文档](./docs/README.md) (尚未完成)~~
+~~[文档](https://zhaouv.github.io/antlr-blockly/docs/) (尚未完成)~~
 
 转化思路 [convert.md](./convert.md)
 

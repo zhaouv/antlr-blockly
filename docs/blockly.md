@@ -1,7 +1,7 @@
 # blockly运行机制简介
 
 先前的代码段转化成blockly图块后如图
-``` javaScript
+``` js
 193
 a = 5
 b = 6
@@ -15,57 +15,57 @@ a+b*2
 同时blockly也不需要换行符来作为语句结束的标记.  
 
 接下来看每个具体的方块是如何运行的,这是其中赋值方块`assign`的和表达式方块`intExpr`的配置代码  
-``` json
-[
-  {
-    "type": "assign",
-    "message0": "%1 = %2",
-    "args0": [
-      {
-        "type": "field_input",
-        "text": "ID_default",
-        "name": "ID_0"
-      },
-      {
-        "type": "input_value",
-        "name": "expression_0",
-        "check": [
-          "expression_arithmetic_0",
-          "idExpr",
-          "intExpr"
-        ]
-      }
-    ],
-    "inputsInline": true,
-    "tooltip": "",
-    "helpUrl": "",
-    "colour": 160,
-    "previousStatement": "assign",
-    "nextStatement": [
-      "printExpr",
-      "assign",
-      "blank"
-    ]
-  },
-  {
-    "type": "intExpr",
-    "message0": "%1",
-    "args0": [
-      {
-        "type": "field_number",
-        "value": 0,
-        "min": 0,
-        "precision": 1,
-        "name": "Int_0"
-      }
-    ],
-    "inputsInline": true,
-    "tooltip": "",
-    "helpUrl": "",
-    "colour": 330,
-    "output": "intExpr"
-  }
-]
+``` js
+{
+  "type": "assign",
+  "message0": "%1 = %2",
+  "args0": [
+    {
+      "type": "field_input",
+      "text": "ID_default",
+      "name": "ID_0"
+    },
+    {
+      "type": "input_value",
+      "name": "expression_0",
+      "check": [
+        "expression_arithmetic_0",
+        "idExpr",
+        "intExpr"
+      ]
+    }
+  ],
+  "inputsInline": true,
+  "tooltip": "",
+  "helpUrl": "",
+  "colour": 160,
+  "previousStatement": "assign",
+  "nextStatement": [
+    "printExpr",
+    "assign",
+    "blank"
+  ]
+}
+```
+``` js
+{
+  "type": "intExpr",
+  "message0": "%1",
+  "args0": [
+    {
+      "type": "field_number",
+      "value": 0,
+      "min": 0,
+      "precision": 1,
+      "name": "Int_0"
+    }
+  ],
+  "inputsInline": true,
+  "tooltip": "",
+  "helpUrl": "",
+  "colour": 330,
+  "output": "intExpr"
+}
 ```
 > 这个json是模仿官方提供的[blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) 产生的`Block Definition: JSON`,在antlr-blockly实际产生的代码中,会把重复出现的`["printExpr","assign","blank"]`替换为`AddSubMulDivBlocks.stat`,以及`["expression_arithmetic_0","idExpr","intExpr"]`替换为`AddSubMulDivBlocks.expression`.  
 
@@ -89,6 +89,7 @@ blockly方块有`value`和`statement`两种,通过是否包含`output`项来区�
 + 下方statement块的`previousStatement`提供其块的类型数组,  
   上方statement块的`nextStatement`提供能接收的类型数组,  
   两者含共同元素或者其中一个是`null`便能拼接.
++ > 意味着提供针脚的接受语句的方块,无法直接控制其接受的第一个语句之外的语句的类型
 
 `field_`开头的有以下几种:  
 + `field_input` 文本输入 <img src="./img/field_input_demo.png" alt="field_input" style="position:relative;top:8px;"> ,通过`text`设置默认值.
@@ -135,7 +136,7 @@ Blockly.JavaScript['intExpr'] = function(block) {
 
 分别用`getFieldValue,statementToCode,valueToCode`,从`field_,input_statement,input_value`中取结果,就可以遍历整个语法树.  
 
-**需要注意两点**:
+需要注意两点:
 + `valueToCode`时需要给出作用在方块上的优先级,`value`返回时需要给出自身的优先级,这里优先级意味着一种表达式字符串的结合强度.  
 例如`(1+2)*3`,方块`1+2`的强度是加法,而方块`?*3`作用在`?`上的强度是乘法,  
 乘法的强度大于加法,因此`valueToCode`会自动给`1+2`加上括号,组合成`(1+2)*3`.  
