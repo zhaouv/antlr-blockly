@@ -16,18 +16,18 @@ statExprSplit : '=== statement ^ === expression v ===' ;
 expression
     :   expression MulDivAddSub_List expression
 //    |   parens
-    |   intExpr
     |   idExpr
+    |   intExpr
     ;
 
 //parens : '(' expr ')' ;
-intExpr : INT ;
+intExpr : Int ;
 idExpr : ID ;
 
 MulDivAddSub_List : '*'|'/'|'+'|'-' ;
 
 ID  :   [a-zA-Z_][a-zA-Z_0-9]+ ; // match identifiers
-INT :   [0-9]+ ;                 // match integers
+Int :   [0-9]+ ;                 // match integers
 
 MeaningfulSplit : '=== meaningful ^ ===' ;
 
