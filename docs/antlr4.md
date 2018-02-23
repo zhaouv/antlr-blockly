@@ -20,7 +20,8 @@ expr:   expr ('*'|'/') expr
 
 ID  :   [a-zA-Z_][a-zA-Z_0-9]+ ; // match identifiers
 INT :   [0-9]+ ;                 // match integers
-NEWLINE:'\r'? '\n' ;             // return newlines to parser (is end-statement signal)
+NEWLINE:'\r'? '\n' ; 
+        // return newlines to parser (is end-statement signal)
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
 ```
 描述了`一个Expr程序由很多语句构成,每个语句由打印表达式或赋值或空行构成,表达式由表达式间的乘除加减或者括号围着的表达式以及整数或变量名构成`.  
