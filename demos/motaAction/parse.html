@@ -155,6 +155,13 @@ editor_blockly.initscript=String.raw`
       MotaActionBlocks['evalString_e'].xmlText(),
     ],
     'template':[
+      '<label text="检测音乐如果没有开启则系统提示开启"></label>',
+      MotaActionFunctions.actionParser.parseList({"type": "if", "condition": "!core.musicStatus.bgmStatus",
+        "true": [
+          "\t[系统提示]你当前音乐处于关闭状态，本塔开音乐游戏效果更佳"
+        ],
+        "false": []
+      }),
       '<label text="战前剧情"></label>',
       MotaActionFunctions.actionParser.parse({ 
         "trigger": "action", 
@@ -335,7 +342,7 @@ editor_blockly.doubleClickBlock = function (blockId){
         'choices_s':'EvalString_0',
         'function_s':'RawEvalString_0',
     }
-    var f=textStringDict[b];
+    var f=b?textStringDict[b.type]:null;
     if(f){
         var value = b.getFieldValue(f);
         //func(value,function(newvalue,b,f){b.setFieldValue(newvalue,f);})

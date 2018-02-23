@@ -257,7 +257,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         var check = childvalue.check;
         args_.check=check.length===1?check[0]:check;
         childvalue.user[obj.name]=obj.type;
-        this.notEntry[args.id]=true;
+        this.notEntry[args.id]=true;//被其他语句使用过的语句不是入口方块
         this.setRule(args.blockType,args.id,childvalue);
       } else {
         var key = ({
@@ -318,7 +318,7 @@ EvalVisitor.prototype.assemble = function() {
   var rulekeys = Object.keys(this.statementRules);
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
     if (stateRule.check.length>1){
-      this.notEntry[rulekeys[ii]]=true;
+      this.notEntry[rulekeys[ii]]=true;//语句集合不是入口方块
       for(var jj=0,subStateRule;subStateRule=stateRule.check[jj];jj++){
         var value = this.getRule('statement',subStateRule);
         value.blockjs.nextStatement = stateRule.check;
@@ -327,7 +327,7 @@ EvalVisitor.prototype.assemble = function() {
         //其字符串会被形如AbcBlocks.collection来替换,以避免生成重复的内容
         //同时方便修改
         this.setRule('statement',subStateRule,value);
-        this.notEntry[subStateRule]=true;
+        this.notEntry[subStateRule]=true;//语句集合内的元素不是入口方块
       }
     }
   }

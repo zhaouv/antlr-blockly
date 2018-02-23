@@ -98,7 +98,7 @@ blockly方块有`value`和`statement`两种,通过是否包含`output`项来区�
 + `field_dropdown` 下拉菜单 <img src="./img/field_dropdown_demo.png" alt="field_dropdown" style="position:relative;top:8px;"> ,通过`options`设置形如`[["option1","a"],["option2","b"],["option_3","c"]]`的选项,每一组显示第一个作为字符串,值为第二个,默认选中第一组.  
 + > blockly中还支持角度,颜色作为输入,常规dsl中这两个输入意义不是很大,需要生成blockly程序后修改,或者在`.g4`中用嵌入的函数修改.
 
-之后是给每个图块写其执行的代码
+之后是给每个图块写其执行的代码(这三个例子是自动生成的,需要修改`code`才会有实际的作用)
 <pre>
 Blockly.JavaScript['prog'] = function(block) {
   var stat_0 = Blockly.JavaScript.<span style="font-weight: bold;color:navy">statementToCode</span>(block, 'stat_0');
@@ -141,7 +141,7 @@ Blockly.JavaScript['intExpr'] = function(block) {
 例如`(1+2)*3`,方块`1+2`的强度是加法,而方块`?*3`作用在`?`上的强度是乘法,  
 乘法的强度大于加法,因此`valueToCode`会自动给`1+2`加上括号,组合成`(1+2)*3`.  
 `Blockly.JavaScript.ORDER_OVERRIDES`可以消去某些多余的括号,例如`(1+2)+3 -> 1+2+3`,  
-**没有对于左结合或右结合的支持**,无法描述一个左结合的符号`?`,`(a?b)?c`能去掉括号但是`a?(b?c)`时不能去掉括号.
+**blockly没有对于左结合或右结合的支持**,无法描述一个左结合的符号`?`,`(a?b)?c`能去掉括号但是`a?(b?c)`时不能去掉括号.
   > 如果不从语法树生成代码,而是直接执行,是不需要考虑优先级的.
 + `statementToCode`没有提供改变调用顺序的接口,多个语句只能由其内部按照从上到下的顺序遍历.
 
