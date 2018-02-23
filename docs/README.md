@@ -13,11 +13,15 @@
 通过 [antlr4](https://github.com/antlr/antlr4) 可以非常简洁的创造一个新语言(dsl),用非常自然易懂的`.g4`文件来描述语法,并继承listenner或visitor来遍历语法树,可以优雅的实现一个语言,并且很容易做到语法树和code间的互相转换.
 
 通过本项目,可以借助antlr4的语法的来描述语言,自动产生描述每个方块的json,并且能够类似在antlr4编辑visitor一样,更为简洁方便的写`方块产生的代码的函数`,来遍历blockly产生的语法树.  
-能够简化blockly的配置,并且可以很方便的统一为各种类型设置"转义"或者缺省时的行为.
+能够简化blockly的配置,并且可以很方便的统一为各种类型设置"转义"或者缺省时的行为.  
+结合antlr4产生visitor使用的话,很容易做到blockly图块和code双向转化
 
 本项目面向有`可视化编辑"领域特定语言"`需求的使用者,可以高效的产生一个图形的编辑器.
 
-同时面向antlr4或blockly使用者,为antlr4使用者提供一个高效产生其dsl的开发工具的手段,为blockly使用者简化其blockly方块的配置.
+主要面向blockly使用者,简化其blockly方块的配置,无需学习antlr4.  
+对于antlr4使用者,提供了一个高效产生其dsl的开发工具的手段,只需要了解blockly如何布局到网页中.
+
+> 使用blockly作ide相比让用户直接编辑dsl文本的好处:不会有格式错误和关键字拼写错误,学习成本低,语句块天然的语法高亮,和帮助文档能够紧密结合
 
 > ~~通过此文档,不需要有antlr4或blockly的使用经验,就可以搭建出自己的blockly程序~~  
 
@@ -26,5 +30,5 @@
 - **Home**  
 - [antlr4语法简介](antlr4.md)  
 - [blockly运行机制简介](blockly.md)  
-- [Get Start](getStart.md)  
+- [语法文件规则](grammerFile.md)  
 - [demo](demo.md)  

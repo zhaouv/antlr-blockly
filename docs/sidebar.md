@@ -1,5 +1,5 @@
 - [Home](README.md)  
 - [antlr4语法简介](antlr4.md)  
 - [blockly运行机制简介](blockly.md)  
-- [Get Start](getStart.md)  
+- [语法文件规则](grammerFile.md)  
 - [demo](demo.md)  

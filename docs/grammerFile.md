@@ -1,6 +1,9 @@
-# Get Start
+# 语法文件规则
 
-把[antlr4语法简介](antlr4.md)中的例子转成此项目能识别的形式
+把[antlr4语法简介](antlr4.md)中的例子转成此项目能识别的形式  
+由于blockly的块是确定的,因此要在antlr规则的做一些限制后,把语法规则转换成块,把词法规则转化成`field`  
+
+
 ``` antlr
 grammar AddSubMulDiv;
 
@@ -44,5 +47,5 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 - [Home](README.md)  
 - [antlr4语法简介](antlr4.md)  
 - [blockly运行机制简介](blockly.md)  
-- [Get Start](getStart.md)  
+- [语法文件规则](grammerFile.md)  
 - [demo](demo.md)  
