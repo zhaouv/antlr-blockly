@@ -69,8 +69,27 @@ demos中分别给出了直接执行和生成dsl的两个版本的实现,要注�
 
 ## 完整的 .g4 规则的描述
 > antlr-blockly使用antlr4来解析antlr4的`.g4`文件,并解析符合条件的注释来获取嵌入,因此接下来的内容实质是 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 加上 [EvalVisitor.prototype.loadInject](https://github.com/zhaouv/antlr-blockly/search?utf8=%E2%9C%93&q=%22EvalVisitor.prototype.loadInject+%3D+function%22&type=) 的解释.  
+> `.g4`语法非常自然易懂,接下来的内容建议对照 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 来看  
 > ( 这里相当于一个三阶元语言 : xxx的blockly描述dsl, xxx.g4描述xxx的blockly, BlocklyGrammer.g4描述xxx.g4 ) 
 
+一个完整的antlr-blockly识别的语法文件,由`语法声明,语句块集合,语句和值分隔符,值块集合,词法集合,有意义词法分隔符,词法集合`构成.
+
+语法声明是第一句,具有`grammar Xxx ;`的形式,表明这个语法的名字是`Xxx`
+
+固定的形式`statExprSplit : '=== statement ^ === expression v ===' ;`之上的是blockly的语句块或是语句集合.
+
+语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名或值块的名.
+
+语句块和值块的规则是一样的,能够用`+*?`自由的组合语句块值块和field,但是不能使用`|`,需要使用`|`表示选则的场合必须借助语句集合或是field的下拉菜单  
+
+在实现使约定了几个特殊的`field`
++ `BGNL?`可以使得blockly块在该处换行
++ `Int`对应正整数
++ `Number`对应数(不支持科学计数法)
++ `Bool`对应checkbox(有对勾或无对勾的布尔值)
++ 以`_List`结尾的只由字符串和`|`组成的field对应下拉菜单
+
+值块与语句块没有本质区别,语句块的`previousStatement`相当于值块的`output`,语句块的`nextStatement`相当于值块提供了一个`check`为`nextStatement`的`input_statement`,两者可以这样转换.(进而可以使得一个blockly转化为只含值块的同构)
 
 - - -
 
