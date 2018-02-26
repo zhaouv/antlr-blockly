@@ -178,18 +178,28 @@ function func_Run(){
         }
     }
     if(!loadlib[0]){
+        
+        /* loadjs('blocklyRuntime.bundle.min.js',function(){
+            loadlib[0]=true;
+            var script = document.createElement('script');
+            script.innerHTML = converter.mainFile.slice(5,8).join('');
+            document.body.appendChild(script);
+        }); */
+        var lnum=[0];
+        var tcb = function(){
+            if(++lnum[0]!==3)return;
+            loadlib[0]=true;
+            var script = document.createElement('script');
+            script.innerHTML = converter.mainFile.slice(5,8).join('');
+            document.body.appendChild(script);
+        }
+
         loadjs('blockly_compressed.js',function(){
-            loadjs('blocks_compressed.js',function(){
-                loadjs('javascript_compressed.js',function(){
-                    loadjs('zh-hans.js',function(){
-                        loadlib[0]=true;
-                        var script = document.createElement('script');
-                        script.innerHTML = converter.mainFile.slice(5,8).join('');
-                        document.body.appendChild(script);
-                    });
-                });
-            });
+            loadjs('blocks_compressed.js',tcb);
+            loadjs('javascript_compressed.js',tcb);
+            loadjs('zh-hans.js',tcb);
         });
+
     } else {
         var script = document.createElement('script');
         script.innerHTML = converter.mainFile.slice(5,8).join('');

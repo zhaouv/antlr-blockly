@@ -211,7 +211,7 @@ EvalVisitor.prototype.matchInject = function(IdString) {
   return value[1];
 }
 
-EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default']
+EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default','override']
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
   if(!injectStr)return {'default':[]};
@@ -401,6 +401,12 @@ EvalVisitor.prototype.assemble = function() {
       }
     }
     if (stateRule.blockobj.inject.generFunc) {
+      if (stateRule.blockobj.inject.override) {
+        cpre(-9999);
+        text = [];
+        text.push(pre+'function(block) {\n');
+        cpre(1);
+      }
       text.push(pre+
         stateRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
       text.push('\n');
@@ -470,6 +476,12 @@ EvalVisitor.prototype.assemble = function() {
       }
     }
     if (exprRule.blockobj.inject.generFunc) {
+      if (exprRule.blockobj.inject.override) {
+        cpre(-9999);
+        text = [];
+        text.push(pre+'function(block) {\n');
+        cpre(1);
+      }
       text.push(pre+
         exprRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
       text.push('\n');
