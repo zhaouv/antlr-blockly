@@ -18,6 +18,9 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 ## Todo
 
++ 形如`xxx ??`,`xxx +?`,`xxx *?`的支持 (更像是fix bug)  
+strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
+
 + [x] 支持colour,tooltip,helpUrl  
   默认值default的设置  
   generFunc的代码  

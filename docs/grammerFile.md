@@ -51,7 +51,7 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 `stat`作为语句集合的概念,本身不是方块,把它的三个选项独立命名作为语句块.  
 
-`expr`改名为`expression`,`expression`作为 antlr-blockly 的关键字,是唯一允许调用自身的语法规则,用来作为表达式集合的概念,其下的规则除了`expression`开头的全部独立命名作为值块.而`expression`开头的规则会被依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
+`expr`改名为`expression`,`expression`作为 antlr-blockly 的关键字,是唯一允许调用自身的语法规则,用来作为表达式集合的概念,其下的规则除了`expression`开头的全部独立命名作为值块.而`expression`开头的算数式会被依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
 
 由于优先级处理方式不一样,`MulDivAddSub_List`把四则运算合并成一个下拉菜单,同时移除`parens`括号组.
 
@@ -73,7 +73,7 @@ demos中分别给出了直接执行和生成dsl的两个版本的实现,要注�
 
 ### 域的转化规则
 
-约定了几个特殊的域 [EvalVisitor.prototype.SpeicalLexerRule](https://github.com/zhaouv/antlr-blockly/search?utf8=%E2%9C%93&q=SpeicalLexerRule&type=) [EvalVisitor.prototype.visitLexerRuleList](https://github.com/zhaouv/antlr-blockly/search?utf8=%E2%9C%93&q=EvalVisitor.prototype.visitLexerRuleList&type=)
+约定了几个特殊的域 
 + `BGNL?`可以使得blockly块在该处换行
 + `Int`对应正整数
 + `Number`对应数(科学计数法会被直接计算后替代原字符)
@@ -84,6 +84,52 @@ demos中分别给出了直接执行和生成dsl的两个版本的实现,要注�
 
 其他的域会被转化成文本输入,规则名`Xxx`的默认值为`Xxx_default`
 
+### 语句集合和表达式集合
+
+语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名,不允许有多余的符号.  
+
+> 在 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 中定义如下  
+> `ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)+ ';'`  
+
+用来在拼接时指代一类语句,本身不作为方块.  
+一个语句只能最多属于一个语句集合,语句集合不能包含语句集合,语句集合和其元素不视为[入口方块](#入口方块)
+
+`expression`是antlr-blockly中的关键字用来定义唯一的表达式集合.
+
+> `'expression' ':' (arithmeticRuleCollection|ParserIdentifier) ('|' (arithmeticRuleCollection|ParserIdentifier))* ';'`
+
+是由`|`分隔的若干个值块的名或者是算术式,用来指代表达式这个概念,本身不是方块.  
+其中的算数式会按照出现顺序,依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
+
+### 语句块值块和算数式
+
+语句块和值块的定义均是如下的形式
+> `ParserIdentifier ':' parserRuleAtom* ';'`
+
+算数式的定义如下
+> `'expression' parserRuleAtom*`
+
+等效于第一个`parserRuleAtom`一定是`expression`的值块
+
+而`parserRuleAtom`的定义如下
+> ```
+parserRuleAtom
+    :   'expression' '?'? # ParserAtomExpr
+    |   ParserIdentifier ('+' | '*' | '?')? # ParserAtomParserId
+    |   LexerIdentifier '?'? # ParserAtomLexerId
+    |   String # ParserAtomStr
+    ;
+```
+
+
+### 入口方块
+
+一个语句块没被任何语法规则使用过时,会被识别为入口方块,其上下会封闭起来,无法连接任何方块.
+
+> 在antlr-blockly的默认设置下,悬空的图块不会被加载.
+
+- - -
+
 > antlr-blockly使用antlr4来解析antlr4的`.g4`文件,并解析符合条件的注释来获取嵌入,因此接下来的内容实质是 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 加上 [EvalVisitor.prototype.loadInject](https://github.com/zhaouv/antlr-blockly/search?utf8=%E2%9C%93&q=%22EvalVisitor.prototype.loadInject+%3D+function%22&type=) 的解释.  
 > `.g4`语法非常自然易懂,接下来的内容建议对照 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 来看  
 
@@ -93,7 +139,7 @@ demos中分别给出了直接执行和生成dsl的两个版本的实现,要注�
 
 固定的形式`statExprSplit : '=== statement ^ === expression v ===' ;`之上的是blockly的语句块或是语句集合.
 
-语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名或值块的名.
+语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名.
 
 语句块和值块的规则是一样的,能够用`+*?`自由的组合语句块值块和field,但是不能使用`|`,需要使用`|`表示选则的场合必须借助语句集合或是域的下拉菜单  
 

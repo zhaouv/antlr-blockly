@@ -8,6 +8,9 @@
 parserRule中不允许出现`(`和`)`  
 parserRule中的词法,包含`.. | + * ?`以及正则表达式的必须单独作为LexerRule  
 parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需要的场合打包成新的新的LexerRule
+```
+未考虑到非贪婪匹配,需要略微修改
+```
 
 引入分隔符`statExprSplit : '=== statement ^ === expression v ===' ;`强制要求blockly的statsment和value分别置于其上下
 
