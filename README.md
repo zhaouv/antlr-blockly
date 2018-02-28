@@ -2,7 +2,7 @@
 
 用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
 
-~~[文档](https://zhaouv.github.io/antlr-blockly/docs/) (尚未完成)~~
+~~[文档](https://zhaouv.github.io/antlr-blockly/docs/#/README) (尚未完成)~~
 
 转化思路 [convert.md](./convert.md)
 
@@ -18,8 +18,11 @@ motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 ## Todo
 
-+ 形如`xxx ??`,`xxx +?`,`xxx *?`的支持 (更像是fix bug)  
++ [x] 形如`xxx ??`,`xxx +?`,`xxx *?`的支持 (更像是fix bug)  
 strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
+
++ [x] `lexerRuleAtom`的命名不合理,应改成`lexerRuleExpr`  
+`grammerDecl`中不应包含`ParserIdentifier`
 
 + [x] 支持colour,tooltip,helpUrl  
   默认值default的设置  

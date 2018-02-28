@@ -1,6 +1,6 @@
 # antlr-blockly说明文档
 
-**为保证效果,请使用docsify版: [antlr-blockly 使用文档说明(docsify)](https://zhaouv.github.io/antlr-blockly/docs/)**
+**为保证效果,请使用docsify版: [antlr-blockly 使用文档说明(docsify)](https://zhaouv.github.io/antlr-blockly/docs/#/README)**
 
 [blockly](https://github.com/google/blockly) 是一个可视化的程序编辑器,通过拖拽图块来编程.  
 

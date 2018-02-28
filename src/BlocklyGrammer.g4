@@ -7,7 +7,7 @@ grammarFile
     ;
 
 grammerDecl
-    :   'grammar' (ParserIdentifier | LexerIdentifier) ';'
+    :   'grammar' LexerIdentifier ';'
     ;
 
 statExprSplit
@@ -29,10 +29,10 @@ arithmeticRuleCollection
     ;
 
 parserRuleAtom
-    :   'expression' '?'? # ParserAtomExpr
-    |   ParserIdentifier ('+' | '*' | '?')? # ParserAtomParserId
-    |   LexerIdentifier '?'? # ParserAtomLexerId
-    |   String # ParserAtomStr
+    :   'expression' ('?' '?'?)? # ParserAtomExpr
+    |   ParserIdentifier (('+' | '*' | '?') '?'?)? # ParserAtomParserId
+    |   LexerIdentifier ('?' '?'?)? # ParserAtomLexerId
+    |   String ('?' '?'?)? # ParserAtomStr
     ;
 
 lexerRuleCollection
@@ -46,20 +46,20 @@ meaningfulSplit
 lexerRule
     :   LexerIdentifier ':' strings ';' # LexerRuleStrings
     |   LexerIdentifier ':' strings ('|' strings)+ ';' # LexerRuleList
-    |   LexerIdentifier ':' lexerRuleAtom ';' # LexerRuleComplex
+    |   LexerIdentifier ':' lexerRuleExpr ';' # LexerRuleComplex
     ;
 
 strings
-    :   String+
+    :   (String ('?' '?'?)?)+
     ;
     
-lexerRuleAtom
-    :   lexerRuleAtom '?'
-    |   lexerRuleAtom ('+'|'*') '?'?
-    |   lexerRuleAtom '|' lexerRuleAtom
-    |   lexerRuleAtom lexerRuleAtom
-    |   '(' lexerRuleAtom ')'
-    |   '~' lexerRuleAtom
+lexerRuleExpr
+    :   lexerRuleExpr '?'
+    |   lexerRuleExpr ('+'|'*') '?'?
+    |   lexerRuleExpr '|' lexerRuleExpr
+    |   lexerRuleExpr lexerRuleExpr
+    |   '(' lexerRuleExpr ')'
+    |   '~' lexerRuleExpr
     |   LexerIdentifier
     |   String '.' '.' String
     |   String

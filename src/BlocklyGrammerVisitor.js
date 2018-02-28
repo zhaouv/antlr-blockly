@@ -120,8 +120,8 @@ BlocklyGrammerVisitor.prototype.visitStrings = function(ctx) {
 };
 
 
-// Visit a parse tree produced by BlocklyGrammerParser#lexerRuleAtom.
-BlocklyGrammerVisitor.prototype.visitLexerRuleAtom = function(ctx) {
+// Visit a parse tree produced by BlocklyGrammerParser#lexerRuleExpr.
+BlocklyGrammerVisitor.prototype.visitLexerRuleExpr = function(ctx) {
   return this.visitChildren(ctx);
 };
 

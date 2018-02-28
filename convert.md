@@ -6,11 +6,8 @@
 不允许嵌入,如`@member{}`之类的
 
 parserRule中不允许出现`(`和`)`  
-parserRule中的词法,包含`.. | + * ?`以及正则表达式的必须单独作为LexerRule  
-parserRule中词法只允许`LexerRuleA?`,不允许`LexerRuleA* LexerRuleA+`,需要的场合打包成新的新的LexerRule
-```
-未考虑到非贪婪匹配,需要略微修改
-```
+parserRule中的词法,包含`.. | + * ?`以及正则表达式的必须单独作为LexerRule,除了纯字符串可以使用`?`  
+parserRule中词法只允许`LexerRuleA?(?)`括号内的问号是非贪婪匹配,不允许`LexerRuleA*(?) LexerRuleA+(?)`,需要的场合打包成新的新的LexerRule
 
 引入分隔符`statExprSplit : '=== statement ^ === expression v ===' ;`强制要求blockly的statsment和value分别置于其上下
 
@@ -79,7 +76,7 @@ fragment不会被显示
 + Bool => `checkbox`
 + Int => `precision`为1`min`为0的`numeric imput`
 + Number => `numeric imput`
-+ BGNL => 块中使文本换行,使用时在规则中填`BGNL?`(Lexer中设定成一个长字符串,如`BGNL : 'aiyuviaurgfuabvar' ;`)
++ BGNL => 块中使文本换行,使用时在规则中填`BGNL?`(Lexer中设定成一个长字符串或者复杂语法规则,如`BGNL : 'aiyuviaurgfuabvar' ;`)
 + 以`_List`结尾的LexerRule => `dropdown`
 
 ```
