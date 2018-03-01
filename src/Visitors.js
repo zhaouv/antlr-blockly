@@ -855,7 +855,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
   //LexerIdentifier '?'?
   var lexerId = ctx.children[0].getText();
   var lexervalue = this.getRule('lexer',lexerId);
-  if (!lexervalue) return;
+  if (!lexervalue) return;//分隔符之下的词法规则直接丢弃
   var parservalue={
     'id': lexerId,
     'blockType': 'field',

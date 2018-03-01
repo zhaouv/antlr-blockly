@@ -1,7 +1,7 @@
 # 语法文件规则
 
 由于blockly的块是确定的,因此把antlr的规则做一些限制后,把语法规则转换成块,把词法规则转化成域.  
-把 [antlr4语法简介](antlr4.md) 中的例子转成此项目能识别的形式如下  
+把 [antlr4语法简介](antlr4.md) 中的例子转成antlr-blockly能识别的形式如下  
 
 <pre>
 grammar AddSubMulDiv;
@@ -55,7 +55,7 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 由于优先级处理方式不一样,`MulDivAddSub_List`把四则运算合并成一个下拉菜单,同时移除`parens`括号组.
 
-至此,图块间拼接的描述已经完成了.可以将此文件内容粘贴至 [项目主页](https://zhaouv.github.io/antlr-blockly/) `Parse`并查看效果或者下载生成的网页文件了.
+至此,图块间拼接的描述已经完成了.可以将此文件内容粘贴至 [antlr-blockly主页](https://zhaouv.github.io/antlr-blockly/) `Parse`并查看效果或者下载生成的网页文件了.
 
 之后是每个方块的帮助信息,颜色,执行的代码的配置,可以在`.g4`中嵌入的编辑,也可以直接在下载的网页文件里编辑.
 
@@ -97,7 +97,7 @@ demos中分别给出了直接执行和生成dsl的两个版本的实现,要注�
 
 > `'expression' ':' (arithmeticRuleCollection|ParserIdentifier) ('|' (arithmeticRuleCollection|ParserIdentifier))* ';'`
 
-是由`|`分隔的若干个值块的名或者是算术式,用来指代表达式这个概念,本身不是方块.  
+是由`|`分隔的若干个小写开头的值块的名或者是算术式,用来指代表达式这个概念,本身不是方块.  
 其中的算数式会按照出现顺序,依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
 
 ### 语句块值块和算数式
@@ -122,9 +122,11 @@ parserRuleAtom
 
 对应着每个方块由字符,域,嵌入语句块或语句集合的针脚,嵌入值块或表达式集合的针脚组合而成.
 
-方块中不能使用`() |`
+定义方块的规则中不能使用`( ) |`.
 
-使用字符串或域或表达式集合或值块时用`?`或者`??`表示可以缺省,不能使用`+ *`
+使用字符串或域或表达式集合或值块时用`?`或者`??`表示可以缺省.不能使用`+ *`.
+
+> 值块与语句块没有本质区别,语句块的`previousStatement`相当于值块的`output`,语句块的`nextStatement`相当于值块提供了一个`check`为`nextStatement`的`input_statement`,两者可以这样转换.(进而可以使得一个blockly转化为只含值块的同构)
 
 ### 入口方块
 
@@ -132,24 +134,19 @@ parserRuleAtom
 
 > 在antlr-blockly的默认设置下,悬空的图块不会被加载.
 
-- - -
+### 语法文件
 
-> antlr-blockly使用antlr4来解析antlr4的`.g4`文件,并解析符合条件的注释来获取嵌入,因此接下来的内容实质是 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 加上 [EvalVisitor.prototype.loadInject](https://github.com/zhaouv/antlr-blockly/search?utf8=%E2%9C%93&q=%22EvalVisitor.prototype.loadInject+%3D+function%22&type=) 的解释.  
-> `.g4`语法非常自然易懂,接下来的内容建议对照 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 来看  
-
-一个完整的antlr-blockly识别的语法文件,由`语法声明,语句块集合,语句和值分隔符,值块集合,词法集合,有意义词法分隔符,词法集合`构成.
+一个完整的antlr-blockly识别的语法文件,由`语法声明,语句块集合,语句块和值块分隔符,值块集合,词法集合,有意义词法分隔符,词法集合`构成.  
+> `grammerDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection`
 
 语法声明是第一句,具有`grammar Xxx ;`的形式,表明这个语法的名字是`Xxx`
 
-固定的形式`statExprSplit : '=== statement ^ === expression v ===' ;`之上的是blockly的语句块或是语句集合.
+语句块和值块分隔符是固定的形式`statExprSplit : '=== statement ^ === expression v ===' ;`  
+之上的是blockly的语句集合或是语句块.  
+之下的是表达式集合`expression`或者是值块.
 
-语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名.
-
-语句块和值块的规则是一样的,能够用`+*?`自由的组合语句块值块和field,但是不能使用`|`,需要使用`|`表示选则的场合必须借助语句集合或是域的下拉菜单  
-
-
-
-值块与语句块没有本质区别,语句块的`previousStatement`相当于值块的`output`,语句块的`nextStatement`相当于值块提供了一个`check`为`nextStatement`的`input_statement`,两者可以这样转换.(进而可以使得一个blockly转化为只含值块的同构)
+有意义词法分隔符是固定的形式`MeaningfulSplit : '=== meaningful ^ ===' ;`  
+antlr-blockly只识别其之上的词法规则作为域,之下的词法规则会被直接丢弃.
 
 - - -
 

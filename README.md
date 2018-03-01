@@ -37,7 +37,7 @@ strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
 + 文档  
   如何使用这个工具  
   需要对antlr和blockly了解到什么程度  
-  目标是只看这个项目就能高效的搭一个的blockly  
+  目标是只看antlr-blockly就能高效的搭一个的blockly  
 
 + 优化一些默认值,缺省之类的细节
 
