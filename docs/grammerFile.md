@@ -59,13 +59,104 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 之后是每个方块的帮助信息,颜色,执行的代码的配置,可以在`.g4`中嵌入的编辑,也可以直接在下载的网页文件里编辑.
 
-[demo:AddSubMulDiv](demo.md#AddSubMulDiv) 中分别给出了生成dsl和直接执行的两个版本的实现,要注意直接执行的版本,需要关闭实时检查(实时生成).
+[demo:AddSubMulDiv](demo.md#AddSubMulDiv) 中分别给出了 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现,要注意直接执行的版本,需要关闭实时检查(实时生成).
 
-这里给出其中几个方块的实现以做说明.
+这里给出其中几个方块的函数以做说明.  
+可以在.g4中通过`/* 方块名\n ... */`的形式嵌入代码,antlr-blockly会识别第一个同名的嵌入的注释  
 
-```
+<pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
+prog:   stat+ ;
+/&#42; prog
+var code = '!function(printf){\n'+stat_0+'}(console.log);';
+return code;
+&#42;/
+</pre>
+<pre style="float:left;width:380px;white-space:pre-wrap;">
+prog:   stat+ ;
+/&#42; prog
+override : true
+vars={};
+printf=console.log;
+blocks={};
+Blockly.JavaScript.statementToCode(block, 'stat_0');
+delete(printf);
+//delete(vars);
+//delete(blocks);
+return block.id;
+&#42;/
+</pre>
+<br style="clear:both">
 
-```
+prog 是程序的入口方块,  
+生成code是blockly的原始的思路,只需要像常规方块一样,获取子结构的代码,组装出代码返回.  
+直接执行的话,就需要通过这个方块的函数来初始化.  
+第一行`override : true`是
+
+<pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
+assign : ID '=' expression NEWLINE ;
+/&#42; assign
+default : ["x",null]
+var code = 'var '+ID_0+' = '+expression_0+';\n';
+return code;
+&#42;/
+</pre>
+<pre style="float:left;width:380px;white-space:pre-wrap;">
+assign : ID '=' expression NEWLINE ;
+/&#42; assign
+default : ["x",null]
+vars[ID_0]=blocks[expression_0];
+return block.id;
+&#42;/
+</pre>
+<br style="clear:both">
+
+<pre style="/*float:left;width:380px;white-space:pre-wrap;margin-right:5px*/">
+expression
+    :   expression MulDivAddSub_List expression
+...
+/&#42; expression_arithmetic_0
+override : true
+
+var MulDivAddSub_List_0 = block.getFieldValue('MulDivAddSub_List_0');
+MulDivAddSub_List_0 = AddSubMulDiv_generCodeFunctions.pre('MulDivAddSub_List')(MulDivAddSub_List_0);
+var orders = {
+  '+': Blockly.JavaScript.ORDER_ADDITION,
+  '-': Blockly.JavaScript.ORDER_SUBTRACTION,
+  '&#42;': Blockly.JavaScript.ORDER_MULTIPLICATION,
+  '/': Blockly.JavaScript.ORDER_DIVISION,
+};
+var order = orders[MulDivAddSub_List_0];
+var expression_0 = Blockly.JavaScript.valueToCode(block, 'expression_0', 
+  order);
+if (expression_0==='') {
+  throw new OmitedError(block,'expression_0','expression_arithmetic_0');
+}
+var expression_1 = Blockly.JavaScript.valueToCode(block, 'expression_1', 
+  order);
+if (expression_1==='') {
+  throw new OmitedError(block,'expression_1','expression_arithmetic_0');
+}
+var code = expression_0 + MulDivAddSub_List_0 + expression_1;
+return [code, order];
+&#42;/
+</pre>
+<pre style="/*float:left;width:380px;white-space:pre-wrap;*/">
+expression
+    :   expression MulDivAddSub_List expression
+...
+/&#42; expression_arithmetic_0
+var a = blocks[expression_0], b = blocks[expression_1];
+var function&#95; = {
+  '+': function(a,b){return a+b},
+  '-': function(a,b){return a-b},
+  '&#42;': function(a,b){return a&#42;b},
+  '/': function(a,b){return a/b},
+}[MulDivAddSub_List&#95;0];
+blocks[block.id]=function&#95;(a,b);
+return [block.id, Blockly.JavaScript.ORDER_ATOMIC];
+&#42;/
+</pre>
+<br style="clear:both">
 
 ## 完整的 .g4 规则的描述
 
