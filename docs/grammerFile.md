@@ -1,7 +1,7 @@
 # 语法文件规则
 
 由于blockly的块是确定的,因此把antlr的规则做一些限制后,把语法规则转换成块,把词法规则转化成域.  
-把 [antlr4语法简介](antlr4.md) 中的例子转成antlr-blockly能识别的形式如下  
+把 [antlr4语法简介](antlr4.md) 中的例子转成antlr-blockly能识别的形式如下,[AddSubMulDiv.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4)  
 
 <pre>
 grammar AddSubMulDiv;
@@ -59,9 +59,9 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 之后是每个方块的帮助信息,颜色,执行的代码的配置,可以在`.g4`中嵌入的编辑,也可以直接在下载的网页文件里编辑.
 
-demos中分别给出了直接执行和生成dsl的两个版本的实现,要注意直接执行的版本,需要关闭实时检查.
+[demo:AddSubMulDiv](demo.md#AddSubMulDiv) 中分别给出了生成dsl和直接执行的两个版本的实现,要注意直接执行的版本,需要关闭实时检查(实时生成).
 
-这里给出其中几个方块的实现.
+这里给出其中几个方块的实现以做说明.
 
 ```
 
