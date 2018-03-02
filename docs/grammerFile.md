@@ -90,7 +90,12 @@ return block.id;
 prog 是程序的入口方块,  
 生成code是blockly的原始的思路,只需要像常规方块一样,获取子结构的代码,组装出代码返回.  
 直接执行的话,就需要通过这个方块的函数来初始化.  
-第一行`override : true`是
+第一行`override : true`是嵌入代码时的约定,代表不自动生成获取子结构的代码.  
+此处使用是为了在遍历子结构前声明变量.由于不在一个作用域内,需要使用全局量.推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
+类似的约定还有`colour : 300`,把方块指定为hue颜色.  
+`tooltip : 鼠标悬浮在方块上时的帮助提示`.  
+`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile`右键点击帮助会弹出该页面.  
+`default : [null,"hello",1,true,[["是","true"],["否","false"],["取消","null"]]]`设置方块中域的默认值,`null`代表不改变.域是下拉菜单时,通过二维数字的形式来设置,每一组分别是显示的文字和对应的值.
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 assign : ID '=' expression NEWLINE ;
