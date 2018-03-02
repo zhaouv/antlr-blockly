@@ -53,11 +53,11 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 `stat`作为语句集合的概念, 本身不是方块, 把它的三个选项独立命名作为语句块.  
 
-`expr`改名为`expression`, `expression`作为 antlr-blockly 的关键字, 是唯一允许调用自身的语法规则, 用来作为表达式集合的概念, 其下的规则除了`expression`开头的全部独立命名作为值块.而`expression`开头的算数式会被依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
+`expr`改名为`expression`, `expression`作为 antlr-blockly 的关键字, 是唯一允许调用自身的语法规则, 用来作为表达式集合的概念, 其下的规则除了`expression`开头的全部独立命名作为值块. 而`expression`开头的算数式会被依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
 
 由于优先级处理方式不一样, `MulDivAddSub_List`把四则运算合并成一个下拉菜单, 同时移除`parens`括号组.
 
-至此, 图块间拼接的描述已经完成了.可以将此文件内容粘贴至 [antlr-blockly主页](https://zhaouv.github.io/antlr-blockly/) `Parse`并查看效果或者下载生成的网页文件了.
+至此, 图块间拼接的描述已经完成了. 可以将此文件内容粘贴至 [antlr-blockly主页](https://zhaouv.github.io/antlr-blockly/) `Parse`并查看效果或者下载生成的网页文件了.
 
 ## 方块的配置
 
@@ -67,7 +67,7 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 这里给出其中几个方块的配置以做说明.  
 可以在.g4中通过`/* 方块名\n ... */`的形式嵌入代码, antlr-blockly会识别第一个同名的嵌入的注释, 将其内容置入方块的函数中.  
-涉及到的域或者方块或者集合会以`名字`+`_0`,`_1`..的形式依次命名.  
+涉及到的域或者方块或者集合会以`名字`+`_0`,`_1`.. 的形式依次命名.  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 prog:   stat+ ;
@@ -96,11 +96,11 @@ prog 是程序的入口方块,
 生成code是blockly的原始的思路, 只需要像常规方块一样, 获取子结构的代码, 组装出代码返回.  
 直接执行的话, 就需要通过这个方块的函数来初始化.  
 第一行`override : true`是嵌入代码时的约定, 代表不自动生成获取子结构的代码.  
-此处使用是为了在遍历子结构前声明变量.由于不在一个作用域内, 需要使用全局量.推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
+此处使用是为了在遍历子结构前声明变量. 由于不在一个作用域内, 需要使用全局量. 推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
 类似的约定还有`colour : 300`, 把方块指定为hue颜色.  
 `tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
 `helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile`右键点击帮助会弹出该页面.  
-`default : [null,"hello",1,true,[["是","true"],["否","false"],["取消","null"]]]`设置方块中域的默认值, `null`代表不改变.域是下拉菜单时, 通过二维数组的形式来设置, 每一组分别是显示的文字和对应的值.  
+`default : [null,"hello",1,true,[["是","true"],["否","false"],["取消","null"]]]`设置方块中域的默认值, `null`代表不改变. 域是下拉菜单时, 通过二维数组的形式来设置, 每一组分别是显示的文字和对应的值.  
 > 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
@@ -121,7 +121,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 </pre>
 <br style="clear:both">
 
-直接执行的思路, 用`blocks`储存每个值块返回的值, 用`vars`储存每个变量的值.语句块始终返回id, 直接执行对应内容.值块始终以`Blockly.JavaScript.ORDER_ATOMIC`强度返回id, 把计算的值用id做key存到`blocks`中.
+直接执行的思路, 用`blocks`储存每个值块返回的值, 用`vars`储存每个变量的值. 语句块始终返回id, 直接执行对应内容. 值块始终以`Blockly.JavaScript.ORDER_ATOMIC`强度返回id, 把计算的值用id做key存到`blocks`中.
 
 <pre style="/*float:left;width:380px;white-space:pre-wrap;margin-right:5px*/">
 expression
@@ -223,6 +223,7 @@ return [<span style="font-weight: bold;color:teal">block.id</span>, <span style=
 等效于第一个`parserRuleAtom`一定是`expression`的值块
 
 而`parserRuleAtom`的定义如下
+> 
 ```
 parserRuleAtom
     :   'expression' ('?' '?'?)? # ParserAtomExpr
@@ -236,7 +237,7 @@ parserRuleAtom
 
 定义方块的规则中不能使用`( ) |`.
 
-使用字符串或域或表达式集合或值块时用`?`或者`??`表示可以缺省.不能使用`+ *`.
+使用字符串或域或表达式集合或值块时用`?`或者`??`表示可以缺省. 不能使用`+ *`.
 
 > 值块与语句块没有本质区别, 语句块的`previousStatement`相当于值块的`output`, 语句块的`nextStatement`相当于值块提供了一个`check`为`nextStatement`的`input_statement`, 两者可以这样转换.(进而可以使得一个blockly转化为只含值块的同构)
 
@@ -262,6 +263,49 @@ parserRuleAtom
 
 有意义词法分隔符是固定的形式`MeaningfulSplit : '=== meaningful ^ ===' ;`  
 antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则会被直接丢弃.
+
+语法文件中还可以以`/* 函数名\n ... */`的形式在特定的区域嵌入代码  
+
+> `Function_0,Function_1,Function_2` 会被`Converter`直接执行,`Functions`会被置入生成的代码中.
+
++ `Function_0` 能够以如下的形式修改以下变量  
+```js
+  this.evisitor.valueColor=330;  
+  this.evisitor.statementColor=160;  
+  this.evisitor.entryColor=230;  
+
+  this.evisitor.generLanguage='JavaScript';  
+  this.evisitor.recieveOrder='ORDER_ATOMIC';  
+  this.evisitor.sendOrder='ORDER_NONE';  
+  this.evisitor.varPrefix='';  
+
+  this.toolboxGap=5;  
+  this.toolboxId='toolbox';  
+  this.blocklyDivId='blocklyDiv';  
+  this.workSpaceName='workspace';  
+  this.codeAreaId='codeArea';  
+```  
+最常用到的是`this.evisitor.recieveOrder='ORDER_NONE';`来使得语句接受值时不加括号.
+
++ `Function_1` 修改某个具体方块  
+例如 [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中修改布尔非的`inputsInline`, 以及把方块`idString_1_e`和`idString_2_e`的类型设定为`idString_e`  
+```js
+delete(converter.evisitor.expressionRules.negate_e.blockjs.inputsInline);
+converter.evisitor.expressionRules.idString_1_e.blockjs.output='idString_e';
+converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
+```
+
++ `Function_2` 此处方块的定义已经转化为字符串, 可以通过对字符串`this.blocks`进行`replace`替换, 修改各复杂词法规则的默认值等等.
+
++ `Functions` 此处的代码会置入生成的网页的`语法名Functions={};`之后. 用来嵌入词法规格的转义函数,例如  
+``` js
+  XxxFunctions.IdString_pre = function(IdString){
+    if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');
+    if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - 之外的字符');
+    return IdString;
+  }
+```
+[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中在此处嵌入了代码转图块的Parser.
 
 - - -
 

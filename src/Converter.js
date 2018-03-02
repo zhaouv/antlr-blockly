@@ -84,20 +84,20 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
 
   /* functions[0] : 此处是整体修改
   能够修改以下变量
-  converter.evisitor.valueColor=330;
-  converter.evisitor.statementColor=160;
-  converter.evisitor.entryColor=230;
+  this.evisitor.valueColor=330;
+  this.evisitor.statementColor=160;
+  this.evisitor.entryColor=230;
 
-  converter.evisitor.generLanguage='JavaScript';
-  converter.evisitor.recieveOrder='ORDER_ATOMIC';
-  converter.evisitor.sendOrder='ORDER_NONE';
-  converter.evisitor.varPrefix='';
+  this.evisitor.generLanguage='JavaScript';
+  this.evisitor.recieveOrder='ORDER_ATOMIC';
+  this.evisitor.sendOrder='ORDER_NONE';
+  this.evisitor.varPrefix='';
 
-  converter.toolboxGap=5;
-  converter.toolboxId='toolbox';
-  converter.blocklyDivId='blocklyDiv';
-  converter.workSpaceName='workspace';
-  converter.codeAreaId='codeArea';
+  this.toolboxGap=5;
+  this.toolboxId='toolbox';
+  this.blocklyDivId='blocklyDiv';
+  this.workSpaceName='workspace';
+  this.codeAreaId='codeArea';
    */
   eval(this.evisitor.matchInject('Function_0'));
   if(functions[0])functions[0]();
@@ -183,6 +183,13 @@ Converter.prototype.generMainFile = function(){
   text.push('\n\n');
   text.push(grammerName+'Functions={}\n\n');
   text.push(this.evisitor.matchInject('Functions'));
+  /* Functions : 此处可以嵌入词法规格的转义函数,例如
+  XxxFunctions.IdString_pre = function(IdString){
+    if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');
+    if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - 之外的字符');
+    return IdString;
+  }
+   */
   text.push('\n\n');
   text.push(this.Functions_pre);
   text.push('\n\n');
