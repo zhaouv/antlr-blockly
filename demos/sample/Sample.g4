@@ -25,19 +25,19 @@ setValue
 statExprSplit : '=== statement ^ === expression v ===' ;
 
 expression
-    :   bracket
-    |   bool_not_e
+    :   bool_not_e
     |   expression Arithmetic_1_List expression
     |   expression Arithmetic_2_List expression
     |   expression Arithmetic_3_List expression
-    |   number_e
-    |   bool_e
     |   idString_e
+    |   bool_e
+//  |   bracket
+    |   number_e
     ;
 
-bracket
-    :   '(' expression ')'
-    ;
+// bracket
+//     :   '(' expression ')'
+//     ;
 
 bool_not_e
     :   'not' expression
