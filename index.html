@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>antlr test</title>
+    <title>antlr-blockly</title>
 <!-- css START -->
 <style>
     a {text-decoration:none;color:blue;}
@@ -114,16 +114,19 @@
 
 <input id="input_A" spellcheck="false" type="text" style="width: 100%;height: 1.5em;display:none" placeholder="input_A">
 </input> 
+<h1>antlr-blockly</h1>
+<textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="Paste Your Grammar File Here"></textarea>
 <br/>
+<div style="margin:0;padding:0;position:relative;width:100%">
+<input type="button" value="Parse" onclick="func_Parse()"/>
+<input type="button" value="Run" onclick="func_Run()"/>
+<input type="button" value="Download" onclick="func_Download()"/>
 
-<textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="input_B"></textarea>
-<br/>
-
-<input type="button" value="Parse" onclick="func_Parse()" />
-
-<input type="button" value="Run" onclick="func_Run()" />
-
-<input type="button" value="Download" onclick="func_Download()"   />
+<span style="margin:0;padding:0;position:absolute;right:0;">
+<input type="button" value="docs" onclick="window.location='/docs/#/README'"/>
+<input type="button" value="view on Github" onclick="window.location='https://github.com/zhaouv/antlr-blockly/'"/>
+</span>
+</div>
 <br/>
 
 <pre id='printf_target'><span class="weakresult">result</span></pre>
@@ -143,7 +146,7 @@ input_B = document.getElementById('input_B');
 
     
 (function(){    
-document.getElementsByClassName('middletop')[0].style.marginTop=~~(innerHeight/10)+'px';
+document.getElementsByClassName('middletop')[0].style.marginTop=~~(innerHeight/20)+'px';
 printf = function(str,weak) {
     var node=document.createElement('span');
     if (weak){

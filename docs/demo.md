@@ -5,7 +5,7 @@
 ## AddSubMulDiv  
 非常简单的**四则运算**+**变量赋值**+**打印**的例子  
 [目录demos/addSubMulDiv](https://github.com/zhaouv/antlr-blockly/tree/master/demos/addSubMulDiv) 中给出了 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4) 以及 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现.  
-**运行**:[[纯规则]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4), [[生成cod]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4) ,[[直接执行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4)
+**运行**:[[纯规则]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4), [[生成code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4) ,[[直接执行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4)
 
 ## Sample
 更复杂的算数运算的例子 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/sample/Sample.g4). [[运行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/sample/Sample.g4)
