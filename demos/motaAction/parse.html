@@ -6,6 +6,7 @@
 </head><body>
 
 <p>
+<a href="https://github.com/ckcz123/mota-js">mota-js</a>事件编辑器独立运行版本(未绑定多行文本编辑器)
 <button onclick="editor_blockly.showXML()">Show XML</button>
 <button onclick="editor_blockly.runCode()">console.log(obj=code)</button>
 <select id="entryType">
@@ -300,7 +301,7 @@ var xhr=new XMLHttpRequest();
 xhr.onreadystatechange = function (){
     if(xhr.readyState!=4) return;
     if(xhr.status!=200) {
-        alert("无法在file://下加载");
+        alert("语法文件加载失败(无法在file://下加载)");
         return;
     }
     input_=xhr.responseText;
@@ -353,7 +354,7 @@ editor_blockly.doubleClickBlock = function (blockId){
     var f=b?textStringDict[b.type]:null;
     if(f){
         var value = b.getFieldValue(f);
-        console.log('未绑定多行编辑,需实现下一行的函数');
+        console.log('未绑定多行文本编辑器');//需实现下一行的函数
         //func(value,function(newvalue,b,f){b.setFieldValue(newvalue,f);})
     }
 }

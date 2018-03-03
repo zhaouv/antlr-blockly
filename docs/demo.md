@@ -4,14 +4,14 @@
 
 ## AddSubMulDiv  
 非常简单的**四则运算**+**变量赋值**+**打印**的例子  
-[目录demos/addSubMulDiv](https://github.com/zhaouv/antlr-blockly/tree/master/demos/addSubMulDiv) 中给出了 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4) 以及 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现,  
-复制到主页中`Parse` `Run`可以运行.
+[目录demos/addSubMulDiv](https://github.com/zhaouv/antlr-blockly/tree/master/demos/addSubMulDiv) 中给出了 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4) 以及 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现.  
+**运行**:[[纯规则]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4), [[生成cod]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4) ,[[直接执行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4)
 
 ## Sample
-更复杂的算数运算的例子 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/sample/Sample.g4)
+更复杂的算数运算的例子 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/sample/Sample.g4). [[运行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/sample/Sample.g4)
 
 ## MotaAction
-[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 一个较复杂的实际应用, [mota-js](https://github.com/ckcz123/mota-js) 的组件, 依照其 [文档](https://ckcz123.github.io/mota-js/#/event) 为其事件配置了图形化编辑器.  
+[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 一个较复杂的实际应用, [mota-js](https://github.com/ckcz123/mota-js) 的组件, 依照其 [文档](https://ckcz123.github.io/mota-js/#/event) 为其事件配置了图形化编辑器. [[运行]](https://zhaouv.github.io/antlr-blockly/demos/motaAction/parse.html)  
 这里复制出一些其中值得注意的用法.  
 
 + **按类别统一设置颜色**  

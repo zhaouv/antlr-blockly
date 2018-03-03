@@ -232,7 +232,7 @@ Converter = require('./src/Converter').Converter;
 
 
 <script>
-function runOne(){
+function runOne(callback){
     var grammerFile = input_B.value;
     
     converter = new Converter().init();
@@ -248,18 +248,37 @@ function runOne(){
 
     console.log(converter);
 
+    if(callback)callback();
+
 }
+function getSearch(){
+    var s = location.search;
+    var sm = {};
+    if(s){
+        s.slice(1).split('&').forEach(function(v){
+            var v=v.split('=');
+            sm[decodeURIComponent(v[0]||'')]=decodeURIComponent(v[1]||'');
+        });
+        //return sm;
+    }
+    //return null;
+    return sm;
+}
+var getSearch = getSearch();//<a href="/?run=true&grammarFile">xxx</a>
+var grammarFile = getSearch.grammarFile || './demos/addSubMulDiv/AddSubMulDiv_generCode.g4';
 var xhr=new XMLHttpRequest();
 xhr.onreadystatechange = function (){
     if(xhr.readyState!=4) return;
     if(xhr.status!=200) {
-        alert("无法在file://下加载,请手动粘贴语法文件并点Parse");
+        alert("语法文件加载失败,请手动粘贴语法文件并点Parse");
         return;
     }
     input_B.value=xhr.responseText;
-    runOne();
+    var cb = null;
+    if(getSearch.run==='true')cb=func_Run;
+    runOne(cb);
 }
-xhr.open('GET','./demos/motaAction/MotaAction.g4',true);
+xhr.open('GET',grammarFile,true);
 xhr.send(null);
 
 </script>
