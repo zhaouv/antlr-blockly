@@ -2,13 +2,11 @@
 
 用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
 
-~~[文档](https://zhaouv.github.io/antlr-blockly/docs/#/README) (尚未完成)~~
+[文档(docsify)](https://zhaouv.github.io/antlr-blockly/docs/#/README)
 
 转化思路 [convert.md](./convert.md)
 
 作为示例MotaAction.g4给项目 [mota-js](https://github.com/ckcz123/mota-js) 提供事件编辑器子模块
-
-motaAction以及blockly运行机制的简单介绍 [talk.md](./talk.md)
 
 [LICENSE](./NOTICE.md)
 
@@ -34,14 +32,20 @@ strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
 
 + 表达式支持expression之外的集合,(只有expression允许左递归)
 
-+ 文档  
++ [x] 文档  
   如何使用这个工具  
   需要对antlr和blockly了解到什么程度  
   目标是只看antlr-blockly就能高效的搭一个的blockly  
 
-+ 优化一些默认值,缺省之类的细节
++ 文档:blockly在网页上如何配置,如何设置侧边栏  
+
++ [x] 主页支持search参数直接加载和运行demos中的.g4文件
+
++ [x] 优化一些默认值,缺省之类的细节
 
 + 多语言的支持
+
++ 注释,每处做了什么的说明
 
 
 
