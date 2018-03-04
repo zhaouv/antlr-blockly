@@ -1,9 +1,9 @@
-# 语法文件规则
+# Grammar file rules
 
-## 语法文件
+## grammar file
 
-由于blockly的块是确定的, 因此把antlr的规则做一些限制后, 把语法规则转换成块, 把词法规则转化成域.  
-把 [antlr4语法简介](antlr4.md) 中的例子转成antlr-blockly能识别的形式如下, [AddSubMulDiv.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4)  
+Since blockly blocks are deterministic, after restricting antlr's rules, the syntax rules are converted into blocks and the lexical rules into fields.
+Converting the example from [antlr4 syntax introduction](en/antlr4.md) to antlr-blockly recognizes the following form, [AddSubMulDiv.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4)  
 
 <pre>
 grammar AddSubMulDiv;
@@ -44,30 +44,30 @@ NEWLINE:'\r'? '\n' ;
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
 </pre>
 
-首先是添加两个记号:
-+ `statExprSplit : '=== statement ^ === expression v ===' ;`  
-用来分隔blockly的语句块和值块  
-+ `MeaningfulSplit : '=== meaningful ^ ===' ;`  
-用来分隔有意义的词法规则和不显示的词法规则  
-`NEWLINE`不需要显示或是让用户输入, 放到分隔符下面
+The first is to add two tokens:
++ `statExprSplit: '=== statement ^ === expression v ===';`
+Used to separate blockly statement blocks and value blocks
++ `MeaningfulSplit: '=== meaningful ^ ===';`
+Used to separate meaningful lexical rules and non-displayed lexical rules  
+`NEWLINE` does not need to be displayed or allowed to type by the user and placed below the delimiter
 
-`stat`作为语句集合的概念, 本身不是方块, 把它的三个选项独立命名作为语句块.  
+The concept of `stat` as a collection of statements is not itself a block, but its three options are named independently as statement blocks.
 
-`expr`改名为`expression`, `expression`作为 antlr-blockly 的关键字, 是唯一允许调用自身的语法规则, 用来作为表达式集合的概念, 其下的规则除了`expression`开头的全部独立命名作为值块. 而`expression`开头的算数式会被依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
+`expr` is renamed to `expression`. `expression` is a keyword  of antlr-blockly that is the only grammar rule that allows itself to be invoked as a concept of a collection of expressions, with the following rules in addition to the full independence of the `expression` The name is given as a value block, and the arithmetical expressions at the beginning of expression are automatically named as `expression_arithmetic_0`,`..._1`,`..._2`.
 
-由于优先级处理方式不一样, `MulDivAddSub_List`把四则运算合并成一个下拉菜单, 同时移除`parens`括号组.
+Because the priority is handled differently, `MulDivAddSub_List` merges the four operations into one pull-down menu, removing the `parens` brackets group.
 
-至此, 图块间拼接的描述已经完成了. 可以在antlr-blockly主页中[[运行此文件]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4) 查看效果或者下载生成的网页文件.
+At this point, the description of the splicing between tiles has been completed. Can be in the antlr-blockly home page [[run this file]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4) View the effect or download the generated web page file.
 
-## 方块的配置
+## block configuration
 
-之后是每个方块的帮助信息,颜色,执行的代码的配置, 可以在`.g4`中嵌入的编辑, 也可以直接在下载的网页文件里编辑.
+Following is the help information for each block, the color, the configuration of the executed code, the edits that can be embedded in the `.g4`, or you can edit directly in the downloaded web page file.
 
-[demo:AddSubMulDiv](demo.md#AddSubMulDiv) 中分别给出了 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现, 要注意直接执行的版本, 需要关闭实时检查(实时生成). (运行: [[生成code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4), [[直接执行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4) )
+[demo:AddSubMulDiv](demo.md#AddSubMulDiv) gives two versions of [Generate code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) and [Direct execution](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) respectively, pay attention to the Direct execution version, you need to turn off real-time checking (real-time running). (Run: [[Generate code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4), [[Direct execution]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4))
 
-这里给出其中几个方块的配置以做说明.  
-可以在.g4中通过`/* 方块名\n ... */`的形式嵌入代码, antlr-blockly会识别第一个同名的嵌入的注释, 将其内容置入方块的函数中.  
-涉及到的域或者方块或者集合会以`名字`+`_0`,`_1`.. 的形式依次命名.  
+Here are some of the configuration of several blocks to illustrate.  
+You can embed code in .g4 as `/* blockName\n ... */`, and antlr-blockly will recognize the first embedded comment of the same name and place its contents in a square function.
+The fields or squares or blocks involved are named in the order of `name`+`_0`,`_1`..
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 prog:   stat+ ;
@@ -92,16 +92,16 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 </pre>
 <br style="clear:both">
 
-`prog` 是程序的入口方块,  
-生成code是blockly的原始的思路, 只需要像常规方块一样, 获取子结构的代码, 组装出代码返回.  
-直接执行的话, 就需要通过这个方块的函数来初始化.  
-第一行`override : true`是嵌入代码时的约定, 代表不自动生成获取子结构的代码.  
-此处使用是为了在遍历子结构前声明变量. 由于不在一个作用域内, 需要使用全局量. 推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
-类似的约定还有`colour : 300`, 把方块指定为hue颜色.  
-`tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
-`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile`右键点击帮助会弹出该页面.  
-`default : [null,"hello",1,true,[["是","true"],["否","false"],["取消","null"]]]`设置方块中域的默认值, `null`代表不改变. 域是下拉菜单时, 通过二维数组的形式来设置, 每一组分别是显示的文字和对应的值.  
-> 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
+`prog` is the entry block of the program,  
+Generate code is the original idea of ​​blockly, just need to get the substructure code like the regular block, assemble the code back.  
+Direct execution, you need to initialize this function through the block.  
+The first line, `override: true`, is the convention at embed code that does not automatically generate the code to get the substructure.  
+This is used here to declare variables before traversing substructures. Since globals are not in scope, it is recommended to use the form `MulDivAddSub = {vars: {}, blocks: {}, printf: console.log};` .  
+A similar convention is `color: 300`, which specifies the block as a hue color.  
+`tooltip: Help hint when the mouse is over the block`.  
+`helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile` right click on the help will pop up the page.  
+`default:[null,"hello",1,true,[["yes","true"],["no","false"],["cancel","null"]]` The default value of the field, `null` represents does not change. Domain is the drop-down menu, through the two-dimensional array to set the form, each group is displayed text and the corresponding value.  
+> It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 assign : ID '=' expression NEWLINE ;
@@ -121,7 +121,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 </pre>
 <br style="clear:both">
 
-直接执行的思路, 用`blocks`储存每个值块返回的值, 用`vars`储存每个变量的值. 语句块始终返回id, 直接执行对应内容. 值块始终以`Blockly.JavaScript.ORDER_ATOMIC`强度返回id, 把计算的值用id做key存到`blocks`中.
+The idea of Direct execution using `blocks` to store the value returned by each value block, `vars` to store the value of each variable. The statement block always returns the id, direct implementation of the corresponding. The value block is always `Blockly.JavaScript.ORDER_ATOMIC` Strength return id, the calculated value id key stored in the `blocks`.
 
 <pre style="/*float:left;width:380px;white-space:pre-wrap;margin-right:5px*/">
 expression
@@ -171,17 +171,17 @@ return [<span style="font-weight: bold;color:teal">block.id</span>, <span style=
 </pre>
 <br style="clear:both">
 
-四则运算的方块是生成code的思路中最复杂的方块, 由于需要根据运算符来决定取方块的优先级, 需要`override : true`来手动写取方块的代码.  
-建议先Parse生成出代码, 再粘贴出来改成`override : true`.  
-首先把获取符号`MulDivAddSub_List_0`的部分调整到最前面, 然后根据符号来获取优先级, 把`valueToCode`中的默认的优先级改成作用在接受的值块上的优先级, 在最后一行中把返回的优先级改成值块自身的优先级.  
-大多数情况这两个优先级相等, 但是例如javascript的指数运算`Math.pow(a,b)`, 作用在接受值块上的优先级是`Blockly.JavaScript.ORDER_COMMA`, 其自身的优先级是`Blockly.JavaScript.ORDER_FUNCTION_CALL`.  
-返回的code的产生非常容易, 把三个字符串直接加起来`var code = expression_0 + MulDivAddSub_List_0 + expression_1;`.  
+The arithmetic block is the most complicated block in the idea of ​​Generating code. Because operators need to determine the priority of a block, you need to `override: true` to manually write the block's code.  
+It is recommended that `Parse` generate the code and paste it out, then add `override: true`.  
+First of all, the part of the symbol `MulDivAddSub_List_0` is adjusted to be the first one, then the symbol is used to get the priority, the default priority of `valueToCode` is changed to the priority of the value block accepted, the last line The returned priority is changed to the value block's own priority.  
+In most cases, these two priorities are equal, but for example, `Math.pow (a, b)`, which is an exponential operation of javascript, takes precedence over `Blockly.JavaScript.ORDER_COMMA`, which has its own priority is `Blockly.JavaScript.ORDER_FUNCTION_CALL`.  
+The return of the code is very easy to generate, the three strings directly add `var code = expression_0 + MulDivAddSub_List_0 + expression_1;`.
 
-而直接执行的思路不需要考虑优先级, 根据符号直接运算出结果即可.
+The idea of ​​Direct execution does not need to consider the priority, the direct calculation of the results based on symbols.
 
-## 完整的 .g4 规则的描述
+## Description of the complete .g4 rules
 
-用语法规则来描述语句块和值块以及语句集合和表达式集合, 用词法规则来描述域
+Grammar rules to describe the statement block and value block and the statement set and expression set, using the lexical rules to describe the field
 
 ### 域的转化规则
 

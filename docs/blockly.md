@@ -71,13 +71,13 @@ a+b*2
   "output": "intExpr"
 }
 ```
-> 这个json是模仿官方提供的[blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) 产生的`Block Definition: JSON`, 在antlr-blockly实际产生的代码中, 会把重复出现的`["printExpr","assign","blank"]`替换为`AddSubMulDivBlocks.stat`, 以及`["expression_arithmetic_0","idExpr","intExpr"]`替换为`AddSubMulDivBlocks.expression`.  
+> 这个json是模仿官方提供的 [blockfactory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) 产生的`Block Definition: JSON`, 在antlr-blockly实际产生的代码中, 会把重复出现的`["printExpr","assign","blank"]`替换为`AddSubMulDivBlocks.stat`, 以及`["expression_arithmetic_0","idExpr","intExpr"]`替换为`AddSubMulDivBlocks.expression`.  
 
 blockly方块有`value`和`statement`两种, 通过是否包含`output`项来区分, 这里分别称之为**`值块`**和**`语句块`**  
 语句块是否包含`previousStatement`和`nextStatement`, 决定了其是否能在上下方向和其他语句块拼接,  
 也意味着没有`previousStatement`的语句块, 就是程序的入口.  
 
-图块的内容由`message0`决定, 其中的`1`开始的` %n `形式的内容由`args0`的第`n-1`项决定:  
+图块的内容由`message0`决定, 其中的`1`开始的 `%n` 形式的内容由`args0`的第`n-1`项决定:  
 + `field_`开头的代表用户的直接输入, 也就是语法树的叶节点, 随后会详细说明  
 + `input_dummy`代表换行,  
 + `input_statement`代表嵌入的是语句块, 通过`check`检查第一个块的类型,  
