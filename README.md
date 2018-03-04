@@ -1,8 +1,10 @@
 # antlr-blockly
 
-用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)
+用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly)  
+Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 to [blockly](https://github.com/google/blockly)
 
-[文档(docsify)](https://zhaouv.github.io/antlr-blockly/docs/#/README)
+[文档(docsify 中文)](https://zhaouv.github.io/antlr-blockly/docs/#/README)  
+[Document(docsify English)](https://zhaouv.github.io/antlr-blockly/docs/#/en/README)
 
 转化思路 [convert.md](./convert.md)
 

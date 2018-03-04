@@ -114,7 +114,8 @@ return [/*0*/`<!doctype html>
 <script src="blockly_compressed.js"></script>
 <script src="blocks_compressed.js"></script>
 <script src="javascript_compressed.js"></script>
-<script src="zh-hans.js"></script>`,/*2*/`
+<script src="zh-hans.js"></script>
+<!-- <script src="en.js"></script> -->`,/*2*/`
 </head>
 <body>`,/*3*/`
 

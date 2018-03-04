@@ -5,7 +5,7 @@
 [blockly](https://github.com/google/blockly) is a visual program editor that you can program by dragging and dropping blocks.
 
 Configure each block mosaic logic and write the `generated code function`, you can generate a language code, or to generate javascript code and then directly on the page execution, is often used for programming education .  
-In fact, blockly as a code editor for domain-specific languages ​​or new programming languages ​​is also quite advantageous. [Domain Specific Languages](https://en.wikipedia.org/wiki/Domain-specific_language): dsl, Can be understood as a certain format, can be some tools to resolve pseudo-code, such as regular expressions and embedded SQL)
+In fact, blockly as a code editor for domain-specific languages ​​or new programming languages ​​is also quite advantageous. [Domain Specific Languages](https://en.wikipedia.org/wiki/Domain-specific_language): dsl, can be understood as a certain format pseudo-code, can be resolved by some tools, such as regular expression and embedded SQL)
 
 Each box independently configured, you need to select the type of each input, give each input naming, the process is more complicated.  
 The drag-and-drop process of the user essentially bypasses the process of editing the code by directly editing the Abstract Syntax Tree (ast), generating the code via ast, or executing ast directly (See details in [blockly running mechanism](blockly.md))
