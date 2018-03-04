@@ -1,20 +1,20 @@
 # demo
 
-> 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
+> It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 
 ## AddSubMulDiv  
-非常简单的**四则运算**+**变量赋值**+**打印**的例子  
-[目录demos/addSubMulDiv](https://github.com/zhaouv/antlr-blockly/tree/master/demos/addSubMulDiv) 中给出了 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4) 以及 [生成code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) 和 [直接执行](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) 的两个版本的实现.  
-**运行**:[[纯规则]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4), [[生成code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4) ,[[直接执行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4)
+Very simple **AddSubMulDiv arithmetic**+**variable assignment**+**print** example  
+[Directory demos/addSubMulDiv](https://github.com/zhaouv/antlr-blockly/tree/master/demos/addSubMulDiv) provides [Pure rules](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv.g4) and two implementations [Generating code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) and [Direct execution](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4).  
+**Run**:[[Pure rules]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv.g4), [[Generating code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4) ,[[Direct execution]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4)
 
 ## Sample
-更复杂的算数运算的例子 [纯规则](https://github.com/zhaouv/antlr-blockly/blob/master/demos/sample/Sample.g4). [[运行]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/sample/Sample.g4)
+Examples of more complex arithmetic operations [Pure rules](https://github.com/zhaouv/antlr-blockly/blob/master/demos/sample/Sample.g4). [[Run]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/sample/Sample.g4)
 
 ## MotaAction
-[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 一个较复杂的实际应用, [mota-js](https://github.com/ckcz123/mota-js) 的组件, 依照其 [文档](https://ckcz123.github.io/mota-js/#/event) 为其事件配置了图形化编辑器. [[运行]](https://zhaouv.github.io/antlr-blockly/demos/motaAction/parse.html)  
-这里复制出一些其中值得注意的用法.  
+[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) A more complicated practical application, a component of [mota-js](https://github.com/ckcz123/mota-js) , The graphical editor configured for its events according to [Document](https://ckcz123.github.io/mota-js/#/event). [[Run]](https://zhaouv.github.io/antlr-blockly/demos/motaAction/parse.html)  
+Here are some of the notes worth noting.  
 
-+ **按类别统一设置颜色**  
++ **Set the color by category**  
 
 <pre>
 playSound_s
@@ -44,7 +44,7 @@ converter.evisitor.soundColor=20;
 */
 </pre>
 
-+ **修改布尔非的`inputsInline`, 以及把方块`idString_1_e`和`idString_2_e`的类型设定为`idString_e`**
++ **Modify Boolean Not's `inputsInline` and set the type of block `idString_1_e` and block `idString_2_e` to `idString_e`**
 
 <pre>
 /* Function_1
@@ -54,9 +54,9 @@ converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
 */
 </pre>
 
-+ **Code转图块的实现**
++ **The realization of converting code to block**
 
-其中`_next`,`this.insertActionList`的使用, 以及`MotaActionFunctions.parse`的写法值得注意.
+The use of `_next`, `this.insertActionList`, and the realization of `MotaActionFunctions.parse` are noteworthy.
 
 ``` js
 function ActionParser(){
@@ -217,8 +217,8 @@ MotaActionFunctions.parse = function(obj,type) {
 
 - - -
 
-- [Start Page](README.md)  
-- [antlr4语法简介](antlr4.md)  
-- [blockly运行机制简介](blockly.md)  
-- [语法文件规则](grammerFile.md)  
+- [Start Page](en/README.md)  
+- [antlr4 syntax introduction](en/antlr4.md)
+- [blockly running mechanism](en/blockly.md)
+- [grammar file rules](en/grammerFile.md)
 - **demo**

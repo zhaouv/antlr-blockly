@@ -1,6 +1,6 @@
 # antlr-blockly documentation
 
-**To ensure the performance, use the docsify version: [antlr-blockly documentation (docsify)] (https://zhaouv.github.io/antlr-blockly/docs/#/en/README)**
+**To ensure the performance, use the docsify version: [antlr-blockly documentation (docsify)](https://zhaouv.github.io/antlr-blockly/docs/#/en/README)**
 
 [blockly](https://github.com/google/blockly) is a visual program editor that you can program by dragging and dropping blocks.
 

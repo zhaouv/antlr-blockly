@@ -2,7 +2,7 @@ grammar AddSubMulDiv_generCode;
 
 prog:   stat+ ; 
 /* prog
-var code = '!function(printf){\n'+stat_0+'}(console.log);';
+var code = '(function(printf){\n'+stat_0+'})(console.log);';
 return code;
 */
 

@@ -51,9 +51,9 @@ Used to separate blockly statement blocks and value blocks
 Used to separate meaningful lexical rules and non-displayed lexical rules  
 `NEWLINE` does not need to be displayed or allowed to type by the user and placed below the delimiter
 
-The concept of `stat` as a collection of statements is not itself a block, but its three options are named independently as statement blocks.
+The concept of `stat` as a set of statements is not itself a block, but its three options are named independently as statement blocks.
 
-`expr` is renamed to `expression`. `expression` is a keyword  of antlr-blockly that is the only grammar rule that allows itself to be invoked as a concept of a collection of expressions, with the following rules in addition to the full independence of the `expression` The name is given as a value block, and the arithmetical expressions at the beginning of expression are automatically named as `expression_arithmetic_0`,`..._1`,`..._2`.
+`expr` is renamed to `expression`. `expression` is a keyword  of antlr-blockly that is the only grammar rule that allows itself to be invoked as a concept of a set of expressions, with the following rules in addition to the full independence of the `expression` The name is given as a value block, and the arithmetical expressions at the beginning of expression are automatically named as `expression_arithmetic_0`,`..._1`,`..._2`.
 
 Because the priority is handled differently, `MulDivAddSub_List` merges the four operations into one pull-down menu, removing the `parens` brackets group.
 
@@ -66,8 +66,8 @@ Following is the help information for each block, the color, the configuration o
 [demo:AddSubMulDiv](demo.md#AddSubMulDiv) gives two versions of [Generate code](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_generCode.g4) and [Direct execution](https://github.com/zhaouv/antlr-blockly/blob/master/demos/addSubMulDiv/AddSubMulDiv_exec.g4) respectively, pay attention to the Direct execution version, you need to turn off real-time checking (real-time running). (Run: [[Generate code]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_generCode.g4), [[Direct execution]](https://zhaouv.github.io/antlr-blockly/?run=true&grammarFile=./demos/addSubMulDiv/AddSubMulDiv_exec.g4))
 
 Here are some of the configuration of several blocks to illustrate.  
-You can embed code in .g4 as `/* blockName\n ... */`, and antlr-blockly will recognize the first embedded comment of the same name and place its contents in a square function.
-The fields or squares or blocks involved are named in the order of `name`+`_0`,`_1`..
+You can embed code in .g4 as `/* blockName\n ... */`, and antlr-blockly will recognize the first embedded comment of the same name and place its contents in a block's function.
+The fields or blocks or sets involved are named in the order of `name`+`_0`,`_1`..
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 prog:   stat+ ;
@@ -183,46 +183,46 @@ The idea of ​​Direct execution does not need to consider the priority, the d
 
 Grammar rules to describe the statement block and value block and the statement set and expression set, using the lexical rules to describe the field
 
-### 域的转化规则
+### field conversion rules
 
-域的定义形如`Xxx : .... ;`大写开头域名加冒号开头分号结尾, antlr-blockly会检查其是否满足特殊域的要求:
-+ `BGNL?`可以使得blockly块在该处换行
-+ `Int`对应正整数
-+ `Number`对应数(科学计数法会被直接计算后替代原字符)
-+ `Bool`对应checkbox(有对勾或无对勾的布尔值)
-+ 以`_List`结尾, 且只由字符串和`|`组成的field对应下拉菜单
-+ 字符串或字符串`?`, 或由纯字符串和`?`构成的词法规则会被直接置入方块中显示
+The definition of the domain such as `Xxx: ....;` capitalized at the beginning of the domain name with a semicolon at the end, antlr-blockly will check whether it meets the requirements of special fields:  
++ `BGNL?` Can cause the blockly block to wrap around there
++ `Int` corresponds to a non-negative integer
++ `Number` correspondence (scientific counting method will be calculated directly to replace the original character)
++ `Bool` corresponds to the checkbox (boolean with or without checkmark)
++ The field that ends with `_List` and that consists of only the string and `|` corresponds to the pull-down menu
++ String or string `?`, Or lexical rules consisting of pure strings and `?` Will be displayed directly in the block
 
-其他的域会被转化成文本输入, 规则名`Xxx`的默认值为`Xxx_default`
+Other fields will be converted to text input. The default for the rule name `Xxx` is` Xxx_default`
 
-### 语句集合和表达式集合
+### statement set and expression set
 
-语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名, 不允许有多余的符号.  
+The statement set such as `xxx: xxx | xxx | xxx;` Each `xxx` is the name of the statement block at the beginning of a different lowercase, do not allow extra symbols.
 
-> 在 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 中定义如下  
-> `ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)+ ';'`  
+> Definition in [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4)
+> `ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier) ​​+ ';'`
 
-用来在拼接时指代一类语句, 本身不作为方块.  
-一个语句只能最多属于一个语句集合, 语句集合不能包含语句集合, 语句集合和其元素不视为[入口方块](#入口方块)
+Used to refer to a type of statement in the stitching, itself not as a block.  
+A statement can only belong to a set of statements at most, a statement set can not contain a statement set, a statement set and its elements are not considered [entry block](#entry-block)
 
-`expression`是antlr-blockly中的关键字用来定义唯一的表达式集合.
+`expression` is a keyword in antlr-blockly used to define a unique set of expressions.
 
 > `'expression' ':' (arithmeticRuleCollection|ParserIdentifier) ('|' (arithmeticRuleCollection|ParserIdentifier))* ';'`
 
-是由`|`分隔的若干个小写开头的值块的名或者是算术式, 用来指代表达式这个概念, 本身不是方块.  
-其中的算数式会按照出现顺序, 依次自动命名为`expression_arithmetic_0`,`..._1`,`..._2`.
+Is the number of lowercase first-entered value blocks separated by `|`, or arithmetical expressions used to refer to the notion of an expression, which is not itself a block.  
+The arithmetic expressions are automatically named as `expression_arithmetic_0`,`..._1`,`..._2` in order of appearance.
 
-### 语句块值块和算数式
+### Value block statement block and arithmetic expression
 
-语句块和值块的定义均是如下的形式
-> `ParserIdentifier ':' parserRuleAtom* ';'`
+The definition of the statement block and the value block are as follows
+> `ParserIdentifier ':' parserRuleAtom * ';'`
 
-算数式的定义如下
+The definition of arithmetic is as follows
 > `'expression' parserRuleAtom*`
 
-等效于第一个`parserRuleAtom`一定是`expression`的值块
+Equivalent to the first `parserRuleAtom` must be a `expression` value block
 
-而`parserRuleAtom`的定义如下
+The definition of `parserRuleAtom` is as follows
 > 
 ```
 parserRuleAtom
@@ -233,42 +233,42 @@ parserRuleAtom
     ;
 ```
 
-对应着每个方块由字符,域,嵌入语句块或语句集合的针脚,嵌入值块或表达式集合的针脚组合而成.
+Corresponding to each block combined by the string, field, pins of embedded statement blocks or statement sets, pins of embedded value block or expression set.
 
-定义方块的规则中不能使用`( ) |`.
+You can not use `() |` in a rule that defines a block.
 
-使用字符串或域或表达式集合或值块时用`?`或者`??`表示可以缺省. 不能使用`+ *`.
+Using a string or field or expression set or value block with `?` or `??` to represent a default. Can not use `+ *`.
 
-> 值块与语句块没有本质区别, 语句块的`previousStatement`相当于值块的`output`, 语句块的`nextStatement`相当于值块提供了一个`check`为`nextStatement`的`input_statement`, 两者可以这样转换.(进而可以使得一个blockly转化为只含值块的同构)
+> There is no essential difference between a value block and a statement block. The `previousStatement` of the block is equivalent to the `output` of the value block. The `nextStatement` of the block is equivalent to the value block providing an `input_statement` of `nextStatement`, The two can be transformed in this way (which in turn allows a blockly transformation to a isomorphism involving only value blocks)
 
-方块可以通过约定形式的注释来嵌入其执行的函数, [方块的配置](#方块的配置) 中已有说明, 不再重复.
+Blocks can be embedded into the functions they execute using the conventions of the comments, which are explained in [block configuration](#block-configuration) and will not be repeated.
 
-### 入口方块
+### entry block
 
-一个语句块没被任何语法规则使用过时, 会被识别为入口方块, 其上下会封闭起来, 无法连接任何方块.
+A statement block is not used by any grammar rules outdated, will be identified as the entry block, the upper and lower will be closed up, can not connect to any block.
 
-> 在antlr-blockly的默认设置下, 悬空的图块不会被执行.
+> In the antlr-blockly default setting, dangling blocks are not executed.
 
-### 语法文件
+### grammar file
 
-一个完整的antlr-blockly识别的语法文件, 由`语法声明,语句块集合,语句块和值块分隔符,值块集合,词法集合,有意义词法分隔符,词法集合`构成.  
-> `grammerDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection`
+A complete antlr-blockly recognized grammar file consists of `grammar declaration, statement blocks collection, statement block and value block delimiter, value block collection, lexer rule collection, meaningful lexer rule delimiter, lexer rule collection`.  
+> `grammerDecl statementRule *? statExprSplit expressionRule *? lexerRuleCollection meaningfulSplit lexerRuleCollection`
 
-语法声明是第一句, 具有`grammar Xxx ;`的形式, 表明这个语法的名字是`Xxx`
+The grammar declaration is the first statement, in the form `grammar Xxx;`, indicating that the name of this grammar is `Xxx`
 
-语句块和值块分隔符是固定的形式  
-`statExprSplit : '=== statement ^ === expression v ===' ;`  
-之上的是blockly的语句集合或是语句块.  
-之下的是表达式集合`expression`或者是值块.
+The statement block and value block delimiter is fixed form
+`statExprSplit: '=== statement ^ === expression v ===';`  
+Above is the blocky statement set or statement block.  
+Under the expression set is the expression or value block.  
 
-有意义词法分隔符是固定的形式`MeaningfulSplit : '=== meaningful ^ ===' ;`  
-antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则会被直接丢弃.
+Meaningful lexer rule delimiter is fixed form  `MeaningfulSplit: '=== meaningful ^ ===';`  
+antlr-blockly recognizes only the lexer rules above it as a field, the lexer rules under it are discarded directly.
 
-语法文件中还可以以`/* 函数名\n ... */`的形式在特定的区域嵌入代码  
+Grammar files can also be embedded in a specific area as `/* functionName\n ... */`
 
-> `Function_0,Function_1,Function_2` 会被`Converter`直接执行,`Functions`会被置入生成的代码中.
+> `Function_0,Function_1,Function_2` will be directly executed by `Converter`, and `Functions` will be put into the generated code.
 
-+ `Function_0` 能够以如下的形式修改以下变量  
++ `Function_0` can modify the following variables in the following way  
 ```js
   this.evisitor.valueColor=330;  
   this.evisitor.statementColor=160;  
@@ -285,32 +285,32 @@ antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则�
   this.workSpaceName='workspace';  
   this.codeAreaId='codeArea';  
 ```  
-最常用到的是`this.evisitor.recieveOrder='ORDER_NONE';`来使得语句接受值时不加括号.
+The most commonly used is `this.evisitor.recieveOrder = 'ORDER_NONE';` to make statements accept values without parentheses.
 
-+ `Function_1` 修改某个具体方块  
-例如 [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中修改布尔非的`inputsInline`, 以及把方块`idString_1_e`和`idString_2_e`的类型设定为`idString_e`  
++ `Function_1` to modify a specific block  
+For example, in [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4), modify Boolean Not's `inputsInline` and set the type of block `idString_1_e` and block `idString_2_e` to `idString_e`  
 ```js
 delete(converter.evisitor.expressionRules.negate_e.blockjs.inputsInline);
 converter.evisitor.expressionRules.idString_1_e.blockjs.output='idString_e';
 converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
 ```
 
-+ `Function_2` 此处方块的定义已经转化为字符串, 可以通过对字符串`this.blocks`进行`replace`替换, 修改各复杂词法规则的默认值等等.
++ `Function_2` The definition of the blocks here has been converted to a string. You can replace the string `this.blocks` by `replace`, change the default values for each of the complex lexer rules, and so on.
 
-+ `Functions` 此处的代码会置入生成的网页的`语法名Functions={};`之后. 用来嵌入词法规格的转义函数,例如  
++ `Functions` The code here will be placed after the `'GrammarName'Functions = {};` of the generated web page. The escape function used to embed the lexical specification, for example  
 ``` js
   XxxFunctions.IdString_pre = function(IdString){
-    if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');
-    if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - 之外的字符');
+    if (IdString.indexOf('__temp_name__')!==-1) throw new Error('Please change __temp_name__');
+    if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+' contains characters other than 0-9 a-z A-Z _ -');
     return IdString;
   }
 ```
-[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中在此处嵌入了代码转图块的Parser.
+[MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) here embedded Parser transforms the code into blocks.
 
 - - -
 
-- [Start Page](README.md)  
-- [antlr4语法简介](antlr4.md)  
-- [blockly运行机制简介](blockly.md)  
-- **语法文件规则**  
-- [demo](demo.md)  
+- [Start Page](en/README.md)  
+- [antlr4 syntax introduction](en/antlr4.md)
+- [blockly running mechanism](en/blockly.md)
+- **grammar file rules**
+- [demo](en/demo.md)
