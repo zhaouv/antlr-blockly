@@ -152,6 +152,102 @@ Blockly.JavaScript['intExpr'] = function(block) {
   > 如果不从语法树生成代码, 而是直接执行, 是不需要考虑优先级的.
 + `statementToCode`没有提供改变调用顺序的接口, 接收的多个语句块只能由其内部机制按照从上到下的顺序遍历.
 
+## 部署到网页
+
+以 [主页生成的网页](https://zhaouv.github.io/antlr-blockly/) 为例, (点开后主页会解析默认的demo把HTML显示文本域在下面)  
+首先导入相关脚本  
+``` html
+<script src="blockly_compressed.js"></script>
+<script src="blocks_compressed.js"></script>
+<script src="javascript_compressed.js"></script>
+<script src="zh-hans.js"></script>
+<!-- <script src="en.js"></script> -->
+```
+blockly通过注入div布局,同时会通过id获取一个xml作为左侧的工具箱
+``` html
+<div id="blocklyDiv" style="height: 480px; width: 940px;"></div>
+<xml id="toolbox" style="display:none">
+  <category name="statement">
+    <block type="prog">
+      <statement name="stat_0">
+        <shadow type="blank"></shadow>
+      </statement>
+    </block>
+    <sep gap="5"></sep>
+    <block type="printExpr">
+      <value name="expression_0">
+        <shadow type="intExpr"></shadow>
+      </value>
+    </block>
+    ...
+  </category>
+  <sep gap="15"></sep>
+  <category name="value">
+    <block type="expression_arithmetic_0">
+      <value name="expression_0">
+        <shadow type="intExpr"></shadow>
+      </value>
+      <value name="expression_1">
+        <shadow type="intExpr"></shadow>
+      </value>
+    </block>
+    ...
+  </category>
+</xml>
+```
+注册各方块的json和执行的函数
+``` js
+Blockly.Blocks[blockName] = {
+  init: function() {this.jsonInit(blockJson);}
+};
+Blockly.JavaScript[blockName] = blockGenerFunc;
+```
+最后调用`inject`生成工作区完成部署
+``` js
+var workspace = Blockly.inject('blocklyDiv',{
+  media: 'media/',
+  toolbox: document.getElementById('toolbox'),
+  zoom:{
+    controls: true,
+    wheel: true,
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.08
+  },
+  trashcan: false,
+});
+```
+如果需要能跟随网页调整大小 ( Copyed from [Blockly Documentation](https://developers.google.com/blockly/guides/configure/web/resizable))  
+修改`blocklyDiv`如第一段(`blocklyDiv`的`parent`是`body`),并在`workspace`定义后插入第二段,能够使得blockly的工作区跟随`blocklyArea`来调整位置大小.
+``` html
+<div id="blocklyArea"></div>
+
+...
+<div id="blocklyDiv" style="position: absolute"></div>
+```
+``` js
+var blocklyArea = document.getElementById('blocklyArea');
+var onresize = function(e) {
+  // Compute the absolute coordinates and dimensions of blocklyArea.
+  var element = blocklyArea;
+  var x = 0;
+  var y = 0;
+  do {
+    x += element.offsetLeft;
+    y += element.offsetTop;
+    element = element.offsetParent;
+  } while (element);
+  // Position blocklyDiv over blocklyArea.
+  blocklyDiv.style.left = x + 'px';
+  blocklyDiv.style.top = y + 'px';
+  blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+  blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+};
+window.addEventListener('resize', onresize, false);
+onresize();
+Blockly.svgResize(workspace);
+```
 
 - - -
 

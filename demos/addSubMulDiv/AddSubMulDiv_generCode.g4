@@ -88,5 +88,5 @@ NEWLINE:'\r'? '\n' ;
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 /* Function_0
-converter.evisitor.recieveOrder='ORDER_NONE';
+this.evisitor.recieveOrder='ORDER_NONE';
 */

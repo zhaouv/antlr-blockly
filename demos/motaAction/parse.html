@@ -44,8 +44,8 @@ Converter = require('../../src/Converter').Converter;
 <script src="../../javascript_compressed.js"></script>
 <script src="../../zh-hans.js"></script>
 <script>
-//__all__=['editor_blockly','MotaActionBlocks','MotaActionFunctions','ActionParser','converter','antlr4','BlocklyGrammerVisitor','BlocklyGrammerLexer','BlocklyGrammerParser','Visitors','SymbolVisitor','EvalVisitor','tpl','Converter'];
-editor_blockly = function(){
+//__all__=['editor_blockly','MotaActionBlocks','MotaActionFunctions','ActionParser','converter','antlr4','Converter'];
+editor_blockly = function(Converter){
 editor_blockly = {};
 editor_blockly.initscript=String.raw`
 (function(){
@@ -283,10 +283,10 @@ editor_blockly.runOne = function (){
     var printf = console.log;
     var grammerFile = input_;
     converter = new Converter().init();
-    converter.generBlocks(grammerFile,[]);
+    converter.generBlocks(grammerFile);
     printf(converter.blocks);
     converter.renderGrammerName();
-    converter.generToolbox();
+    //converter.generToolbox();
     converter.generMainFile();
     printf(converter.mainFile.join(''));
     console.log(converter);
@@ -356,13 +356,13 @@ editor_blockly.doubleClickBlock = function (blockId){
     if(f){
         var value = b.getFieldValue(f);
         console.log('未绑定多行文本编辑器');//需实现下一行的函数
-        //func(value,function(newvalue,b,f){b.setFieldValue(newvalue,f);})
+        //func(value,b,f,function(newvalue,b,f){b.setFieldValue(newvalue,f);})
     }
 }
 
 return editor_blockly;
 }
-editor_blockly=editor_blockly();
+editor_blockly=editor_blockly(Converter);
 </script>
 </body>
 </html>

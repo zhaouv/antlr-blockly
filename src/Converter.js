@@ -8,7 +8,7 @@
  * 
  * converter = new Converter();
  * converter.main(grammerFile,[function(){
- *   converter.evisitor.statementColor=230;
+ *   this.evisitor.statementColor=230;
  * }]);
  * 
  * ---
@@ -20,16 +20,16 @@
  */
 
 antlr4 = require('./antlr4/index');
-BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').
+var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').
   BlocklyGrammerVisitor;
-BlocklyGrammerLexer = require('./BlocklyGrammerLexer').BlocklyGrammerLexer;
-BlocklyGrammerParser = require('./BlocklyGrammerParser').BlocklyGrammerParser;
-Visitors = require('./Visitors');
-SymbolVisitor=Visitors.SymbolVisitor;
-EvalVisitor=Visitors.EvalVisitor;
-tpl = require('./tpl');
+var BlocklyGrammerLexer = require('./BlocklyGrammerLexer').BlocklyGrammerLexer;
+var BlocklyGrammerParser = require('./BlocklyGrammerParser').BlocklyGrammerParser;
+var Visitors = require('./Visitors');
+var SymbolVisitor=Visitors.SymbolVisitor;
+var EvalVisitor=Visitors.EvalVisitor;
+var tpl = require('./tpl');
 
-//__all__=['converter','Converter','antlr4','BlocklyGrammerVisitor','BlocklyGrammerLexer','BlocklyGrammerParser','Visitors','SymbolVisitor','EvalVisitor','tpl'];
+//__all__=['converter','Converter','antlr4'];
 
 function Converter() {
   return this;
@@ -100,24 +100,24 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   this.codeAreaId='codeArea';
    */
   eval(this.evisitor.matchInject('Function_0'));
-  if(functions[0])functions[0]();
+  if(functions[0])functions[0].call(this);
 
   evisitor.visit(tree);
   /* functions[1] : 此处修改各个具体方块
    */
   eval(this.evisitor.matchInject('Function_1'));
-  if(functions[1])functions[1]();
+  if(functions[1])functions[1].call(this);
 
   evisitor.generBlocks();
   console.log(evisitor);
   this.blocks = evisitor.blocks;
   
   /* functions[2] : 此处是整体修改
-  可以通过对converter.blocks进行replace替换,
+  可以通过对this.blocks进行replace替换,
   修改各复杂词法规则的默认值
    */
   eval(this.evisitor.matchInject('Function_2'));
-  if(functions[2])functions[2]();
+  if(functions[2])functions[2].call(this);
   return this;
 }
 
@@ -125,8 +125,6 @@ Converter.prototype.renderGrammerName = function() {
   this.grammerName = this.svisitor.grammerName;
   this.generLanguage = this.evisitor.generLanguage;//在generBlocks中可修改
 
-  eval(this.grammerName+'Functions={};');
-  
   var grammerName = this.grammerName;
   var generLanguage = this.generLanguage;
 
@@ -137,9 +135,11 @@ Converter.prototype.renderGrammerName = function() {
     tpl.Functions_blocksIniter(grammerName,generLanguage);
 
   this.mainFileTPL = tpl.mainFileTPL;
+  return this;
 }
 
 Converter.prototype.generToolbox = function() {
+  eval(this.grammerName+'Functions={};');
   eval(this.Functions_xmlText);
   eval(this.blocks);
   eval('var blocksobj = '+this.grammerName+'Blocks;');
