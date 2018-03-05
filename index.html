@@ -54,8 +54,8 @@
 </style></head><body><pre id="mobilecss" style="display: none;">
     textarea,input[type=button],#result,input[type=text],select {font-size:3em}
 
-    .left {width: 1%;}
-    .middle {width: 98%;}
+    .left {display: none;}
+    .middle {width: 100%;}
     .right {display: none;}
 
     .middletop {display: none;}
@@ -171,6 +171,7 @@ var loadlib=[false];
 function func_Run(){
     var left = document.getElementsByClassName('left')[0];
     left.style.width='100%';
+    left.style.display='block';
     left.style.backgroundColor = 'white';
     left.innerHTML = converter.mainFile[3];
     var loadjs = function(src,callback){
