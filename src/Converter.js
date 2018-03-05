@@ -183,7 +183,8 @@ Converter.prototype.generMainFile = function(){
   text.push('\n\n');
   text.push(grammerName+'Functions={}\n\n');
   text.push(this.evisitor.matchInject('Functions'));
-  /* Functions : 此处可以嵌入词法规格的转义函数,例如
+  /* Functions
+  // 此处可以嵌入词法规则的转义函数,例如
   XxxFunctions.IdString_pre = function(IdString){
     if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');
     if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - 之外的字符');
@@ -212,7 +213,9 @@ Converter.prototype.writeMainFile = function(filename) {
   this.createAndDownloadFile(this.mainFile.join(''), filename, 'html');
 }
 
-Converter.prototype.editBlock = function(blockname) {
+///////////////////////////////////////////////////////////////////////////////
+
+Converter.prototype.block = function(blockname) {
   var obj = this.evisitor.expressionRules[blockname];
   if(!obj) obj = this.evisitor.statementRules[blockname];
   if(!obj || obj.checklength===1)return null;

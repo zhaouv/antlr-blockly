@@ -30,17 +30,17 @@ return code;
 */
 <span style="font-weight: bold;color:teal">...</span>
 /* Function_0
-//converter.evisitor.recieveOrder='ORDER_NONE';
-converter.evisitor.valueColor=330;
-converter.evisitor.statementColor=70;
-converter.evisitor.entryColor=250;
+//this.evisitor.recieveOrder='ORDER_NONE';
+this.evisitor.valueColor=330;
+this.evisitor.statementColor=70;
+this.evisitor.entryColor=250;
 
-converter.evisitor.idstring_eColor=310;
-<span style="font-weight: bold;color:navy">converter.evisitor.subColor=190;</span>
-converter.evisitor.printColor=70;
-converter.evisitor.dataColor=130;
-converter.evisitor.eventColor=220;
-converter.evisitor.soundColor=20;
+this.evisitor.idstring_eColor=310;
+<span style="font-weight: bold;color:navy">this.evisitor.subColor=190;</span>
+this.evisitor.printColor=70;
+this.evisitor.dataColor=130;
+this.evisitor.eventColor=220;
+this.evisitor.soundColor=20;
 */
 </pre>
 
@@ -48,9 +48,9 @@ converter.evisitor.soundColor=20;
 
 <pre>
 /* Function_1
-delete(converter.evisitor.expressionRules.negate_e.blockjs.inputsInline);
-converter.evisitor.expressionRules.idString_1_e.blockjs.output='idString_e';
-converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
+delete(this.block('negate_e').inputsInline);
+this.block('idString_1_e').output='idString_e';
+this.block('idString_2_e').output='idString_e';
 */
 </pre>
 

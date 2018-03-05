@@ -290,9 +290,9 @@ The most commonly used is `this.evisitor.recieveOrder = 'ORDER_NONE';` to make s
 + `Function_1` to modify a specific block  
 For example, in [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4), modify Boolean Not's `inputsInline` and set the type of block `idString_1_e` and block `idString_2_e` to `idString_e`  
 ```js
-delete(converter.evisitor.expressionRules.negate_e.blockjs.inputsInline);
-converter.evisitor.expressionRules.idString_1_e.blockjs.output='idString_e';
-converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
+delete(this.block('negate_e').inputsInline);
+this.block('idString_1_e').output='idString_e';
+this.block('idString_2_e').output='idString_e';
 ```
 
 + `Function_2` The definition of the blocks here has been converted to a string. You can replace the string `this.blocks` by `replace`, change the default values for each of the complex lexer rules, and so on.

@@ -290,9 +290,9 @@ antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则�
 + `Function_1` 修改某个具体方块  
 例如 [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中修改布尔非的`inputsInline`, 以及把方块`idString_1_e`和`idString_2_e`的类型设定为`idString_e`  
 ```js
-delete(converter.evisitor.expressionRules.negate_e.blockjs.inputsInline);
-converter.evisitor.expressionRules.idString_1_e.blockjs.output='idString_e';
-converter.evisitor.expressionRules.idString_2_e.blockjs.output='idString_e';
+delete(this.block('negate_e').inputsInline);
+this.block('idString_1_e').output='idString_e';
+this.block('idString_2_e').output='idString_e';
 ```
 
 + `Function_2` 此处方块的定义已经转化为字符串, 可以通过对字符串`this.blocks`进行`replace`替换, 修改各复杂词法规则的默认值等等.
