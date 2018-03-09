@@ -39,6 +39,8 @@ strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
   需要对antlr和blockly了解到什么程度  
   目标是只看antlr-blockly就能高效的搭一个的blockly  
 
++ 文档:api说明
+
 + [x] 文档:blockly在网页上如何配置,如何设置侧边栏  
 
 + [x] 主页支持search参数直接加载和运行demos中的.g4文件
@@ -49,6 +51,6 @@ strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
 
 + 注释,每处做了什么的说明
 
-+ 不使用反引号的字符串模板以提高兼容性
++ 不使用反引号的字符串模板以提高兼容性,借助`Function.prototype.toString()`实现多行字符串
 
-+ 更多demo
++ 更多demo,提供一个包含`function`的例子
