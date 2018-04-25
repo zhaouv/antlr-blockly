@@ -106,7 +106,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 assign : ID '=' expression NEWLINE ;
 /&#42; assign
-<span style="font-weight: bold;color:navy">default : ["x",null]</span>
+<span style="font-weight: bold;color:navy">default : ["x"]</span>
 var code = 'var '+ID_0+' = '+expression_0+';\n';
 return code;
 &#42;/
@@ -114,7 +114,7 @@ return code;
 <pre style="float:left;width:380px;white-space:pre-wrap;">
 assign : ID '=' expression NEWLINE ;
 /&#42; assign
-<span style="font-weight: bold;color:navy">default : ["x",null]</span>
+<span style="font-weight: bold;color:navy">default : ["x"]</span>
 <span style="font-weight: bold;color:teal">vars[ID_0]=blocks[expression_0];</span>
 return <span style="font-weight: bold;color:teal">block.id</span>;
 &#42;/

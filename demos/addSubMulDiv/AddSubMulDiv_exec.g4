@@ -25,7 +25,7 @@ return block.id;
 */
 assign : ID '=' expression NEWLINE ;
 /* assign
-default : ["x",null]
+default : ["x"]
 vars[ID_0]=blocks[expression_0];
 return block.id;
 */

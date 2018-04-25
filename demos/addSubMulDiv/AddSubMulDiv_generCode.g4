@@ -18,7 +18,7 @@ return code;
 */
 assign : ID '=' expression NEWLINE ;
 /* assign
-default : ["x",null]
+default : ["x"]
 var code = 'var '+ID_0+' = '+expression_0+';\n';
 return code;
 */
