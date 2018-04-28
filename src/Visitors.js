@@ -734,9 +734,12 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
   }
   //以'_List'结尾的'|'分隔的纯字符串,作为下拉菜单
   var strings = ctx.strings();
+  var values = this.matchInject(lexerId);
+  if(values)values=eval(values);
+  else values=[];
   for(var ii=0,value;value=strings[ii];ii++){
     var string_ = this.visit(value);
-    strings[ii] = [string_,string_];
+    strings[ii] = [string_,values[ii]||string_];
   }
   var lexervalue = {
     'type':'field_dropdown',

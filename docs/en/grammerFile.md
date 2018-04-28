@@ -190,7 +190,8 @@ The definition of the domain such as `Xxx: ....;` capitalized at the beginning o
 + `Int` corresponds to a non-negative integer
 + `Number` correspondence (scientific counting method will be calculated directly to replace the original character)
 + `Bool` corresponds to the checkbox (boolean with or without checkmark)
-+ The field that ends with `_List` and that consists of only the string and `|` corresponds to the pull-down menu
++ The field that ends with `_List` and that consists of only the string and `|` corresponds to the pull-down menu, you can modify the string in the corresponding code by embedding, such as  
+`AddSub_List: '+'|'-' /*AddSub_List ['add','sub']*/;`
 + String or string `?`, Or lexical rules consisting of pure strings and `?` Will be displayed directly in the block
 
 Other fields will be converted to text input. The default for the rule name `Xxx` is` Xxx_default`
