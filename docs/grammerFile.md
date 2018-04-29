@@ -100,7 +100,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 类似的约定还有`colour : 300`, 把方块指定为hue颜色.  
 `tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
 `helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile`右键点击帮助会弹出该页面.  
-`default : [null,"hello",1,true,[["是","true"],["否","false"],["取消","null"]]]`设置方块中域的默认值, `null`代表不改变. 域是下拉菜单时, 通过二维数组的形式来设置, 每一组分别是显示的文字和对应的值.  
+`default : [null,"hello",1,true,null]`设置方块中域的默认值, `null`代表不改变.  
 > 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">

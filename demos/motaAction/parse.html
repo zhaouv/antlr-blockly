@@ -74,7 +74,7 @@ editor_blockly.initscript=String.raw`
           {"type": "setValue", "name": "status:hp", "value": "status:hp+\${200*point}"},
         ]},
       ]},'point'),
-      MotaActionFunctions.actionParser.parse({
+      MotaActionFunctions.actionParser.parse([{
         "id": "moneyShop1",
         "name": "贪婪之神", 
         "icon": "blueShop",
@@ -88,7 +88,7 @@ editor_blockly.initscript=String.raw`
           {"text": "防御+4", "effect": "status:def+=4"},
           {"text": "魔防+10", "effect": "status:mdef+=10"}
         ]
-      },'shop'),
+      }],'shop'),
       MotaActionBlocks['afterBattle_m'].xmlText(),
       MotaActionBlocks['afterGetItem_m'].xmlText(),
       MotaActionBlocks['afterOpenDoor_m'].xmlText(),
@@ -107,7 +107,11 @@ editor_blockly.initscript=String.raw`
       ]}),
       MotaActionBlocks['setText_s'].xmlText(),
       MotaActionBlocks['showImage_0_s'].xmlText(),
+      MotaActionBlocks['animateImage_0_s'].xmlText(),
+      MotaActionBlocks['animateImage_1_s'].xmlText(),
       MotaActionBlocks['showImage_1_s'].xmlText(),
+      MotaActionBlocks['showGif_0_s'].xmlText(),
+      MotaActionBlocks['showGif_1_s'].xmlText(),
       MotaActionBlocks['tip_s'].xmlText(),
       MotaActionBlocks['openShop_s'].xmlText(),
       MotaActionBlocks['win_s'].xmlText(),
@@ -131,6 +135,7 @@ editor_blockly.initscript=String.raw`
       MotaActionBlocks['battle_s'].xmlText(),
       MotaActionBlocks['openDoor_s'].xmlText(),
       MotaActionBlocks['setBlock_s'].xmlText(),
+      MotaActionBlocks['setHeroIcon_s'].xmlText(),
       '<label text="事件控制"></label>',
       MotaActionBlocks['if_s'].xmlText(),
       MotaActionBlocks['revisit_s'].xmlText(),
@@ -171,6 +176,32 @@ editor_blockly.initscript=String.raw`
         ],
         "false": []
       }),
+      '<label text="商店购买属性/钥匙"></label>',
+      MotaActionFunctions.actionParser.parse([
+        {"type": "choices", "text": "\t[老人,man]少年，你需要钥匙吗？\n我这里有大把的！",
+        "choices": [
+            {"text": "黄钥匙（\${9+flag:shop_times}金币）", "action": [
+                {"type": "if", "condition": "status:money>=9+flag:shop_times",
+                    "true": [
+                        {"type": "setValue", "name": "status:money", "value": "status:money-(9+flag:shop_times)"},
+                        {"type": "setValue", "name": "item:yellowKey", "value": "item:yellowKey+1"},
+                    ],
+                    "false": [
+                        "\t[老人,man]你的金钱不足！",
+                        {"type": "revisit"}
+                    ]
+                }
+            ]},
+            {"text": "蓝钥匙（\${18+2*flag:shop_times}金币）", "action": [
+            ]},
+            {"text": "离开", "action": [
+                {"type": "exit"}
+            ]}
+        ]
+    },
+    {"type": "setValue", "name": "flag:shop_times", "value": "flag:shop_times+1"},
+    {"type": "revisit"}
+      ], 'event'),  
       '<label text="战前剧情"></label>',
       MotaActionFunctions.actionParser.parse({ 
         "trigger": "action", 
@@ -351,6 +382,7 @@ editor_blockly.doubleClickBlock = function (blockId){
         'autoText_s':'EvalString_2',
         'choices_s':'EvalString_0',
         'function_s':'RawEvalString_0',
+        'shopsub': 'EvalString_3',
     }
     var f=b?textStringDict[b.type]:null;
     if(f){

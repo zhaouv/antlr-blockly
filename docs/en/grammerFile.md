@@ -100,7 +100,7 @@ This is used here to declare variables before traversing substructures. Since gl
 A similar convention is `color: 300`, which specifies the block as a hue color.  
 `tooltip: Help hint when the mouse is over the block`.  
 `helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile` right click on the help will pop up the page.  
-`default:[null,"hello",1,true,[["yes","true"],["no","false"],["cancel","null"]]` The default value of the field, `null` represents does not change. Domain is the drop-down menu, through the two-dimensional array to set the form, each group is displayed text and the corresponding value.  
+`default:[null,"hello",1,true,null]` The default value of the field, `null` represents does not change.  
 > It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">

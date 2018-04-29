@@ -20,7 +20,7 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 + [x] 支持嵌入的方式直接修改下拉菜单的对应值
 
-+ [ ] 修改下拉菜单在default中的行为(会使得与之前的.g4不兼容)
++ [x] 修改下拉菜单在default中的行为,使之更自然(与之前的.g4不兼容)
 
 + [x] 形如`xxx ??`,`xxx +?`,`xxx *?`的支持 (更像是fix bug)  
 strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式

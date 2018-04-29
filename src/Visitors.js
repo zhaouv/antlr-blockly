@@ -268,11 +268,14 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         })[args_.type];
         default_ = obj.inject.default[fieldNum_];
         if (default_===undefined)default_=null;
-        if (default_!==null){
-          args_[key]=default_;
+        if (key==='options'){
+          if (default_==null)default_=args_[key][0][1];
+        } else {
+          if (default_!==null){
+            args_[key]=default_;
+          }
+          default_=args_[key];
         }
-        default_=args_[key];
-        if (key==='options')default_=args_[key][0][1];
         fieldNum_++;
       }
     }
@@ -739,7 +742,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
   else values=[];
   for(var ii=0,value;value=strings[ii];ii++){
     var string_ = this.visit(value);
-    strings[ii] = [string_,values[ii]||string_];
+    strings[ii] = [string_,values[ii]==null?string_:values[ii]];
   }
   var lexervalue = {
     'type':'field_dropdown',
