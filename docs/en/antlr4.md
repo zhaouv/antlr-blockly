@@ -46,12 +46,12 @@ a + b * 2
 ![Please read docsify version. parse_tree] (./img/expr_parse_tree.png)
 
 + > `expr` in the order of priority: Multiplication and division at the same level greater than the addition and subtraction of this level,`Atomic` need not participate in the priority on the last, and bracket group due to parentheses match, itself is Atomic level Intensity  
-+ > antlr-blockly uses a subset of the syntax rules for antlr4, which is a weak version that works in antlr4, using the antlr-blockly unrecognized `.g4` file for more advanced features. This section [Grammar Document rules](en/grammerFile.md) in detail.
++ > antlr-blockly uses a subset of the syntax rules for antlr4, which is a weak version that works in antlr4, using the antlr-blockly unrecognized `.g4` file for more advanced features. This section [Grammar Document rules](en/grammerfile.md) in detail.
 
 - - -
 
 - [Start Page](en/README.md)
 - **antlr4 syntax introduction**
 - [blockly operation mechanism](en/blockly.md)
-- [grammar file rules](en/grammerFile.md)
+- [grammar file rules](en/grammerfile.md)
 - [demo](en/demo.md)

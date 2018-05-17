@@ -220,5 +220,5 @@ MotaActionFunctions.parse = function(obj,type) {
 - [Start Page](en/README.md)  
 - [antlr4 syntax introduction](en/antlr4.md)
 - [blockly running mechanism](en/blockly.md)
-- [grammar file rules](en/grammerFile.md)
+- [grammar file rules](en/grammerfile.md)
 - **demo**

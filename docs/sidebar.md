@@ -1,7 +1,7 @@
 - [Start Page](README.md)  
 - [antlr4语法简介](antlr4.md)  
 - [blockly运行机制简介](blockly.md)  
-- [语法文件规则](grammerFile.md)  
+- [语法文件规则](grammerfile.md)  
 - [demo](demo.md)  
 
 <hr style="border: none;border-bottom: 1px solid #eee;margin:-6px 15px">

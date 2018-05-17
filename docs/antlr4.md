@@ -46,12 +46,12 @@ a+b*2
 ![parse_tree](./img/expr_parse_tree.png)  
 
 + > `expr`的优先级的中的排序的解释:乘除同级大于加减这一级, `Atomic`无需参与优先级放在最后, 而括号组由于括号匹配, 本身是`Atomic`级的强度  
-+ > antlr-blockly使用的是antlr4的语法规则的一个子集, 也就是放到antlr4中能够工作的弱化版, 用到了更高级特性的`.g4`文件antlr-blockly无法识别, 这部分 [语法文件规则](grammerFile.md) 中有详细说明.  
++ > antlr-blockly使用的是antlr4的语法规则的一个子集, 也就是放到antlr4中能够工作的弱化版, 用到了更高级特性的`.g4`文件antlr-blockly无法识别, 这部分 [语法文件规则](grammerfile.md) 中有详细说明.  
 
 - - -
 
 - [Start Page](README.md)  
 - **antlr4语法简介**  
 - [blockly运行机制简介](blockly.md)  
-- [语法文件规则](grammerFile.md)  
+- [语法文件规则](grammerfile.md)  
 - [demo](demo.md)  
