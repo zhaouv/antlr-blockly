@@ -99,7 +99,7 @@ The first line, `override: true`, is the convention at embed code that does not 
 This is used here to declare variables before traversing substructures. Since globals are not in scope, it is recommended to use the form `MulDivAddSub = {vars: {}, blocks: {}, printf: console.log};` .  
 A similar convention is `color: 300`, which specifies the block as a hue color.  
 `tooltip: Help hint when the mouse is over the block`.  
-`helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile` right click on the help will pop up the page.  
+`helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile` right click on the help will pop up the page.  
 `default:[null,"hello",1,true,null]` The default value of the field, `null` represents does not change.  
 > It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 

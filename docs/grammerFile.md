@@ -99,7 +99,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 此处使用是为了在遍历子结构前声明变量. 由于不在一个作用域内, 需要使用全局量. 推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
 类似的约定还有`colour : 300`, 把方块指定为hue颜色.  
 `tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
-`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerFile`右键点击帮助会弹出该页面.  
+`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile`右键点击帮助会弹出该页面.  
 `default : [null,"hello",1,true,null]`设置方块中域的默认值, `null`代表不改变.  
 > 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
 
