@@ -266,7 +266,8 @@ EvalVisitor.prototype.initAssemble = function(obj) {
           'field_dropdown':'options',
           'field_checkbox':'checked',
           'field_colour':'colour',
-          'field_angle':'angle'
+          'field_angle':'angle',
+          'field_image':'src'
         })[args_.type];
         default_ = obj.inject.default[fieldNum_];
         if (default_===undefined)default_=null;
@@ -392,7 +393,8 @@ EvalVisitor.prototype.assemble = function() {
         'field_dropdown':true,
         'field_number':true,
         'field_colour':true,
-        'field_angle':true
+        'field_angle':true,
+        'field_image':true
       }
       if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
@@ -469,7 +471,8 @@ EvalVisitor.prototype.assemble = function() {
         'field_dropdown':true,
         'field_number':true,
         'field_colour':true,
-        'field_angle':true
+        'field_angle':true,
+        'field_image':true
       }
       if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
@@ -753,11 +756,10 @@ EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
 EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
   var lexerId = ctx.LexerIdentifier(0).getText();
   if (this.SpeicalLexerRule(lexerId)) return;
-  if (lexerId.slice(-5)!=='_List') {
+  if (lexerId.slice(-5)!=='_List' && lexerId.slice(-4)!=='_Img') {
     this.visitLexerRuleComplex(ctx);
     return;
   }
-  //以'_List'结尾的'|'分隔的纯字符串,作为下拉菜单
   var strings = ctx.strings();
   var values = this.matchInject(lexerId);
   if(values)values=eval(values);
@@ -766,10 +768,23 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     var string_ = this.visit(value);
     strings[ii] = [string_,values[ii]==null?string_:values[ii]];
   }
-  var lexervalue = {
-    'type':'field_dropdown',
-    'options':strings
+  if (lexerId.slice(-5)==='_List'){
+    //以'_List'结尾的'|'分隔的纯字符串,作为下拉菜单
+    var lexervalue = {
+      'type':'field_dropdown',
+      'options':strings
+    }
+  } else {
+    //以'_Img'结尾的'|'分隔的纯字符串,作为图片
+    var lexervalue = {
+      'type':'field_image',
+      'src': strings[0][0],
+      'width': strings[1]&&strings[1][0]||0,
+      'height': strings[2]&&strings[2][0]||0,
+      'alt': '*'//alt不生效,换别的字符也没用
+    }
   }
+  
   this.setRule('lexer',lexerId,lexervalue);
 };
 
