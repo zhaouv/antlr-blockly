@@ -264,7 +264,9 @@ EvalVisitor.prototype.initAssemble = function(obj) {
           'field_input':'text',
           'field_number':'value',
           'field_dropdown':'options',
-          'field_checkbox':'checked'
+          'field_checkbox':'checked',
+          'field_colour':'colour',
+          'field_angle':'angle'
         })[args_.type];
         default_ = obj.inject.default[fieldNum_];
         if (default_===undefined)default_=null;
@@ -388,7 +390,9 @@ EvalVisitor.prototype.assemble = function() {
       var nextvar = {//不需要考虑省略
         'field_checkbox':true,
         'field_dropdown':true,
-        'field_number':true
+        'field_number':true,
+        'field_colour':true,
+        'field_angle':true
       }
       if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
@@ -463,7 +467,9 @@ EvalVisitor.prototype.assemble = function() {
       var nextvar = {//不需要考虑省略
         'field_checkbox':true,
         'field_dropdown':true,
-        'field_number':true
+        'field_number':true,
+        'field_colour':true,
+        'field_angle':true
       }
       if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
         text.push(pre+'if ('+var_+"==='') {\n");
@@ -685,6 +691,22 @@ EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
     lexervalue = {
       'type': 'field_number',
       'value': 0,
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  if (lexerId==='Colour') {
+    lexervalue = {
+      'type': 'field_colour',
+      'colour': '#ff0000',
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return true;
+  }
+  if (lexerId==='Angle') {
+    lexervalue = {
+      'type': 'field_angle',
+      'angle': 90,
     }
     this.setRule('lexer',lexerId,lexervalue);
     return true;

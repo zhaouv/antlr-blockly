@@ -76,8 +76,12 @@ fragment不会被显示
 + Bool => `checkbox`
 + Int => `precision`为1`min`为0的`numeric imput`
 + Number => `numeric imput`
++ Colour => 颜色域
++ Angle => 角度域
 + BGNL => 块中使文本换行,使用时在规则中填`BGNL?`(Lexer中设定成一个长字符串或者复杂语法规则,如`BGNL : 'aiyuviaurgfuabvar' ;`)
 + 以`_List`结尾的LexerRule => `dropdown`
++ 以`_Img`结尾的LexerRule => 图片
+
 
 ```
 目前的Int和Number对于antlr有bug,满足Int筛选的值无法被标记为Number,需要手动在antlr实现里改tokens类别,但是这样便于blockly中的使用
