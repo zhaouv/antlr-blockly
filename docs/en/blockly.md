@@ -100,7 +100,9 @@ There are several fields at the beginning of `field_`:
 + `field_number` number <img src="./img/field_number_demo.png" alt="Please read docsify version. field_number" style="position:relative;top:8px;">, set the default value via `value`, Set the maximum value, you can set the minimum value by `min`, precision can be set by ` precision`, and the input value that is out of bounds or illegitimate is automatically classified as the closest legal value or the last value.
 + `field_checkbox` boolean <img src="./img/field_checkbox_demo.png" alt="Please read docsify version. field_checkbox" style="position:relative;top:8px;">, set the default value with `checked`.
 + `field_dropdown` drop down menu <img src="./img/field_dropdown_demo.png" alt="Please read docsify version. field_dropdown" style="position:relative;top:8px;">, set options like `[["option1","a"],["option2","b"],["option_3","c"]]` are set via `options` and each group displays the first As a string, the second value, the first selected by the first group.  
-+ > blockly also supports the angle, the color as input, conventional dsl these two inputs is not very significant, you need to modify the generated blockly program, or in `.g4` with embedded functions to modify.
++ `field_colour` color, set its CSS value by `colour`
++ `field_angle` angle, set value between 0~360 by `angle`
++ `field_image` image, set the source by`src`, set width and height by `width,height` (can not be omitted)
 
 ## function executed by the block
 
@@ -218,7 +220,7 @@ var workspace = Blockly.inject('blocklyDiv',{
   trashcan: false,
 });
 ```
-If it needs to be able to adjust the size following the page ( Copyed from [Blockly Documentation](https://developers.google.com/blockly/guides/configure/web/resizable))  
+If it needs to be able to **adjust the size following the page** ( Copyed from [Blockly Documentation](https://developers.google.com/blockly/guides/configure/web/resizable))  
 Modify `blocklyDiv` such as the first paragraph (`parent` of `blocklyDiv` is `body`), and insert second segments after `workspace` definition, which enables blockly workspace to follow `blocklyArea` to adjust the location and size.
 ``` html
 <div id="blocklyArea"></div>
@@ -249,6 +251,45 @@ onresize();
 Blockly.svgResize(workspace);
 ```
 
+**change the behavior of mouse wheel**, change it into move blocks
+``` js
+Blockly.bindEventWithChecks_(workspace.svgGroup_,"wheel",workspace,function(e){
+  e.preventDefault();
+  var hvScroll = e.shiftKey?'hScroll':'vScroll';
+  workspace.scrollbar[hvScroll].handlePosition_+=( ((e.deltaY||0)+(e.detail||0)) >0?20:-20);
+  workspace.scrollbar[hvScroll].onScroll_();
+  workspace.setScale(workspace.scale);
+});
+```
+
+**change the editor of the colour field**, you can change other field with similar ways
+```js
+Blockly.FieldColour.prototype.createWidget_ = function() {
+  // Create the palette using Closure.
+  var picker = new goog.ui.ColorPicker();
+  picker.setSize(this.columns_ || Blockly.FieldColour.COLUMNS);
+  picker.setColors(this.colours_ || Blockly.FieldColour.COLOURS);
+  var div = Blockly.WidgetDiv.DIV;
+  picker.render(div);
+  picker.setSelectedColor(this.getValue());
+  Blockly.WidgetDiv.hide();
+
+  var clickEvent = new MouseEvent("click", {
+    "view": window,
+    "bubbles": true,
+    "cancelable": false
+  });
+
+  var self=this;
+  var a = document.createElement('input');
+  a.setAttribute('type','color')
+  a.setAttribute('value',self.getValue())
+  a.oninput=function(){self.setValue(a.value)}
+  a.dispatchEvent(clickEvent);
+
+  return picker;
+};
+```
 - - -
 
 - [Start Page](en/README.md)  

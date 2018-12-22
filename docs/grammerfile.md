@@ -190,8 +190,11 @@ return [<span style="font-weight: bold;color:teal">block.id</span>, <span style=
 + `Int`对应非负整数
 + `Number`对应数(科学计数法会被直接计算后替代原字符)
 + `Bool`对应checkbox(有对勾或无对勾的布尔值)
++ `Colour`对应颜色(CSS值)
++ `Angle`对应角度(0~360)
 + 以`_List`结尾, 且只由字符串和`|`组成的field对应下拉菜单, 可以通过嵌入的方式修改对应的code中的字符串,如  
 `AddSub_List : '+'|'-' /*AddSub_List ['add','sub']*/;`
++ 以`_Img`结尾, 且只由字符串和`|`组成的field对应图片, 三个字符串分别是`src width height`, 形如`'./a.jpg'|'800'|'600'`
 + 字符串或字符串`?`, 或由纯字符串和`?`构成的词法规则会被直接置入方块中显示
 
 其他的域会被转化成文本输入, 规则名`Xxx`的默认值为`Xxx_default`

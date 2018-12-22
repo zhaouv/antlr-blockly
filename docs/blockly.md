@@ -100,7 +100,9 @@ blockly方块有`value`和`statement`两种, 通过是否包含`output`项来区
 + `field_number` 数字 <img src="./img/field_number_demo.png" alt="field_number" style="position:relative;top:8px;"> , 通过`value`设置默认值, 可通过`max`设最大值, 可通过`min`设最小值, 可通过`precision`设精度, 越界或非法输入会自动归为最接近的合法值或者上一个值.
 + `field_checkbox` 布尔值 <img src="./img/field_checkbox_demo.png" alt="field_checkbox" style="position:relative;top:8px;"> , 通过`checked`设置默认值.
 + `field_dropdown` 下拉菜单 <img src="./img/field_dropdown_demo.png" alt="field_dropdown" style="position:relative;top:8px;"> , 通过`options`设置形如`[["option1","a"],["option2","b"],["option_3","c"]]`的选项, 每一组显示第一个作为字符串, 值为第二个, 默认选中第一组.  
-+ > blockly中还支持角度, 颜色作为输入, 常规dsl中这两个输入意义不是很大, 需要生成blockly程序后修改, 或者在`.g4`中用嵌入的函数修改.
++ `field_colour` 颜色, 通过`colour`设置CSS值
++ `field_angle` 角度, 通过`angle`设置0~360间的数字作为角度
++ `field_image` 图片, 通过`src`设置图片源,`width,height`设置宽高(必填)
 
 ## 方块执行的函数
 
@@ -218,7 +220,7 @@ var workspace = Blockly.inject('blocklyDiv',{
   trashcan: false,
 });
 ```
-如果需要能跟随网页调整大小 ( Copyed from [Blockly Documentation](https://developers.google.com/blockly/guides/configure/web/resizable))  
+如果需要能**跟随网页调整大小** ( Copyed from [Blockly Documentation](https://developers.google.com/blockly/guides/configure/web/resizable))  
 修改`blocklyDiv`如第一段(`blocklyDiv`的`parent`是`body`),并在`workspace`定义后插入第二段,能够使得blockly的工作区跟随`blocklyArea`来调整位置大小.
 ``` html
 <div id="blocklyArea"></div>
@@ -247,6 +249,46 @@ var onresize = function(e) {
 window.addEventListener('resize', onresize, false);
 onresize();
 Blockly.svgResize(workspace);
+```
+
+**修改滚轮的行为**, 将其改为移动画布
+``` js
+Blockly.bindEventWithChecks_(workspace.svgGroup_,"wheel",workspace,function(e){
+  e.preventDefault();
+  var hvScroll = e.shiftKey?'hScroll':'vScroll';
+  workspace.scrollbar[hvScroll].handlePosition_+=( ((e.deltaY||0)+(e.detail||0)) >0?20:-20);
+  workspace.scrollbar[hvScroll].onScroll_();
+  workspace.setScale(workspace.scale);
+});
+```
+
+**修改颜色块的编辑**, 其他域的默认编辑方式也可以类似的修改
+```js
+Blockly.FieldColour.prototype.createWidget_ = function() {
+  // Create the palette using Closure.
+  var picker = new goog.ui.ColorPicker();
+  picker.setSize(this.columns_ || Blockly.FieldColour.COLUMNS);
+  picker.setColors(this.colours_ || Blockly.FieldColour.COLOURS);
+  var div = Blockly.WidgetDiv.DIV;
+  picker.render(div);
+  picker.setSelectedColor(this.getValue());
+  Blockly.WidgetDiv.hide();
+
+  var clickEvent = new MouseEvent("click", {
+    "view": window,
+    "bubbles": true,
+    "cancelable": false
+  });
+
+  var self=this;
+  var a = document.createElement('input');
+  a.setAttribute('type','color')
+  a.setAttribute('value',self.getValue())
+  a.oninput=function(){self.setValue(a.value)}
+  a.dispatchEvent(clickEvent);
+
+  return picker;
+};
 ```
 
 - - -
