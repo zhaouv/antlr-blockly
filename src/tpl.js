@@ -41,7 +41,7 @@ var Functions_xmlText = function(grammerName) {
 return `//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
 //inputs的第i个元素是第i个args的xmlText,null或undefined表示空
 //inputs的第rule.args.length个元素是其下一个语句的xmlText
-${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
+${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
   var rule = ${grammerName}Blocks[ruleName];
   var blocktext = isShadow?'shadow':'block';
   var xmlText = [];
@@ -72,6 +72,11 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow) {
     xmlText.push('<'+inputType+' name="'+rule.args[ii]+'">');
     xmlText.push(_input+input);
     xmlText.push('</'+inputType+'>');
+  }
+  if(comment){
+    xmlText.push('<comment><![CDATA[');
+    xmlText.push(comment.replace(/\]\]>/g,'] ] >'));
+    xmlText.push(']]></comment>');
   }
   var next = inputs[rule.args.length];
   if (next) {//next

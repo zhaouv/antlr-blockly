@@ -531,10 +531,10 @@ EvalVisitor.prototype.assemble = function() {
     }
     var grammerName=this.grammerName;
     var ruleName=rule.check[0];
-    text.push(pre+'function (inputs,isShadow) {\n');
+    text.push(pre+'function (inputs,isShadow,comment) {\n');
     cpre(1);
     text.push(pre+'return '+grammerName+"Functions.xmlText('");
-    text.push(ruleName+"',inputs,isShadow);\n");
+    text.push(ruleName+"',inputs,isShadow,comment);\n");
     cpre(-1);
     text.push(pre+'}');
     rule.xmlText=text.join('');
@@ -561,7 +561,7 @@ EvalVisitor.prototype.assemble = function() {
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
  *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
  *   fieldDefault: [...] 第i个参数的输入如果是field,其默认值,非field时是null
- *   xmlText: function([...args,next],isShadow){...}
+ *   xmlText: function([...args,next],isShadow,comment){...}
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
  *            第一个参数的第args.length个元素是其下一个语句的xmlText
  * }
