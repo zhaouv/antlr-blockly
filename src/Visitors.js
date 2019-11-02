@@ -205,7 +205,7 @@ EvalVisitor.prototype.escapeString = function(string_) {
 }
 
 EvalVisitor.prototype.matchInject = function(IdString) {
-  var pattern = new RegExp('/\\*[^\\S\\r\\n]*'+IdString+'[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
+  var pattern = new RegExp('/\\*[^\\S\\r\\n]*'+IdString+'\\b[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
   var value = this.rawInput.match(pattern);
   if(!value) return '';
   return value[1];

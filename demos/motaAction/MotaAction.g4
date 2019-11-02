@@ -5,13 +5,13 @@ grammar MotaAction;
 
 //事件 事件编辑器入口之一
 event_m
-    :   '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ BEND
+    :   '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle A_Img BEND
     ;
 
 /* event_m
 tooltip : 编辑魔塔的事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event
-default : [false,null,null,null]
+default : [false,null,null,null,'rgba(12,123,53,0.4)',1363,null]
 B_0_List_0=eval(B_0_List_0);
 var code = {
     'trigger': Bool_0?'action':null,
@@ -1037,6 +1037,8 @@ return [code, Blockly.JavaScript.ORDER_ATOMIC];
 */
 
 //===============lexer===============
+Colour: 'asdasdasd';
+Angle: 'asdassdasd';
 
 IdText
     :   'sdeirughvuiyasdeb'+ //为了被识别为复杂词法规则
@@ -1049,6 +1051,10 @@ RawEvalString
 PosString
     :   'sdeirughvuiyasbde'+ //为了被识别为复杂词法规则
     ;
+
+A_Img
+    :   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABLUlEQVRYR8WW0RGDMAhAdRU7givYFZzFEdypK+gKrhKPePRiDAYIxv425T0ggbbNy5+2Fn9ZnEPWtm3NOH48u4qAcwd8XQ+FqgIIf0WAgoPM4y3gwB+7A1z4IwISuLmAFG4qoIGbCWjhJgIl8GKBUvitwDz//Picpm9yXFvASQGEd13n53YsAYul74+5Hs73cMJxl1wyOxAAeLi9UAK3GgiUwrMtiCWGYbgkBhXSZI6BbtdxqhKhRCmc9QpSEmFlcKtxex6fY/0hoSRK4ewKoDV1MbXZZwXCzLHf1hJkC6inePdENZUQzwGAWEpcBLjB8Ry2hhrZuaqcBLhwDJrbFzn46RJK4ZzgnDO+Am/B/xWIn5u2n5yMk5MQewlf1oRnB5EmI+lvWLtAGlRyfgcoKhgwVeF2FgAAAABJRU5ErkJggg=='|'32'|'32';
+
 
 Stair_List
     :   '坐标'|'上楼'|'下楼'
