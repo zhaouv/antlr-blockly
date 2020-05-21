@@ -518,14 +518,16 @@ EvalVisitor.prototype.assemble = function() {
 
 
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
-    //构造args和argsType和fieldDefault,所有输入的名字和类型以及域的默认值
+    //构造args和argsType和argsGrammarName和fieldDefault,所有输入的名字和类型以及域的默认值
     rule.args=[];
     rule.argsType=[];
+    rule.argsGrammarName=[];
     rule.fieldDefault=[];
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
       if(arg.id && arg.data.type!='field_image'){ // 既不是换行也不是图片
         rule.args.push(rule.blockobj.vars[jj]);
         rule.argsType.push(arg.blockType);
+        rule.argsGrammarName.push(arg.id);
         rule.fieldDefault.push(rule.blockobj.fieldDefault[jj]);
       }
     }
@@ -568,6 +570,7 @@ EvalVisitor.prototype.assemble = function() {
  *              与blockfactory给出的Generator stub JavaScript一致
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
  *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
+ *   argsGrammarName: [...] 第i个参数的输入的类型名称
  *   fieldDefault: [...] 第i个参数的输入如果是field,其默认值,非field时是null
  *   menu: [['菜单项1','alert(1)'],
  *          ['function(block){return "菜单项2"}','console.log(block);alert(2)'],
@@ -669,6 +672,9 @@ EvalVisitor.prototype.generBlocks = function() {
     //块的所有输入的类型
     text.push(pre+'"argsType": ');
     text.push(JSON.stringify(rule.argsType,null,0));
+    text.push(',\n');
+    text.push(pre+'"argsGrammarName": ');
+    text.push(JSON.stringify(rule.argsGrammarName,null,0));
     text.push(',\n');
     //块的所有域的默认值,非域是null
     text.push(pre+'"fieldDefault": ');
