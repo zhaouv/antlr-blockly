@@ -211,10 +211,10 @@ EvalVisitor.prototype.matchInject = function(IdString) {
   return value[1];
 }
 
-EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default','override']
+EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default','override','name']
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
-  if(!injectStr)return {'default':[]};
+  if(!injectStr)return {'default':[],'name':[]};
   var obj = {};
   for(var ii=0,inject;inject=this.inject[ii];ii++){
     var pattern = new RegExp(
@@ -226,10 +226,12 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
       value.index+value[0].length);
   }
   if(obj.colour) obj.colour=eval(obj.colour);
-  if(obj.default){
-    obj.default=eval(obj.default);
-  } else {
-    obj.default=[];
+  for(var ii=0,key;key=['default','name'][ii];ii++){
+    if(obj[key]){
+      obj[key]=eval(obj[key]);
+    } else {
+      obj[key]=[];
+    }
   }
   obj.generFunc = injectStr;
   return obj;
@@ -243,12 +245,13 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   obj.fieldDefault = [];
   var manualWrap = false;
   var fieldNum_ = 0;
+  var validinputNum_ = 0;
   //这个循环中把形如块的各输入命名为形如Int_0,Int_1,expression_0
   //并额外记录在vars中
   for(var ii=0,args,ids={};args=obj.args[ii];ii++){
     var args_ = JSON.parse(JSON.stringify(args.data));
     var default_ = null;
-    if (args.id) {
+    if (args.id && args.data.type!='field_image') { // 既不是换行也不是图片
       ids[args.id]=ids[args.id]?ids[args.id]:0;
       args_.name=args.id+'_'+ids[args.id];
       ids[args.id]++;
@@ -281,8 +284,12 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         }
         fieldNum_++;
       }
+      validinputNum_++;
     }
     if (args_.name) {
+      if (obj.inject.name[validinputNum_-1]){
+        args_.name=obj.inject.name[validinputNum_-1];
+      }
       obj.vars.push(args_.name);
     } else {
       obj.vars.push(null);
@@ -371,7 +378,8 @@ EvalVisitor.prototype.assemble = function() {
     cpre(1);
     for(var jj=0,arg;arg=stateRule.blockobj.args[jj];jj++){
       var var_ = this.varPrefix+stateRule.blockobj.vars[jj];
-      if (!arg.id)continue;
+      if (!arg.id || arg.data.type=='field_image')continue;
+      // 既不是换行也不是图片
       if (arg.blockType==='value'){
         text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
         text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
@@ -515,7 +523,7 @@ EvalVisitor.prototype.assemble = function() {
     rule.argsType=[];
     rule.fieldDefault=[];
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
-      if(arg.id){
+      if(arg.id && arg.data.type!='field_image'){ // 既不是换行也不是图片
         rule.args.push(rule.blockobj.vars[jj]);
         rule.argsType.push(arg.blockType);
         rule.fieldDefault.push(rule.blockobj.fieldDefault[jj]);
@@ -580,6 +588,7 @@ EvalVisitor.prototype.generBlocks = function() {
   temp_collection=this.temp_collection;
   delete(this.temp_collection);
   //添加所有语句集合和表达式集合
+  text.push(pre+'// 语句集合和表达式集合\n');
   text.push(pre+this.grammerName+'Blocks = {\n');
   cpre(1);
   for(var ii=0,crule;crule=temp_collection[ii];ii++){
@@ -593,7 +602,14 @@ EvalVisitor.prototype.generBlocks = function() {
   text.push('\n');
   cpre(-1);
   text.push(pre+'}\n');
+  //添加域用来提供外部引用_List和_Img,修改生成的此处的代码是不会实际修改域的
+  text.push(pre+'// 域,提供外部引用_List和_Img,修改生成的此处的代码是不会实际修改域的,这一段可以删除\n');
+  text.push(pre+this.grammerName+'Blocks = Object.assign(');
+  text.push(this.grammerName+'Blocks,');
+  text.push(JSON.stringify(this.lexerRules,null,2).split('\n').join('\n'+pre));
+  text.push(pre+');\n');
   //添加所有方块
+  text.push(pre+'// 所有方块的实际内容\n');
   text.push(pre+this.grammerName+'Blocks = Object.assign(');
   text.push(this.grammerName+'Blocks,{\n');
   cpre(1);

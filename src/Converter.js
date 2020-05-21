@@ -7,13 +7,13 @@
  * ---
  * 
  * converter = new Converter();
- * converter.main(grammerFile,[function(){
+ * converter.main(grammerFile,{Function_0:function(){
  *   this.evisitor.statementColor=230;
- * }]);
+ * }});
  * 
  * ---
  * 
- * converter = new Converter().main(grammerFile,[],'Abc.html');
+ * converter = new Converter().main(grammerFile,{},'Abc.html');
  * 
  * ===
  * @param {!String} grammerFile is [.g4 File] as String
@@ -51,13 +51,13 @@ Converter.prototype.main = function (grammerFile,functions,filename) {
   this.generBlocks(grammerFile,functions);
   this.renderGrammerName();
   this.generToolbox();
-  this.generMainFile();
+  this.generMainFile(functions);
   this.writeMainFile(filename);
   return this;
 }
 
 Converter.prototype.generBlocks = function(grammerFile,functions) {
-  if(!functions)functions=[];
+  if(!functions)functions={};
 
   var temp_consoleError = console.error;
   console.error = function(err){throw new Error(err);}
@@ -82,8 +82,9 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   var evisitor = new EvalVisitor().init(svisitor,grammerFile);
   this.evisitor = evisitor;
 
-  /* functions[0] : 此处是整体修改
-  能够修改以下变量
+  /* Function_0
+  // 此处是整体修改
+  // 能够修改以下变量
   this.evisitor.valueColor=330;
   this.evisitor.statementColor=160;
   this.evisitor.entryColor=230;
@@ -100,24 +101,26 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   this.codeAreaId='codeArea';
    */
   eval(this.evisitor.matchInject('Function_0'));
-  if(functions[0])functions[0].call(this);
+  if(functions['Function_0'])functions['Function_0'].call(this);
 
   evisitor.visit(tree);
-  /* functions[1] : 此处修改各个具体方块
+  /* Function_1
+  // 此处修改各个具体方块
    */
   eval(this.evisitor.matchInject('Function_1'));
-  if(functions[1])functions[1].call(this);
+  if(functions['Function_1'])functions['Function_1'].call(this);
 
   evisitor.generBlocks();
   console.log(evisitor);
   this.blocks = evisitor.blocks;
   
-  /* functions[2] : 此处是整体修改
+  /* Function_2
+  // 此处是整体修改
   可以通过对this.blocks进行replace替换,
   修改各复杂词法规则的默认值
    */
   eval(this.evisitor.matchInject('Function_2'));
-  if(functions[2])functions[2].call(this);
+  if(functions['Function_2'])functions['Function_2'].call(this);
   return this;
 }
 
@@ -151,6 +154,7 @@ Converter.prototype.generToolbox = function() {
     var value = blocksobj[key];
     if(value instanceof Array)continue;
     if(value.type==='value')continue;
+    if(/^[A-Z].*$/.exec(key))continue;
     text.push(value.xmlText());
     text.push('<sep gap="'+this.toolboxGap+'"></sep>');
   }
@@ -162,6 +166,7 @@ Converter.prototype.generToolbox = function() {
     var value = blocksobj[key];
     if(value instanceof Array)continue;
     if(value.type==='statement')continue;
+    if(/^[A-Z].*$/.exec(key))continue;
     text.push(value.xmlText());
     text.push('<sep gap="'+this.toolboxGap+'"></sep>');
   }
@@ -172,7 +177,9 @@ Converter.prototype.generToolbox = function() {
   return this;
 }
 
-Converter.prototype.generMainFile = function(){
+Converter.prototype.generMainFile = function(functions){
+  if(!functions)functions={};
+
   var text = [];
 
   var grammerName = this.grammerName;
@@ -191,6 +198,7 @@ Converter.prototype.generMainFile = function(){
     return IdString;
   }
    */
+  if(functions['Functions'])text.push(functions['Functions']);
   text.push('\n\n');
   text.push(this.Functions_pre);
   text.push('\n\n');

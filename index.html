@@ -242,7 +242,7 @@ function runOne(callback){
     var grammerFile = input_B.value;
     
     converter = new Converter().init();
-    converter.generBlocks(grammerFile,[]);
+    converter.generBlocks(grammerFile);
     printf(converter.blocks);
 
     converter.renderGrammerName();

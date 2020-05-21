@@ -5,22 +5,23 @@ grammar MotaAction;
 
 //事件 事件编辑器入口之一
 event_m
-    :   '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle A_Img BEND
+    :   '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle A_Img 'testinput' EvalString BEND
     ;
 
 /* event_m
 tooltip : 编辑魔塔的事件
 helpUrl : https://ckcz123.github.io/mota-js/#/event
-default : [false,null,null,null,'rgba(12,123,53,0.4)',1363,null]
+default : [false,null,null,null,'rgba(12,123,53,0.4)',1363,'6','7','8','9']
+name : ['abc','abc2']
 B_0_List_0=eval(B_0_List_0);
 var code = {
-    'trigger': Bool_0?'action':null,
-    'enable': Bool_1,
+    'trigger': abc?'action':null,
+    'enable': abc2,
     'noPass': B_0_List_0,
     'displayDamage': Bool_2,
     'data': 'data_asdfefw'
 }
-if (!Bool_0 && Bool_1 && (B_0_List_0===null) && Bool_2) code = 'data_asdfefw';
+if (!abc && abc2 && (B_0_List_0===null) && Bool_2) code = 'data_asdfefw';
 code=JSON.stringify(code,null,2).split('"data_asdfefw"').join('[\n'+action_0+']\n');
 return code;
 */
@@ -917,7 +918,7 @@ function_s
 /* function_s
 tooltip : function: 自定义JS脚本
 helpUrl : https://ckcz123.github.io/mota-js/#/event?id=function-%e8%87%aa%e5%ae%9a%e4%b9%89js%e8%84%9a%e6%9c%ac
-default : ["alert(core.getStatus(\"atk\"));"]
+default : [""]
 colour : this.dataColor
 var code = '{"type": "function", "function": "function(){\\n'+JSON.stringify(RawEvalString_0).slice(1,-1).split('\\\\n').join('\\n')+'\\n}"},\n';
 return code;
