@@ -18,6 +18,10 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 ## Todo
 
++ [ ] 方块的配置:menu和name 的文档
+
++ [x] 域也放在blocks中以供引用 方块的配置:menu和name
+
 + [x] `field_colour field_angle field_image`
 
 + [x] 支持嵌入的方式直接修改下拉菜单的对应值

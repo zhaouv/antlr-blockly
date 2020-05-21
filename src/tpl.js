@@ -96,12 +96,37 @@ ${grammerName}Functions.blocksIniter = function(){
   for(var key in blocksobj) {
     var value = blocksobj[key];
     if(value instanceof Array)continue;
+    if(/^[A-Z].*$/.exec(key))continue;
     (function(key,value){
+      if (value.menu && value.menu.length) {
+        var menuRegisterMixin={
+          customContextMenu: function(options) {
+            for(var ii=0,op;op=value.menu[ii];ii++){
+              var option = {enabled: true};
+              option.text = op[0];
+              var check = 'function('
+              if (option.text.slice(0,check.length)==check){
+                option.text=eval('('+option.text+')(this)');
+              }
+              (function(block,fstr){
+                option.callback = function(){
+                  eval(fstr)
+                }
+              })(this,op[1]);
+              options.push(option);
+            }
+          }
+        };
+        value.json.extensions=value.json.extensions||[];
+        var mixinName = 'contextMenu_${grammerName}_'+value.json.type
+        value.json.extensions.push(mixinName)
+        Blockly.Extensions.registerMixin(mixinName,menuRegisterMixin);
+      }
       Blockly.Blocks[key] = {
         init: function() {this.jsonInit(value.json);}
       }
+      Blockly.${language}[key] = value.generFunc;
     })(key,value);
-    Blockly.${language}[key] = value.generFunc;
   }
 }`
 }
