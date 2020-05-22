@@ -67,7 +67,7 @@ Following is the help information for each block, the color, the configuration o
 
 Here are some of the configuration of several blocks to illustrate.  
 You can embed code in .g4 as `/* blockName\n ... */`, and antlr-blockly will recognize the first embedded comment of the same name and place its contents in a block's function.
-The fields or blocks or sets involved are named in the order of `name`+`_0`,`_1`..
+The fields or blocks or sets involved are named in the order of `name`+`_0`,`_1`(can be changed)..
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 prog:   stat+ ;
@@ -101,6 +101,8 @@ A similar convention is `color: 300`, which specifies the block as a hue color.
 `tooltip: Help hint when the mouse is over the block`.  
 `helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile` right click on the help will pop up the page.  
 `default:[null,"hello",1,true,null]` The default value of the field, `null` represents does not change.  
+`name : ['name1','name2']` change the names of fields and blocks, do not use the default form `ID_0`.  
+`menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` add items in the right-click menu of the blocks.  
 > It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">

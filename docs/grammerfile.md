@@ -67,7 +67,7 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 这里给出其中几个方块的配置以做说明.  
 可以在.g4中通过`/* 方块名\n ... */`的形式嵌入代码, antlr-blockly会识别第一个同名的嵌入的注释, 将其内容置入方块的函数中.  
-涉及到的域或者方块或者集合会以`名字`+`_0`,`_1`.. 的形式依次命名.  
+涉及到的域或者方块或者集合会以`名字`+`_0`,`_1`.. 的形式依次命名(可更改).  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
 prog:   stat+ ;
@@ -101,6 +101,8 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 `tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
 `helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile`右键点击帮助会弹出该页面.  
 `default : [null,"hello",1,true,null]`设置方块中域的默认值, `null`代表不改变.  
+`name : ['name1','name2']`更改域和方块的变量的名字,不再使用默认的`ID_0`的形式.  
+`menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` 方块的右键菜单中的增项.  
 > 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
