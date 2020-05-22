@@ -211,19 +211,22 @@ EvalVisitor.prototype.matchInject = function(IdString) {
   return value[1];
 }
 
-EvalVisitor.prototype.inject = ['colour','tooltip','helpUrl','default','override','name','menu']
+EvalVisitor.prototype.inject = [
+  'type','json','generFunc','args','argsType','argsGrammarName','fieldDefault','menu','xmlText',
+  'colour','tooltip','helpUrl','default','override','name'
+]
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
   if(!injectStr)return {'default':[],'name':[]};
   var obj = {};
-  for(var ii=0,inject;inject=this.inject[ii];ii++){
-    var pattern = new RegExp(
-      '^\\s*'+inject+'\\s*:\\s*([^\\r\\n]*)\\s*?[\\r\\n]+','m');
-    var value = injectStr.match(pattern);
-    if(!value)continue;
-    obj[inject]=value[1]
-    injectStr=injectStr.slice(0,value.index)+injectStr.slice(
-      value.index+value[0].length);
+  var keyvaluepart=/^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]+)*)/.exec(injectStr)
+  obj.generFunc = injectStr.slice(0,keyvaluepart.index)+injectStr.slice(keyvaluepart.index+keyvaluepart[0].length);
+  var lines=keyvaluepart[1].split('\n')
+  for(var ii=0;ii<lines.length;ii++){
+    var line=lines[ii];
+    if (/^\s*$/.exec(line)) continue;
+    var match = /^\s*(\w+)\s*:\s*([^\r\n]*?)\s*$/.exec(line);
+    obj[match[1]]=match[2];
   }
   if(obj.colour) obj.colour=eval(obj.colour);
   for(var ii=0,key;key=['default','name'][ii];ii++){
@@ -233,7 +236,6 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
       obj[key]=[];
     }
   }
-  obj.generFunc = injectStr;
   return obj;
 }
 
@@ -575,6 +577,7 @@ EvalVisitor.prototype.assemble = function() {
  *   menu: [['菜单项1','alert(1)'],
  *          ['function(block){return "菜单项2"}','console.log(block);alert(2)'],
  *           ...] 方块的右键菜单中的增项
+ *   ...: String 其他注入的属性
  *   xmlText: function([...args,next],isShadow,comment){...}
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
  *            第一个参数的第args.length个元素是其下一个语句的xmlText
@@ -684,6 +687,14 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'"menu": ');
     text.push(rule.blockobj.inject.menu||'[]');
     text.push(',\n');
+    //其他注入的属性
+    for(var key in rule.blockobj.inject){
+      if (this.inject.indexOf(key)===-1) {
+        text.push(pre+'"'+key+'": ');
+        text.push(JSON.stringify(rule.blockobj.inject[key],null,0));
+        text.push(',\n');
+      }
+    }
     //块生成为xmlText的方法
     text.push(pre+'"xmlText": ');
     text.push(rule.xmlText.split('\n').join('\n'+pre));

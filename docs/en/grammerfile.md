@@ -103,6 +103,7 @@ A similar convention is `color: 300`, which specifies the block as a hue color.
 `default:[null,"hello",1,true,null]` The default value of the field, `null` represents does not change.  
 `name : ['name1','name2']` change the names of fields and blocks, do not use the default form `ID_0`.  
 `menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` add items in the right-click menu of the blocks.  
+`['type','json','generFunc','args','argsType','argsGrammarName','fieldDefault','menu','xmlText','colour','tooltip','helpUrl','default','override','name']`, other keys will appear in XxxBlocks  
 > It is recommended that using an IDE that supports antlr syntax highlighting to edit `.g4` files such as `vscode` installed `ANTLR4 grammar syntax support`  
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">

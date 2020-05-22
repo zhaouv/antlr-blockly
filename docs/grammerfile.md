@@ -103,6 +103,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 `default : [null,"hello",1,true,null]`设置方块中域的默认值, `null`代表不改变.  
 `name : ['name1','name2']`更改域和方块的变量的名字,不再使用默认的`ID_0`的形式.  
 `menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` 方块的右键菜单中的增项.  
+`['type','json','generFunc','args','argsType','argsGrammarName','fieldDefault','menu','xmlText','colour','tooltip','helpUrl','default','override','name']`之外的键会出现在XxxBlocks中  
 > 建议使用支持antlr语法高亮的IDE来进行`.g4`文件的编辑, 如`vscode`安装`ANTLR4 grammar syntax support` 
 
 <pre style="float:left;width:380px;white-space:pre-wrap;margin-right:5px">
