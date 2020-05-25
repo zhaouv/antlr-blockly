@@ -16,7 +16,8 @@ function OmitedError(block, var_, rule, fileName, lineNumber) {
 
 OmitedError.prototype = Object.create(Error.prototype);
 OmitedError.prototype.constructor = OmitedError;
-//处理此错误的omitedcheckUpdateFunction定义在下面`;
+//处理此错误的omitedcheckUpdateFunction定义在下面
+`;
 }
 
 var Functions_pre = function(grammerName) {
@@ -34,7 +35,45 @@ ${grammerName}Functions.pre = function(LexerId) {
     return ${grammerName}Functions[LexerId+'_pre'];
   }
   return function(obj){return obj}
-}`;
+}
+`;
+}
+
+var Functions_fieldDefault = function(grammerName) {
+return /* js */`//根据输入是整数字符串或null
+//第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
+${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
+  var rule = ${grammerName}Blocks[ruleName];
+  var iskey=typeof keyOrIndex==typeof '';
+  var isindex=typeof keyOrIndex==typeof 0;
+  function args0_content_to_default(cnt) {
+    var key = ({
+      'field_input':'text',
+      'field_number':'value',
+      'field_dropdown':'options',
+      'field_checkbox':'checked',
+      'field_colour':'colour',
+      'field_angle':'angle',
+      // 'field_image':'src'
+    })[cnt.type];
+    if (key==='options'){
+      return cnt[key][0][1];
+    } else {
+      return cnt[key];
+    }
+  }
+  var allDefault=[];
+  for(var ii=0,index=-1,cnt;cnt=rule.json.args0[ii];ii++){
+    if (!cnt.name || cnt.type.slice(0,5)!='field' || cnt.type=='field_image') continue;
+    index++;
+    if (iskey && cnt.name==keyOrIndex)return args0_content_to_default(cnt);
+    if (isindex && index==keyOrIndex)return args0_content_to_default(cnt);
+    allDefault.push(args0_content_to_default(cnt))
+  }
+  if (iskey || isindex) return undefined;
+  return allDefault;
+}
+`;
 }
 
 var Functions_xmlText = function(grammerName) {
@@ -85,7 +124,8 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
   }
   xmlText.push('</'+blocktext+'>');
   return xmlText.join('');
-}`;
+}
+`;
 }
 
 var Functions_blocksIniter = function(grammerName,language) {
@@ -127,7 +167,8 @@ ${grammerName}Functions.blocksIniter = function(){
       Blockly.${language}[key] = value.generFunc;
     })(key,value);
   }
-}`
+}
+`;
 }
 
 var mainFileTPL = function(
@@ -224,11 +265,12 @@ function runCode() {
 
 `,/*9*/`</body>
 </html>
-`]
+`];
 }
 
 exports.OmitedError = OmitedError;
 exports.Functions_pre = Functions_pre;
+exports.Functions_fieldDefault = Functions_fieldDefault;
 exports.Functions_xmlText = Functions_xmlText;
 exports.Functions_blocksIniter = Functions_blocksIniter;
 

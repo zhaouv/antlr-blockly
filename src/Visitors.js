@@ -244,7 +244,6 @@ EvalVisitor.prototype.initAssemble = function(obj) {
   obj.inject = this.loadInject(this.matchInject(obj.name));
   var args0 = [];
   obj.vars = [];//会包含null
-  obj.fieldDefault = [];
   var manualWrap = false;
   var fieldNum_ = 0;
   var validinputNum_ = 0;
@@ -265,6 +264,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         this.notEntry[args.id]=true;//被其他语句使用过的语句不是入口方块
         this.setRule(args.blockType,args.id,childvalue);
       } else {
+        args_={name:args_.name};
         var key = ({
           'field_input':'text',
           'field_number':'value',
@@ -272,17 +272,16 @@ EvalVisitor.prototype.initAssemble = function(obj) {
           'field_checkbox':'checked',
           'field_colour':'colour',
           'field_angle':'angle',
-          'field_image':'src'
-        })[args_.type];
+          // 'field_image':'src'
+        })[args.data.type];
         default_ = obj.inject.default[fieldNum_];
         if (default_===undefined)default_=null;
         if (key==='options'){
-          if (default_==null)default_=args_[key][0][1];
+          if (default_==null)default_=args.data[key][0][1];
         } else {
           if (default_!==null){
             args_[key]=default_;
           }
-          default_=args_[key];
         }
         fieldNum_++;
       }
@@ -297,7 +296,6 @@ EvalVisitor.prototype.initAssemble = function(obj) {
       obj.vars.push(null);
       manualWrap = true;
     }
-    obj.fieldDefault.push(default_);
     args0.push(args_);
   }
   var blockjs = {
@@ -520,17 +518,15 @@ EvalVisitor.prototype.assemble = function() {
 
 
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
-    //构造args和argsType和argsGrammarName和fieldDefault,所有输入的名字和类型以及域的默认值
+    //构造args和argsType和argsGrammarName,所有输入的名字和类型
     rule.args=[];
     rule.argsType=[];
     rule.argsGrammarName=[];
-    rule.fieldDefault=[];
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
       if(arg.id && arg.data.type!='field_image'){ // 既不是换行也不是图片
         rule.args.push(rule.blockobj.vars[jj]);
         rule.argsType.push(arg.blockType);
         rule.argsGrammarName.push(arg.id);
-        rule.fieldDefault.push(rule.blockobj.fieldDefault[jj]);
       }
     }
     //生成构造xmltext的函数
@@ -550,6 +546,16 @@ EvalVisitor.prototype.assemble = function() {
     cpre(-1);
     text.push(pre+'}');
     rule.xmlText=text.join('');
+    //生成获取块的域的默认值的方法
+    text = [];
+    cpre(-9999);
+    text.push(pre+'function (keyOrIndex) {\n');
+    cpre(1);
+    text.push(pre+'return '+grammerName+"Functions.fieldDefault('");
+    text.push(ruleName+"',keyOrIndex);\n");
+    cpre(-1);
+    text.push(pre+'}');
+    rule.fieldDefault=text.join('');
   }
   this.temp_xml=temp_xml;
   this.temp_collection=temp_collection;
@@ -573,7 +579,9 @@ EvalVisitor.prototype.assemble = function() {
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
  *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
  *   argsGrammarName: [...] 第i个参数的输入的类型名称
- *   fieldDefault: [...] 第i个参数的输入如果是field,其默认值,非field时是null
+ *   fieldDefault: function(keyOrIndex){...}
+ *                 根据输入是整数字符串或null
+ *                 第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
  *   menu: [['菜单项1','alert(1)'],
  *          ['function(block){return "菜单项2"}','console.log(block);alert(2)'],
  *           ...] 方块的右键菜单中的增项
@@ -611,8 +619,8 @@ EvalVisitor.prototype.generBlocks = function() {
   text.push('\n');
   cpre(-1);
   text.push(pre+'}\n');
-  //添加域用来提供外部引用_List和_Img,修改生成的此处的代码是不会实际修改域的
-  text.push(pre+'// 域,提供外部引用_List和_Img,修改生成的此处的代码是不会实际修改域的,这一段可以删除\n');
+  //添加域
+  text.push(pre+'// 所有域的默认行为\n');
   text.push(pre+this.grammerName+'Blocks = Object.assign(');
   text.push(this.grammerName+'Blocks,');
   text.push(JSON.stringify(this.lexerRules,null,2).split('\n').join('\n'+pre));
@@ -625,10 +633,9 @@ EvalVisitor.prototype.generBlocks = function() {
   //此函数的目的是将块中的语句集合和表达式集合在生成为文件时
   //从展开的数组换回AbcBlock.expression的形式
   function renderblockjs(obj,rule,pre) {
-    var blockjs = rule.blockjs;
-    var blockjsstr = JSON.stringify(blockjs).split('\n').join('\n'+pre);
+    var blockjs = JSON.parse(JSON.stringify(rule.blockjs));
     var replaceobj = {};
-    blockjs = JSON.parse(blockjsstr);//复制一份
+    // 表达式集合
     for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
       if(!arg.id)continue;
       var usedrule=obj.getRule(arg.blockType,arg.id);
@@ -637,6 +644,7 @@ EvalVisitor.prototype.generBlocks = function() {
       blockjs.args0[jj].check='1_fry2_3_inrgv'+arg.id;
       replaceobj['"1_fry2_3_inrgv'+arg.id+'"']=obj.grammerName+'Blocks.'+arg.id;
     }
+    // 语句集合
     if (blockjs.nextStatement) {
       for(var kk=0,crule;crule=temp_collection[kk];kk++){
         if (crule[1].check.indexOf(blockjs.type)!==-1){
@@ -647,7 +655,17 @@ EvalVisitor.prototype.generBlocks = function() {
         }
       }
     }
-    blockjsstr = JSON.stringify(blockjs,null,2).split('\n').join('\n'+pre);
+    // field使用引用
+    for(var jj=0,index=0,arg;arg=rule.blockobj.args[jj];jj++){
+      if (!arg.id || arg.data.type=='field_image')continue;
+      if (rule.argsType[index++]!='field')continue;
+      replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']='Object.assign({},'+
+        obj.grammerName+'Blocks.'+arg.id+','+
+        JSON.stringify(blockjs.args0[jj],null,2).split('\n').join('\n'+pre+'    ')
+        +')';
+      blockjs.args0[jj]='1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name;
+    }
+    var blockjsstr = JSON.stringify(blockjs,null,2).split('\n').join('\n'+pre);
     for(var key in replaceobj) {
       blockjsstr=blockjsstr.split(key).join(replaceobj[key]);
     }
@@ -679,9 +697,9 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'"argsGrammarName": ');
     text.push(JSON.stringify(rule.argsGrammarName,null,0));
     text.push(',\n');
-    //块的所有域的默认值,非域是null
+    //块的获取域的默认值的方法
     text.push(pre+'"fieldDefault": ');
-    text.push(JSON.stringify(rule.fieldDefault,null,0));
+    text.push(rule.fieldDefault.split('\n').join('\n'+pre));
     text.push(',\n');
     //块的右键菜单
     text.push(pre+'"menu": ');
@@ -699,6 +717,7 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'"xmlText": ');
     text.push(rule.xmlText.split('\n').join('\n'+pre));
     text.push('\n');
+    //
     cpre(-1);
     text.push(pre+'},\n');
   }

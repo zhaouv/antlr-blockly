@@ -1293,7 +1293,7 @@ ActionParser.prototype.parseAction = function() {
         this.EvalString(data.text),this.next]);
       break;
     case "autoText": // 自动剧情文本
-      data.time=this.isset(data.time)?data.time:MotaActionBlocks['autoText_s'].fieldDefault[3];
+      data.time=this.isset(data.time)?data.time:MotaActionBlocks['autoText_s'].fieldDefault(3);
       this.next = MotaActionBlocks['autoText_s'].xmlText([
         '','','',data.time,this.EvalString(data.text),this.next]);
       break;
