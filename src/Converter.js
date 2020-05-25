@@ -143,38 +143,26 @@ Converter.prototype.renderGrammerName = function() {
 }
 
 Converter.prototype.generToolbox = function() {
-  eval(this.grammerName+'Functions={};');
-  eval(this.Functions_xmlText);
-  eval(this.blocks);
-  eval('var blocksobj = '+this.grammerName+'Blocks;');
-  console.log(blocksobj);
   var text = [];
-  text.push('<xml id="'+this.toolboxId+'" style="display:none">');
-  text.push('<category name="statement">');
-  for(var key in blocksobj) {
-    var value = blocksobj[key];
-    if(value instanceof Array)continue;
-    if(value.type==='value')continue;
-    if(/^[A-Z].*$/.exec(key))continue;
-    text.push(value.xmlText());
-    text.push('<sep gap="'+this.toolboxGap+'"></sep>');
+  text.push('{');
+  text.push('    // 每个键值对作为一页');
+  text.push('    "statement" : [');
+  text.push('      // 所有语句块');
+  for (var key in this.evisitor.statementRules){
+    if (!this.evisitor.statementRules[key].type) continue;
+    text.push('      '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
   }
-  text.pop();
-  text.push('</category>');
-  text.push('<sep gap="'+this.toolboxGap*3+'"></sep>');
-  text.push('<category name="value">');
-  for(var key in blocksobj) {
-    var value = blocksobj[key];
-    if(value instanceof Array)continue;
-    if(value.type==='statement')continue;
-    if(/^[A-Z].*$/.exec(key))continue;
-    text.push(value.xmlText());
-    text.push('<sep gap="'+this.toolboxGap+'"></sep>');
+  text.push('    ],');
+  text.push('    "value" : [');
+  text.push('      // 所有值块');
+  for (var key in this.evisitor.expressionRules){
+    if (!this.evisitor.expressionRules[key].type) continue;
+    text.push('      '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
   }
-  text.pop();
-  text.push('</category>');
-  text.push('</xml>');
-  this.toolbox=this.textToPrettyText(text.join(''));
+  text.push('    ]');
+  text.push('  }');
+  var toolboxObj=text.join('\n');
+  this.toolbox=tpl.ToolboxObj(this.toolboxId,toolboxObj,this.toolboxGap);
   return this;
 }
 
@@ -232,39 +220,6 @@ Converter.prototype.block = function(blockname) {
   if(!obj || obj.checklength===1)return null;
   return obj.blockjs;
 }
-
-/**
- * Converts XML text into properly indented text.
- * from Blockly.Xml.domToPrettyText
- * https://github.com/google/blockly/blob/master/core/xml.js
- * @param {!String} blob XML Text in one line.
- * @return {string} Text representation.
- */
-Converter.prototype.textToPrettyText = function(blob) {
-  // This function is not guaranteed to be correct for all XML.
-  // But it handles the XML that Blockly generates.
-
-  // Place every open and close tag on its own line.
-  var lines = blob.split('<');
-  // Indent every line.
-  var indent = '';
-  for (var i = 1; i < lines.length; i++) {
-    var line = lines[i];
-    if (line[0] == '/') {
-      indent = indent.substring(2);
-    }
-    lines[i] = indent + '<' + line;
-    if (line[0] != '/' && line.slice(-2) != '/>') {
-      indent += '  ';
-    }
-  }
-  // Pull simple tags back together.
-  // E.g. <foo></foo>
-  var text = lines.join('\n');
-  text = text.replace(/(<(\w+)\b[^>]*>[^\n]*)\n *<\/\2>/g, '$1</$2>');
-  // Trim leading blank line.
-  return text.replace(/^\n/, '');
-};
 
 /**
  * Create a file with the given attributes and download it.

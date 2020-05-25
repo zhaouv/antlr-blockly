@@ -171,6 +171,43 @@ ${grammerName}Functions.blocksIniter = function(){
 `;
 }
 
+
+var ToolboxObj = function(toolboxId,toolboxObj,toolboxGap) {
+return /* js */`
+var ${toolboxId} = (function(){
+
+  var toolboxXml=document.createElement('xml')
+
+  // 调整这个obj来更改侧边栏和其中的方块
+  // 可以直接填 '<block type="xxx">...</block>'
+  // 标签 '<label text="标签文本"></label>'
+  var toolboxObj = ${toolboxObj}
+
+  var getCategory = function(toolboxXml,name,custom){
+    var node = document.createElement('category');
+    node.setAttribute('name',name);
+    if(custom)node.setAttribute('custom',custom);
+    toolboxXml.appendChild(node);
+    return node;
+  }
+
+  var toolboxGap = '<sep gap="${toolboxGap}"></sep>'
+
+  for (var name in toolboxObj){
+    var custom = null;
+    if(name=='xxxxxx')custom='xxxxxx';
+    if(name=='zzzzzz')custom='zzzzzz';
+    getCategory(toolboxXml,name,custom).innerHTML = toolboxObj[name].join(toolboxGap);
+    var node = document.createElement('sep');
+    node.setAttribute('gap',${toolboxGap}*3);
+    toolboxXml.appendChild(node);
+  }
+
+  return toolboxXml;
+})();
+`;
+}
+
 var mainFileTPL = function(
   grammerName,language,
   blocklyDivId,codeAreaId,
@@ -195,15 +232,16 @@ return [/*0*/`<!doctype html>
 </p>
 <div id="${blocklyDivId}" style="height: 480px; width: 940px;"></div>
 <pre id="${codeAreaId}"></pre>
-${toolboxArea}
 `,/*4*/`
 <script>
 `,/*5*/`
 ${blocklyScripts}
 `,/*6*/`
+${toolboxArea}
+
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
   media: 'media/',
-  toolbox: document.getElementById('${toolboxId}'),
+  toolbox: ${toolboxId},
   zoom:{
     controls: true,
     wheel: true,//false
@@ -273,5 +311,6 @@ exports.Functions_pre = Functions_pre;
 exports.Functions_fieldDefault = Functions_fieldDefault;
 exports.Functions_xmlText = Functions_xmlText;
 exports.Functions_blocksIniter = Functions_blocksIniter;
+exports.ToolboxObj = ToolboxObj;
 
 exports.mainFileTPL = mainFileTPL;
