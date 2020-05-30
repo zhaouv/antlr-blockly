@@ -40,8 +40,9 @@ ${grammerName}Functions.pre = function(LexerId) {
 }
 
 var Functions_fieldDefault = function(grammerName) {
-return /* js */`//根据输入是整数字符串或null
-//第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
+return /* js */`// ${grammerName}Functions.fieldDefault
+// 根据输入是整数字符串或null
+// 第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
 ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
   var rule = ${grammerName}Blocks[ruleName];
   var iskey=typeof keyOrIndex==typeof '';
@@ -76,10 +77,35 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
 `;
 }
 
+var Functions_defaultCode = function(grammerName) {
+return /* js */`// ${grammerName}Functions.defaultCode
+${grammerName}Functions.defaultCode = function (ruleName,args) {
+  var rule = ${grammerName}Blocks[ruleName];
+  var message=rule.json.message0;
+  for(var ii=0;ii<args.length;ii++){
+    message=message.split(new RegExp('%'+(ii+1)+'\\\\b'))
+    if (args[ii]=='\\n') {
+      message[1]=message[1].slice(1);
+    }
+    if (rule.json.args0[ii].type=="input_statement") {
+      message[0]=message[0]+'\\n';
+      message[1]=message[1].slice(1);
+    }
+    message=message.join(args[ii]);
+  }
+  if (rule.type=='statement') {
+    message=message+'\\n';
+  }
+  return message;
+}
+`;
+}
+
 var Functions_xmlText = function(grammerName) {
-return /* js */`//构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
-//inputs的第i个元素是第i个args的xmlText,null或undefined表示空
-//inputs的第rule.args.length个元素是其下一个语句的xmlText
+return /* js */`// ${grammerName}Functions.xmlText
+// 构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
+// inputs的第i个元素是第i个args的xmlText,null或undefined表示空
+// inputs的第rule.args.length个元素是其下一个语句的xmlText
 ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
   var rule = ${grammerName}Blocks[ruleName];
   var blocktext = isShadow?'shadow':'block';
@@ -129,7 +155,8 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
 }
 
 var Functions_blocksIniter = function(grammerName,language) {
-return /* js */`//把各方块的信息注册到Blockly中
+return /* js */`// ${grammerName}Functions.blocksIniter
+// 把各方块的信息注册到Blockly中
 ${grammerName}Functions.blocksIniter = function(){
   var blocksobj = ${grammerName}Blocks;
   for(var key in blocksobj) {
@@ -309,6 +336,7 @@ function runCode() {
 exports.OmitedError = OmitedError;
 exports.Functions_pre = Functions_pre;
 exports.Functions_fieldDefault = Functions_fieldDefault;
+exports.Functions_defaultCode = Functions_defaultCode;
 exports.Functions_xmlText = Functions_xmlText;
 exports.Functions_blocksIniter = Functions_blocksIniter;
 exports.ToolboxObj = ToolboxObj;

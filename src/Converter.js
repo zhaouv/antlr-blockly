@@ -134,6 +134,7 @@ Converter.prototype.renderGrammerName = function() {
   this.OmitedError = tpl.OmitedError();
   this.Functions_pre = tpl.Functions_pre(grammerName);
   this.Functions_fieldDefault = tpl.Functions_fieldDefault(grammerName);
+  this.Functions_defaultCode = tpl.Functions_defaultCode(grammerName);
   this.Functions_xmlText=tpl.Functions_xmlText(grammerName);
   this.Functions_blocksIniter = 
     tpl.Functions_blocksIniter(grammerName,generLanguage);
@@ -192,6 +193,8 @@ Converter.prototype.generMainFile = function(functions){
   text.push(this.Functions_pre);
   text.push('\n\n');
   text.push(this.Functions_fieldDefault);
+  text.push('\n\n');
+  text.push(this.Functions_defaultCode);
   text.push('\n\n');
   text.push(this.Functions_xmlText);
   text.push('\n\n');

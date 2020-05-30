@@ -205,22 +205,28 @@ EvalVisitor.prototype.escapeString = function(string_) {
 }
 
 EvalVisitor.prototype.matchInject = function(IdString) {
-  var pattern = new RegExp('/\\*[^\\S\\r\\n]*'+IdString+'\\b[\\r\\n]*([^]*?)[\\r\\n]*\\*/');
+  var pattern = new RegExp(
+    '/\\*[^\\S\\r\\n]*'+IdString+'\\b[\\r\\n]*([^]*?)[\\r\\n]*\\*/'
+  );
   var value = this.rawInput.match(pattern);
   if(!value) return '';
   return value[1];
 }
 
 EvalVisitor.prototype.inject = [
-  'type','json','generFunc','args','argsType','argsGrammarName','fieldDefault','menu','xmlText',
+  'type','json','generFunc','args','argsType',
+  'argsGrammarName','fieldDefault','menu','xmlText',
+
   'colour','tooltip','helpUrl','default','override','name'
 ]
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
   if(!injectStr)return {'default':[],'name':[]};
   var obj = {};
-  var keyvaluepart=/^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]+)*)/.exec(injectStr)
-  obj.generFunc = injectStr.slice(0,keyvaluepart.index)+injectStr.slice(keyvaluepart.index+keyvaluepart[0].length);
+  var keyvaluepart=
+    /^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]+)*)/.exec(injectStr)
+  obj.generFunc = injectStr.slice(0,keyvaluepart.index)+
+    injectStr.slice(keyvaluepart.index+keyvaluepart[0].length);
   var lines=keyvaluepart[1].split('\n')
   for(var ii=0;ii<lines.length;ii++){
     var line=lines[ii];
@@ -358,8 +364,8 @@ EvalVisitor.prototype.assemble = function() {
   //此时blockjs已经是各方块的完整的描述了
 
   //生成遍历语法树的函数--statement块部分
-  var temp_xml = [];
-  var temp_collection = [];
+  var temp_xml = []; // 所有的方块
+  var temp_collection = []; // 所有的语句集合或表达式集合
   for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
     if(stateRule.check.length>1){
       temp_collection.push([rulekeys[ii],stateRule]);
@@ -428,7 +434,10 @@ EvalVisitor.prototype.assemble = function() {
         stateRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
       text.push('\n');
     } else {
-      text.push(pre+"var code = '1111111111;\\n';\n");
+      text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
+      text.push(stateRule.check[0]+"',["+stateRule.blockobj.vars.map(
+        function(v){return v==null?'"\\n"':v}
+      ).join(',')+"]);\n");
       text.push(pre+'return code;\n');
     }
     cpre(-1);
@@ -506,7 +515,10 @@ EvalVisitor.prototype.assemble = function() {
         exprRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
       text.push('\n');
     } else {
-      text.push(pre+"var code = 0000000000;\n");
+      text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
+      text.push(exprRule.check[0]+"',["+exprRule.blockobj.vars.map(
+        function(v){return v==null?'"\\n"':v}
+      ).join(',')+"]);\n");
       text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
     }
     cpre(-1);
@@ -600,9 +612,9 @@ EvalVisitor.prototype.generBlocks = function() {
     if(point>0)pre+=Array(2*point+1).join(' ');
     if(point<0)pre=pre.slice(0,2*point);
   }
-  temp_xml=this.temp_xml;
+  var temp_xml=this.temp_xml; // 所有的方块
   delete(this.temp_xml);
-  temp_collection=this.temp_collection;
+  var temp_collection=this.temp_collection; // 所有的语句集合或表达式集合
   delete(this.temp_collection);
   //添加所有语句集合和表达式集合
   text.push(pre+'// 语句集合和表达式集合\n');
@@ -659,7 +671,8 @@ EvalVisitor.prototype.generBlocks = function() {
     for(var jj=0,index=0,arg;arg=rule.blockobj.args[jj];jj++){
       if (!arg.id || arg.data.type=='field_image')continue;
       if (rule.argsType[index++]!='field')continue;
-      replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']='Object.assign({},'+
+      replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']=
+        'Object.assign({},'+
         obj.grammerName+'Blocks.'+arg.id+','+
         JSON.stringify(blockjs.args0[jj],null,2).split('\n').join('\n'+pre+'    ')
         +')';
