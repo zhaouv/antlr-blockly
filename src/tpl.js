@@ -84,7 +84,7 @@ ${grammerName}Functions.defaultCode = function (ruleName,args) {
   var message=rule.json.message0;
   for(var ii=0;ii<args.length;ii++){
     message=message.split(new RegExp('%'+(ii+1)+'\\\\b'))
-    if (args[ii]=='\\n') {
+    if (args[ii]==='\\n') {
       message[1]=message[1].slice(1);
     }
     if (rule.json.args0[ii].type=="input_statement") {
