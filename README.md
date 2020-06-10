@@ -18,6 +18,12 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 ## Todo
 
++ [ ] 动态下拉菜单  
+  生成后的代码把options从二维数组改成`function(block){return [['text','value']]}`的样子就行  
+  格式约定 `'dynamic'|'function'`(一定要有两个使之识别为list), 在注入中放function  
+
++ [ ] 下拉菜单的默认值不起效(虽然本质是blockly的机制options无法把非第一项注册成默认值)
+
 + [x] 方块的配置:menu和name 的文档
 
 + [x] 域也放在blocks中以供引用 方块的配置:menu和name
