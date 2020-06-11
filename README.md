@@ -18,6 +18,8 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 ## Todo
 
++ [ ] 多行文本 https://github.com/google/blockly/pull/2663
+
 + [ ] 动态下拉菜单  
   生成后的代码把options从二维数组改成`function(block){return [['text','value']]}`的样子就行  
   格式约定 `'dynamic'|'function'`(一定要有两个使之识别为list), 在注入中放function  
