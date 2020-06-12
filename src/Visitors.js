@@ -274,7 +274,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         var key = ({
           'field_input':'text',
           'field_number':'value',
-          'field_dropdown':'options',
+          'field_dropdown':'default',
           'field_checkbox':'checked',
           'field_colour':'colour',
           'field_angle':'angle',
@@ -282,12 +282,8 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         })[args.data.type];
         default_ = obj.inject.default[fieldNum_];
         if (default_===undefined)default_=null;
-        if (key==='options'){
-          if (default_==null)default_=args.data[key][0][1];
-        } else {
-          if (default_!==null){
-            args_[key]=default_;
-          }
+        if (default_!==null){
+          args_[key]=default_;
         }
         fieldNum_++;
       }
@@ -635,7 +631,23 @@ EvalVisitor.prototype.generBlocks = function() {
   text.push(pre+'// 所有域的默认行为\n');
   text.push(pre+this.grammerName+'Blocks = Object.assign(');
   text.push(this.grammerName+'Blocks,');
-  text.push(JSON.stringify(this.lexerRules,null,2).split('\n').join('\n'+pre));
+  function renderLexerRules(lexerRules) {
+    var rcount=0;
+    var replaceobj={};
+    var text1=JSON.stringify(lexerRules,function(k,v){
+      if (k==='options'&&(typeof v===typeof '')&&v.slice(0,8)==='function') {
+        ++rcount;
+        replaceobj['"_'+rcount+'_1_fry2_3_inrgv"']=v.split('\n').join('\n    '+pre);
+        return '_'+rcount+'_1_fry2_3_inrgv'
+      }
+      return v
+    },2).split('\n').join('\n'+pre);
+    for(var key in replaceobj) {
+      text1=text1.split(key).join(replaceobj[key]);
+    }
+    return text1
+  }
+  text.push(renderLexerRules(this.lexerRules));
   text.push(pre+');\n');
   //添加所有方块
   text.push(pre+'// 所有方块的实际内容\n');
@@ -834,8 +846,17 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
   }
   var strings = ctx.strings();
   var values = this.matchInject(lexerId);
-  if(values)values=eval(values);
+  if(values)values=eval('('+values+')');
   else values=[];
+  if (typeof values===typeof (function(){})) {
+    var lexervalue = {
+      'type':'field_dropdown',
+      'options':values.toString(),
+      'default':this.visit(strings[1])
+    }
+    this.setRule('lexer',lexerId,lexervalue);
+    return;
+  }
   for(var ii=0,value;value=strings[ii];ii++){
     var string_ = this.visit(value);
     strings[ii] = [string_,values[ii]==null?string_:values[ii]];
@@ -844,7 +865,8 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     //以'_List'结尾的'|'分隔的纯字符串,作为下拉菜单
     var lexervalue = {
       'type':'field_dropdown',
-      'options':strings
+      'options':strings,
+      'default':strings[0][1]
     }
   } else {
     //以'_Img'结尾的'|'分隔的纯字符串,作为图片

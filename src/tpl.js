@@ -51,17 +51,13 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
     var key = ({
       'field_input':'text',
       'field_number':'value',
-      'field_dropdown':'options',
+      'field_dropdown':'default',
       'field_checkbox':'checked',
       'field_colour':'colour',
       'field_angle':'angle',
       // 'field_image':'src'
     })[cnt.type];
-    if (key==='options'){
-      return cnt[key][0][1];
-    } else {
-      return cnt[key];
-    }
+    return cnt[key];
   }
   var allDefault=[];
   for(var ii=0,index=-1,cnt;cnt=rule.json.args0[ii];ii++){
@@ -116,7 +112,11 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
     var input = inputs[ii];
     var _input = '';
     var noinput = (input===null || input===undefined);
-    if(noinput && inputType==='field') continue;
+    if(noinput && inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type!=='field_dropdown') continue;
+    if(noinput && inputType==='field') {
+      noinput = false;
+      input = rule.fieldDefault(rule.args[ii])
+    }
     if(noinput) input = '';
     if(inputType!=='field') {
       var subList = false;
