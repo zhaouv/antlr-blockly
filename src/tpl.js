@@ -50,6 +50,7 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
   function args0_content_to_default(cnt) {
     var key = ({
       'field_input':'text',
+      'field_multilinetext':'text',
       'field_number':'value',
       'field_dropdown':'default',
       'field_checkbox':'checked',

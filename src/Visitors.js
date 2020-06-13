@@ -273,6 +273,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
         args_={name:args_.name};
         var key = ({
           'field_input':'text',
+          'field_multilinetext':'text',
           'field_number':'value',
           'field_dropdown':'default',
           'field_checkbox':'checked',
@@ -875,7 +876,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
       'src': strings[0][0],
       'width': strings[1]&&strings[1][0]||0,
       'height': strings[2]&&strings[2][0]||0,
-      'alt': '*'//alt不生效,换别的字符也没用
+      'alt': strings[3]&&strings[3][0]||'img' //alt不生效, 始终是*
     }
   }
   
@@ -888,7 +889,7 @@ EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
   if (this.SpeicalLexerRule(lexerId)) return;
   //复杂词法规则作为文本域让用户输入
   var lexervalue = {
-    'type': 'field_input',
+    'type': lexerId.slice(-6)!=='_Multi'?'field_input':'field_multilinetext',
     'text': lexerId+'_default'
   }
   this.setRule('lexer',lexerId,lexervalue);

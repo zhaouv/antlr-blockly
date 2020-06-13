@@ -5,7 +5,7 @@ grammar MotaAction;
 
 //事件 事件编辑器入口之一
 event_m
-    :   '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle A_Img 'testinput' EvalString BEND
+    :    A_Img '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle 'testinput' EvalString BEND
     ;
 
 /* event_m
@@ -1054,7 +1054,7 @@ PosString
     ;
 
 A_Img
-    :   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABLUlEQVRYR8WW0RGDMAhAdRU7givYFZzFEdypK+gKrhKPePRiDAYIxv425T0ggbbNy5+2Fn9ZnEPWtm3NOH48u4qAcwd8XQ+FqgIIf0WAgoPM4y3gwB+7A1z4IwISuLmAFG4qoIGbCWjhJgIl8GKBUvitwDz//Picpm9yXFvASQGEd13n53YsAYul74+5Hs73cMJxl1wyOxAAeLi9UAK3GgiUwrMtiCWGYbgkBhXSZI6BbtdxqhKhRCmc9QpSEmFlcKtxex6fY/0hoSRK4ewKoDV1MbXZZwXCzLHf1hJkC6inePdENZUQzwGAWEpcBLjB8Ry2hhrZuaqcBLhwDJrbFzn46RJK4ZzgnDO+Am/B/xWIn5u2n5yMk5MQewlf1oRnB5EmI+lvWLtAGlRyfgcoKhgwVeF2FgAAAABJRU5ErkJggg=='|'32'|'32';
+    :   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABLUlEQVRYR8WW0RGDMAhAdRU7givYFZzFEdypK+gKrhKPePRiDAYIxv425T0ggbbNy5+2Fn9ZnEPWtm3NOH48u4qAcwd8XQ+FqgIIf0WAgoPM4y3gwB+7A1z4IwISuLmAFG4qoIGbCWjhJgIl8GKBUvitwDz//Picpm9yXFvASQGEd13n53YsAYul74+5Hs73cMJxl1wyOxAAeLi9UAK3GgiUwrMtiCWGYbgkBhXSZI6BbtdxqhKhRCmc9QpSEmFlcKtxex6fY/0hoSRK4ewKoDV1MbXZZwXCzLHf1hJkC6inePdENZUQzwGAWEpcBLjB8Ry2hhrZuaqcBLhwDJrbFzn46RJK4ZzgnDO+Am/B/xWIn5u2n5yMk5MQewlf1oRnB5EmI+lvWLtAGlRyfgcoKhgwVeF2FgAAAABJRU5ErkJggg=='|'32'|'32'|'sword';
 
 
 Stair_List
