@@ -195,12 +195,15 @@ return [<span style="font-weight: bold;color:teal">block.id</span>, <span style=
 + `Bool`对应checkbox(有对勾或无对勾的布尔值)
 + `Colour`对应颜色(CSS值)
 + `Angle`对应角度(0~360)
-+ 以`_List`结尾, 且只由字符串和`|`组成的field对应下拉菜单, 可以通过嵌入的方式修改对应的code中的字符串,如  
-`AddSub_List : '+'|'-' /*AddSub_List ['add','sub']*/;`
++ 以`_List`结尾, 且只由字符串和`|`组成的field对应下拉菜单,  
+可以通过嵌入的方式修改对应的code中的字符串,如  
+`AddSub_List : '+'|'-' /*AddSub_List ['add','sub']*/;`  
+也可以通过如下形式来使用动态计算的下拉菜单  
+`AddSub_List : 'dynamic'|'<put default value here>' /*AddSub_List function(){return [['text1','value1'],['2','2']]}*/;`
 + 以`_Img`结尾, 且只由字符串和`|`组成的field对应图片, 三个字符串分别是`src width height`, 形如`'./a.jpg'|'800'|'600'`
 + 字符串或字符串`?`, 或由纯字符串和`?`构成的词法规则会被直接置入方块中显示
 
-其他的域会被转化成文本输入, 规则名`Xxx`的默认值为`Xxx_default`
+其他的域会被转化成文本输入, 规则名`Xxx`的默认值为`Xxx_default`, 如果是`Xxx_Multi`的形式, 则会使用多行文本域
 
 ### 语句集合和表达式集合
 

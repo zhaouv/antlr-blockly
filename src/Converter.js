@@ -75,7 +75,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   var svisitor = new SymbolVisitor().init();
   this.svisitor = svisitor;
   svisitor.visit(tree);
-  console.log(svisitor);
+  // console.log(svisitor);
 
   svisitor.checkSymbol();
 
@@ -111,7 +111,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
   if(functions['Function_1'])functions['Function_1'].call(this);
 
   evisitor.generBlocks();
-  console.log(evisitor);
+  // console.log(evisitor);
   this.blocks = evisitor.blocks;
   
   /* Function_2

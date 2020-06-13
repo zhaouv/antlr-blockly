@@ -195,12 +195,15 @@ The definition of the domain such as `Xxx: ....;` capitalized at the beginning o
 + `Bool` corresponds to the checkbox (boolean with or without checkmark)
 + `Colour` corresponds to the colour (CSS value)
 + `Angle` corresponds to the angle (0~360)
-+ The field that ends with `_List` and that consists of only the string and `|` corresponds to the pull-down menu, you can modify the string in the corresponding code by embedding, such as  
-`AddSub_List: '+'|'-' /*AddSub_List ['add','sub']*/;`
++ The field that ends with `_List` and that consists of only the string and `|` corresponds to the pull-down menu,  
+you can modify the string in the corresponding code by embedding, such as  
+`AddSub_List: '+'|'-' /*AddSub_List ['add','sub']*/;`  
+You can also use the dynamic version in the following form  
+`AddSub_List : 'dynamic'|'<put default value here>' /*AddSub_List function(){return [['text1','value1'],['2','2']]}*/;`
 + The field that ends with `_Img` and that consists of only the string and `|` corresponds to images, three correspond to `src width height`, such as `'./a.jpg'|'800'|'600'`
 + String or string `?`, Or lexical rules consisting of pure strings and `?` Will be displayed directly in the block
 
-Other fields will be converted to text input. The default for the rule name `Xxx` is` Xxx_default`
+Other fields will be converted to text input. The default for the rule name `Xxx` is` Xxx_default`. If it is in the form of `Xxx_Multi`, it will use a multi-line text field
 
 ### statement set and expression set
 
