@@ -119,6 +119,7 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
       input = rule.fieldDefault(rule.args[ii])
     }
     if(noinput) input = '';
+    if(inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type==='field_checkbox')input=input?'TRUE':'FALSE';
     if(inputType!=='field') {
       var subList = false;
       var subrulename = rule.argsGrammarName[ii];

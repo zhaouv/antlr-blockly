@@ -47,7 +47,7 @@ Converter = require('../../src/Converter').Converter;
 //__all__=['editor_blockly','MotaActionBlocks','MotaActionFunctions','ActionParser','converter','antlr4','Converter'];
 editor_blockly = function(Converter){
 editor_blockly = {};
-editor_blockly.initscript=String.raw`
+editor_blockly.initscript=String.raw/* js */`
 (function(){
   var getCategory = function(name){
   for(var node of document.getElementById('toolbox').children) {
