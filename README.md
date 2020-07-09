@@ -18,6 +18,14 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 ## Todo
 
++ [ ] package化
+
++ [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等
+
++ [ ] json生成版本的defaultCode, 以及相应的默认json到方块的Parser
+
++ [ ] 文本生成的defaultCode不再需要在数组中加'\n'
+
 + [x] 多行文本的文档
 
 + [x] 多行文本 https://github.com/google/blockly/pull/2663  
@@ -74,6 +82,6 @@ strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
 
 + 注释,每处做了什么的说明
 
-+ 不使用反引号的字符串模板以提高兼容性,借助`Function.prototype.toString()`实现多行字符串
++ [x] ~~不使用反引号的字符串模板以提高兼容性,借助`Function.prototype.toString()`实现多行字符串~~
 
 + [ ] 更多demo,提供一个包含`function`的例子
