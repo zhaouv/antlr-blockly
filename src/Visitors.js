@@ -224,7 +224,7 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
   if(!injectStr)return {'default':[],'name':[]};
   var obj = {};
   var keyvaluepart=
-    /^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]+)*)/.exec(injectStr)
+    /^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]*)*)/.exec(injectStr)
   obj.generFunc = injectStr.slice(0,keyvaluepart.index)+
     injectStr.slice(keyvaluepart.index+keyvaluepart[0].length);
   var lines=keyvaluepart[1].split('\n')
@@ -360,171 +360,97 @@ EvalVisitor.prototype.assemble = function() {
   }
   //此时blockjs已经是各方块的完整的描述了
 
-  //生成遍历语法树的函数--statement块部分
   var temp_xml = []; // 所有的方块
   var temp_collection = []; // 所有的语句集合或表达式集合
-  for(var ii=0,stateRule;stateRule=this.statementRules[rulekeys[ii]];ii++){
-    if(stateRule.check.length>1){
-      temp_collection.push([rulekeys[ii],stateRule]);
-      continue;
-    }
-    temp_xml.push(stateRule);
-    stateRule.type='statement';
-    var text = [];
-    var pre='';
-    var cpre = function(point){
-      if(point>0)pre+=Array(2*point+1).join(' ');
-      if(point<0)pre=pre.slice(0,2*point);
-    }
-    var bl = 'Blockly.'+this.generLanguage+'.';
-    text.push(pre+'function(block) {\n');
-    cpre(1);
-    for(var jj=0,arg;arg=stateRule.blockobj.args[jj];jj++){
-      var var_ = this.varPrefix+stateRule.blockobj.vars[jj];
-      if (!arg.id || arg.data.type=='field_image')continue;
-      // 既不是换行也不是图片
-      if (arg.blockType==='value'){
-        text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
-        text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
-      } else if (arg.blockType==='statement') {
-        text.push(pre+'var '+var_+' = '+bl+'statementToCode'+"(block, '");
-        text.push(var_+"')");
-      } else { // field
-        text.push(pre+'var '+var_+' = '+'block.getFieldValue'+"('");
-        text.push(var_+"')");
-      }
-      if (arg.data.type==='field_checkbox'){
-        text.push(" === 'TRUE'");
-      }
-      text.push(';\n');
-      if (!arg.multi) {//不允许复数个语句
-      }
-      var nextvar = {//不需要考虑省略
-        'field_checkbox':true,
-        'field_dropdown':true,
-        'field_number':true,
-        'field_colour':true,
-        'field_angle':true,
-        'field_image':true
-      }
-      if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
-        text.push(pre+'if ('+var_+"==='') {\n");
-        cpre(1);
-        text.push(pre+"throw new OmitedError(block,'"+var_+"','");
-        text.push(rulekeys[ii]+"');\n");
-        cpre(-1);
-        text.push(pre+'}\n');
-      }
-      if (arg.blockType==='field'){
-        text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
-        text.push(arg.id+"')("+var_+');\n');
-      }
-    }
-    if (stateRule.blockobj.inject.generFunc) {
-      if (stateRule.blockobj.inject.override) {
-        cpre(-9999);
-        text = [];
-        text.push(pre+'function(block) {\n');
-        cpre(1);
-      }
-      text.push(pre+
-        stateRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
-      text.push('\n');
-    } else {
-      text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
-      text.push(stateRule.check[0]+"',["+stateRule.blockobj.vars.map(
-        function(v){return v==null?'"\\n"':v}
-      ).join(',')+"]);\n");
-      text.push(pre+'return code;\n');
-    }
-    cpre(-1);
-    text.push(pre+'}');
-    stateRule.generFunc=text.join('');
-    //a=evisitor.statementRules.setValue.generFunc;console.log(a);
-  }
 
-  //生成遍历语法树的函数--value块部分
-  rulekeys = Object.keys(this.expressionRules);
-  for(var ii=0,exprRule;exprRule=this.expressionRules[rulekeys[ii]];ii++){
-    if(exprRule.check.length>1){
-      temp_collection.push([rulekeys[ii],exprRule]);
-      continue;
+  for (var typeIndex = 0; typeIndex < 2; typeIndex++) {
+    var rule_type=typeIndex===0?'statement':'value';
+    var rules=rule_type==='statement'?this.statementRules:this.expressionRules
+    var rulekeys = Object.keys(rules);
+    for(var ii=0,rule;rule=rules[rulekeys[ii]];ii++){
+      if(rule.check.length>1){
+        temp_collection.push([rulekeys[ii],rule]);
+        continue;
+      }
+      temp_xml.push(rule);
+      rule.type=rule_type;
+      var text = [];
+      var pre='';
+      var cpre = function(point){
+        if(point>0)pre+=Array(2*point+1).join(' ');
+        if(point<0)pre=pre.slice(0,2*point);
+      }
+      var bl = 'Blockly.'+this.generLanguage+'.';
+      text.push(pre+'function(block) {\n');
+      cpre(1);
+      for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
+        var var_ = this.varPrefix+rule.blockobj.vars[jj];
+        if (!arg.id || arg.data.type=='field_image')continue;
+        // 既不是换行也不是图片
+        if (arg.blockType==='value'){
+          text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
+          text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
+        } else if (arg.blockType==='statement') {
+          text.push(pre+'var '+var_+' = '+bl+'statementToCode'+"(block, '");
+          text.push(var_+"')");
+        } else { // field
+          text.push(pre+'var '+var_+' = '+'block.getFieldValue'+"('");
+          text.push(var_+"')");
+        }
+        if (arg.data.type==='field_checkbox'){
+          text.push(" === 'TRUE'");
+        }
+        text.push(';\n');
+        if (!arg.multi) {//不允许复数个语句
+        }
+        var nextvar = {//不需要考虑省略
+          'field_checkbox':true,
+          'field_dropdown':true,
+          'field_number':true,
+          'field_colour':true,
+          'field_angle':true,
+          'field_image':true
+        }
+        if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
+          text.push(pre+'if ('+var_+"==='') {\n");
+          cpre(1);
+          text.push(pre+"throw new OmitedError(block,'"+var_+"','");
+          text.push(rulekeys[ii]+"');\n");
+          cpre(-1);
+          text.push(pre+'}\n');
+        }
+        if (arg.blockType==='field'){
+          text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
+          text.push(arg.id+"')("+var_+');\n');
+        }
+      }
+      if ((rule.blockobj.inject.generFunc||'').trim()) {
+        if (rule.blockobj.inject.override) {
+          cpre(-9999);
+          text = [];
+          text.push(pre+'function(block) {\n');
+          cpre(1);
+        }
+        text.push(pre+
+          rule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
+        text.push('\n');
+      } else {
+        text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
+        text.push(rule.check[0]+"',eval('['+"+this.grammerName+"Blocks['");
+        text.push(rule.check[0]+"'].args.join(',')+']'),block);\n");
+        if(rule_type==='statement'){
+          text.push(pre+'return code;\n');
+        }else{
+          text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
+        }
+      }
+      cpre(-1);
+      text.push(pre+'}');
+      rule.generFunc=text.join('');
+      //a=evisitor.statementRules.setValue.generFunc;console.log(a);
+      //a=evisitor.expressionRules.expression_arithmetic_0.generFunc;console.log(a);
     }
-    temp_xml.push(exprRule);
-    exprRule.type='value';
-    var text = [];
-    var pre='';
-    var cpre = function(point){
-      if(point>0)pre+=Array(2*point+1).join(' ');
-      if(point<0)pre=pre.slice(0,2*point);
-    }
-    var bl = 'Blockly.'+this.generLanguage+'.';
-    text.push(pre+'function(block) {\n');
-    cpre(1);
-    for(var jj=0,arg;arg=exprRule.blockobj.args[jj];jj++){
-      var var_ = this.varPrefix+exprRule.blockobj.vars[jj];
-      if (!arg.id)continue;
-      if (arg.blockType==='value'){
-        text.push(pre+'var '+var_+' = '+bl+'valueToCode'+"(block, '");
-        text.push(var_+"', \n  "+pre+bl+this.recieveOrder+')');
-      } else if (arg.blockType==='statement') {
-        text.push(pre+'var '+var_+' = '+bl+'statementToCode'+"(block, '");
-        text.push(var_+"')");
-      } else { // field
-        text.push(pre+'var '+var_+' = '+'block.getFieldValue'+"('");
-        text.push(var_+"')");
-      }
-      if (arg.data.type==='field_checkbox'){
-        text.push(" === 'TRUE'");
-      }
-      text.push(';\n');
-      if (!arg.multi) {//不允许复数个语句
-      }
-      var nextvar = {//不需要考虑省略
-        'field_checkbox':true,
-        'field_dropdown':true,
-        'field_number':true,
-        'field_colour':true,
-        'field_angle':true,
-        'field_image':true
-      }
-      if (!nextvar[arg.data.type] && !arg.omitted) {//不允许省略
-        text.push(pre+'if ('+var_+"==='') {\n");
-        cpre(1);
-        text.push(pre+"throw new OmitedError(block,'"+var_+"','");
-        text.push(rulekeys[ii]+"');\n");
-        cpre(-1);
-        text.push(pre+'}\n');
-      }
-      if (arg.blockType==='field'){
-        text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
-        text.push(arg.id+"')("+var_+');\n');
-      }
-    }
-    if (exprRule.blockobj.inject.generFunc) {
-      if (exprRule.blockobj.inject.override) {
-        cpre(-9999);
-        text = [];
-        text.push(pre+'function(block) {\n');
-        cpre(1);
-      }
-      text.push(pre+
-        exprRule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
-      text.push('\n');
-    } else {
-      text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
-      text.push(exprRule.check[0]+"',["+exprRule.blockobj.vars.map(
-        function(v){return v==null?'"\\n"':v}
-      ).join(',')+"]);\n");
-      text.push(pre+'return [code, '+bl+this.sendOrder+'];\n');
-    }
-    cpre(-1);
-    text.push(pre+'}');
-    exprRule.generFunc=text.join('');
-    //a=evisitor.expressionRules.expression_arithmetic_0.generFunc;
-    //console.log(a);
   }
-
 
   for(var ii=0,rule;rule=temp_xml[ii];ii++){
     //构造args和argsType和argsGrammarName,所有输入的名字和类型

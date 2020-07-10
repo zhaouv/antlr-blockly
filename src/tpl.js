@@ -76,19 +76,26 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
 
 var Functions_defaultCode = function(grammerName) {
 return /* js */`// ${grammerName}Functions.defaultCode
-${grammerName}Functions.defaultCode = function (ruleName,args) {
+${grammerName}Functions.defaultCode = function (ruleName,args,block) {
   var rule = ${grammerName}Blocks[ruleName];
   var message=rule.json.message0;
-  for(var ii=0;ii<args.length;ii++){
-    message=message.split(new RegExp('%'+(ii+1)+'\\\\b'))
-    if (args[ii]==='\\n') {
+  var args0=rule.json.args0;
+  for(var ii=0,jj=0;ii<args0.length;ii++){
+    message=message.split(new RegExp('%'+(ii+1)+'\\\\b'));
+    var content='\\n';
+    if (['input_dummy'].indexOf(args0[ii].type)!==-1) {
       message[1]=message[1].slice(1);
+    } else if(['field_image'].indexOf(args0[ii].type)!==-1) {
+      message[1]=message[1].slice(1);
+      content='';
+    } else {
+      content=args[jj++];
     }
-    if (rule.json.args0[ii].type=="input_statement") {
+    if (args0[ii].type=="input_statement") {
       message[0]=message[0]+'\\n';
       message[1]=message[1].slice(1);
     }
-    message=message.join(args[ii]);
+    message=message.join(content);
   }
   if (rule.type=='statement') {
     message=message+'\\n';
