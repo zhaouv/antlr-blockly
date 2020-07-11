@@ -24,7 +24,7 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 + [ ] json生成版本的defaultCode, 以及相应的默认json到方块的Parser
 
-+ [ ] 文本生成的defaultCode不再需要在数组中加'\n'
++ [x] 文本生成的defaultCode不再需要在数组中加'\n'
 
 + [x] 多行文本的文档
 

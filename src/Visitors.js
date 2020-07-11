@@ -309,7 +309,8 @@ EvalVisitor.prototype.initAssemble = function(obj) {
     'tooltip': obj.inject.tooltip||'',
     'helpUrl': obj.inject.helpUrl||''
   }
-  if (args0.length===0) delete(blockjs.args0);
+  // // 按照blockly原始的json定义,不应该包含空的args0,方便起见加上
+  // if (args0.length===0) delete(blockjs.args0); 
   if (manualWrap) delete(blockjs.inputsInline);
   var value = this.getRule(obj.type,obj.name);
   var check = value.check;
@@ -421,7 +422,8 @@ EvalVisitor.prototype.assemble = function() {
         }
         if (arg.blockType==='field'){
           text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
-          text.push(arg.id+"')("+var_+');\n');
+          text.push(arg.id+"')("+var_+",block,'"+var_+"','");
+          text.push(rulekeys[ii]+"');\n");
         }
       }
       if ((rule.blockobj.inject.generFunc||'').trim()) {

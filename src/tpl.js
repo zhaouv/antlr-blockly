@@ -34,7 +34,7 @@ ${grammerName}Functions.pre = function(LexerId) {
   if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {
     return ${grammerName}Functions[LexerId+'_pre'];
   }
-  return function(obj){return obj}
+  return function(obj,block,fieldName,blockType){return obj}
 }
 `;
 }
@@ -75,8 +75,8 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
 }
 
 var Functions_defaultCode = function(grammerName) {
-return /* js */`// ${grammerName}Functions.defaultCode
-${grammerName}Functions.defaultCode = function (ruleName,args,block) {
+return /* js */`// ${grammerName}Functions.defaultCode_TEXT
+${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
   var rule = ${grammerName}Blocks[ruleName];
   var message=rule.json.message0;
   var args0=rule.json.args0;
@@ -102,6 +102,9 @@ ${grammerName}Functions.defaultCode = function (ruleName,args,block) {
   }
   return message;
 }
+
+// ${grammerName}Functions.defaultCode
+${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_TEXT
 `;
 }
 
