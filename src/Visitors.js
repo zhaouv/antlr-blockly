@@ -125,6 +125,47 @@ SymbolVisitor.prototype.visitLexerRuleCollection = function(ctx) {
 };
 
 //============================================================================
+// 能指定展开的层数的 stringify
+var json={
+  stringify:function(data,replacer,space,d){
+    d=~~d
+    if (typeof space==typeof 0) {
+      space=Array.from({length:space+1}).join(' ')
+    }
+    if (d<=0 || !space) {
+      return JSON.stringify(data,replacer,space);
+    }
+    return json.json(JSON.parse(JSON.stringify(data,replacer)),d,space,'\n')
+  },
+  parse:JSON.parse,
+  json:function(data,d,space,pre){
+    if (d<=0) {
+      return JSON.stringify(data);
+    }
+    if (data instanceof Array) {
+      if (data.length==0) {
+        return '[]'
+      }
+      var texts = [];
+      for (var i in data) {
+        texts.push(space+json.json(data[i],d-1,space,pre+space));
+      }
+      return '['+pre+texts.join(','+pre)+pre+']';
+    }
+    if (data instanceof Object) {
+      if (Object.keys(data).length==0) {
+        return '{}'
+      }
+      var texts = [];
+      for (var i in data) {
+        texts.push(space+'"'+i+'": '+json.json(data[i],d-1,space,pre+space))
+      }
+      return '{'+pre+texts.join(','+pre)+pre+'}';
+    }
+    return JSON.stringify(data);
+  },
+}
+//============================================================================
 
 function EvalVisitor() {
 	BlocklyGrammerVisitor.call(this);
@@ -563,14 +604,14 @@ EvalVisitor.prototype.generBlocks = function() {
   function renderLexerRules(lexerRules) {
     var rcount=0;
     var replaceobj={};
-    var text1=JSON.stringify(lexerRules,function(k,v){
+    var text1=json.stringify(lexerRules,function(k,v){
       if (k==='options'&&(typeof v===typeof '')&&v.slice(0,8)==='function') {
         ++rcount;
         replaceobj['"_'+rcount+'_1_fry2_3_inrgv"']=v.split('\n').join('\n    '+pre);
         return '_'+rcount+'_1_fry2_3_inrgv'
       }
       return v
-    },2).split('\n').join('\n'+pre);
+    },2,3).split('\n').join('\n'+pre);
     for(var key in replaceobj) {
       text1=text1.split(key).join(replaceobj[key]);
     }
@@ -648,7 +689,7 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(',\n');
     //块的所有输入的名字
     text.push(pre+'"args": ');
-    text.push(JSON.stringify(rule.args,null,2).split('\n').join('\n'+pre));
+    text.push(JSON.stringify(rule.args,null,0).split('\n').join('\n'+pre));
     text.push(',\n');
     //块的所有输入的类型
     text.push(pre+'"argsType": ');
