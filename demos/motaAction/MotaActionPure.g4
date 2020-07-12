@@ -5,7 +5,7 @@ grammar MotaActionPure;
 
 //事件 事件编辑器入口之一
 event_m
-    :    A_Img '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle 'testinput' EvalString DymanicTest_List BEND
+    :   A_Img '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle 'testinput' EvalString DymanicTest_List BEND
     ;
 
 
