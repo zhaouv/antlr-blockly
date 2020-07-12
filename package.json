@@ -1,0 +1,36 @@
+{
+    "name": "antlr-blockly",
+    "description": "Generate blockly application from .g4 grammar",
+    "version": "0.1.0",
+    "publisher": "zhaouv",
+    "main": "./Converter.bundle.min.js",
+    "scripts": {
+        "antlr4js": "antlr4-tool --no-listener --language javascript -o src/gen src/BlocklyGrammer.g4",
+        "bundle": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/zhaouv/antlr-blockly.git"
+    },
+    "keywords": [
+        "ANTLR4",
+        "antlr",
+        "blockly"
+    ],
+    "author": "Youwei Zhao",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/zhaouv/antlr-blockly/issues"
+    },
+    "homepage": "https://zhaouv.github.io/antlr-blockly/",
+    "devDependencies": {
+        "@types/antlr4": "4.7.0",
+        "antlr4": "4.7.0",
+        "antlr4-tool": "1.0.19",
+        "uglifyjs-webpack-plugin": "^1.3.0",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.12"
+    },
+    "dependencies": {
+    }
+}

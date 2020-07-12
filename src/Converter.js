@@ -19,18 +19,17 @@
  * @param {!String} grammerFile is [.g4 File] as String
  */
 
-antlr4 = require('./antlr4/index');
-var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').
-    BlocklyGrammerVisitor;
-var BlocklyGrammerLexer = require('./BlocklyGrammerLexer').BlocklyGrammerLexer;
-var BlocklyGrammerParser = require('./BlocklyGrammerParser').BlocklyGrammerParser;
+var antlr4 = require('antlr4/index');
+var BlocklyGrammerLexer = require('./gen/BlocklyGrammerLexer').BlocklyGrammerLexer;
+var BlocklyGrammerParser = require('./gen/BlocklyGrammerParser').BlocklyGrammerParser;
 var Visitors = require('./Visitors');
 var SymbolVisitor=Visitors.SymbolVisitor;
 var EvalVisitor=Visitors.EvalVisitor;
 var tpl = require('./tpl');
 
-//__all__=['converter','Converter','antlr4'];
-
+/**
+ * @class
+ */
 function Converter() {
     return this;
 }

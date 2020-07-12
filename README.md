@@ -20,15 +20,15 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 + [ ] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行
 
-+ [ ] package化
++ [x] package化
 
 + [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground
 
 + [x] xmlText函数加入attribute, 以及把next单独作为输入参数
 
-+ [x] json生成版本的defaultCode, 以及相应的默认json到方块的Parser
++ [x] json生成版本的defaultCode_JSON, 以及相应的默认json到方块的Parser
 
-+ [x] 文本生成的defaultCode不再需要在数组中加'\n'
++ [x] 文本生成版的defaultCode_TEXT不再需要在数组中加'\n'
 
 + [x] 多行文本的文档
 

@@ -1,6 +1,5 @@
 
-var antlr4 = require('./antlr4/index');
-var BlocklyGrammerVisitor = require('./BlocklyGrammerVisitor').
+var BlocklyGrammerVisitor = require('./gen/BlocklyGrammerVisitor').
     BlocklyGrammerVisitor;
 
 function SymbolVisitor() {
