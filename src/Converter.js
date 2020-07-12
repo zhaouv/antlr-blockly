@@ -13,7 +13,7 @@
  * 
  * ---
  * 
- * converter = new Converter().main(grammerFile,{},'Abc.html');
+ * converter = new Converter().main(grammerFile,null,'Abc.html');
  * 
  * ===
  * @param {!String} grammerFile is [.g4 File] as String

@@ -1,7 +1,7 @@
 {
     "name": "antlr-blockly",
     "description": "Generate blockly application from .g4 grammar",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "publisher": "zhaouv",
     "main": "./Converter.bundle.min.js",
     "scripts": {
