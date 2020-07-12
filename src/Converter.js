@@ -146,22 +146,22 @@ Converter.prototype.renderGrammerName = function() {
 Converter.prototype.generToolbox = function() {
     var text = [];
     text.push('{');
-    text.push('    // 每个键值对作为一页');
-    text.push('    "statement" : [');
-    text.push('      // 所有语句块');
+    text.push('        // 每个键值对作为一页');
+    text.push('        "statement": [');
+    text.push('            // 所有语句块');
     for (var key in this.evisitor.statementRules){
         if (!this.evisitor.statementRules[key].type) continue;
-        text.push('      '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
+        text.push('            '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
     }
-    text.push('    ],');
-    text.push('    "value" : [');
-    text.push('      // 所有值块');
+    text.push('        ],');
+    text.push('        "value": [');
+    text.push('            // 所有值块');
     for (var key in this.evisitor.expressionRules){
         if (!this.evisitor.expressionRules[key].type) continue;
-        text.push('      '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
+        text.push('            '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
     }
-    text.push('    ]');
-    text.push('  }');
+    text.push('        ]');
+    text.push('    }');
     var toolboxObj=text.join('\n');
     this.toolbox=tpl.ToolboxObj(this.toolboxId,toolboxObj,this.toolboxGap);
     return this;
