@@ -254,6 +254,9 @@ EvalVisitor.prototype.matchInject = function(IdString) {
     return value[1];
 }
 
+/**
+ * 这些之外的自定义的注入也会被生成到的json中
+ */
 EvalVisitor.prototype.inject = [
     'type','json','generFunc','args','argsType',
     'argsGrammarName','fieldDefault','menu','xmlText',

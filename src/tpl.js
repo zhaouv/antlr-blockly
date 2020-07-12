@@ -102,8 +102,70 @@ ${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
     return message;
 }
 
+${grammerName}Functions.defaultCode_JSON_TYPE='type'
+
+/**
+ * @class
+ */
+${grammerName}Functions.parserClass = function (params) {
+}
+${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
+    var rule = ${grammerName}Blocks[obj[${grammerName}Functions.defaultCode_JSON_TYPE]]
+    var input = []
+    for (var index = 0; index < rule.args.length; index++) {
+        var dobj = obj[rule.args[index]];
+        if (rule.argsType[index]==='statement') {
+            var snext=null
+            while (dobj.length) {
+                var ds=dobj.pop()
+                snext=this.parse(ds,snext)
+            }
+            input.push(snext)
+        } else if (rule.argsType[index]==='value') {
+            input.push(this.parse(dobj))
+        } else {
+            input.push(dobj)
+        }
+    }
+    if (rule.type==='statement' && next!=null) {
+        input.push(next)
+    }
+    return rule.xmlText(input)
+}
+${grammerName}Functions.parser=new ${grammerName}Functions.parserClass()
+${grammerName}Functions.parse=function(obj){
+    ${grammerName}Functions.workspace().clear();
+    var xml_text = ${grammerName}Functions.parser.parse(obj);
+    var xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
+    Blockly.Xml.domToWorkspace(xml, ${grammerName}Functions.workspace());
+}
+
+// ${grammerName}Functions.defaultCode_JSON
+${grammerName}Functions.defaultCode_JSON = function (ruleName,args,block) {
+    var rule = ${grammerName}Blocks[ruleName];
+    var values=args
+    var output={}
+    var ret=''
+    if (rule.type==='statement'||rule.type==='value') {
+        output[${grammerName}Functions.defaultCode_JSON_TYPE]=rule.json.type
+        ret=block.getNextBlock()==null?'':','
+    }
+    for (var index = 0; index < values.length; index++) {
+        var value = values[index];
+        if (rule.argsType[index]==='statement') {
+            output[rule.args[index]]=eval('['+value+']')
+        } else if (rule.argsType[index]==='value') {
+            output[rule.args[index]]=eval('('+value+')')
+        } else {
+            output[rule.args[index]]=value
+        }
+    }
+    ret=JSON.stringify(output,null,4)+ret
+    return ret
+}
+
 // ${grammerName}Functions.defaultCode
-${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_TEXT
+${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_JSON
 `;
 }
 
@@ -290,6 +352,7 @@ var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     },
     trashcan: false,
 });
+${grammerName}Functions.workspace = function(){return ${workspaceName}}
 
 function omitedcheckUpdateFunction(event) {
     console.log(event);
