@@ -127,10 +127,7 @@ ${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
             input.push(dobj)
         }
     }
-    if (rule.type==='statement' && next!=null) {
-        input.push(next)
-    }
-    return rule.xmlText(input)
+    return rule.xmlText(input,next)
 }
 ${grammerName}Functions.parser=new ${grammerName}Functions.parserClass()
 ${grammerName}Functions.parse=function(obj){
@@ -173,12 +170,16 @@ var Functions_xmlText = function(grammerName) {
 return /* js */`// ${grammerName}Functions.xmlText
 // 构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
 // inputs的第i个元素是第i个args的xmlText,null或undefined表示空
-// inputs的第rule.args.length个元素是其下一个语句的xmlText
-${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
+// next是其下一个语句的xmlText
+${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,comment,attribute) {
     var rule = ${grammerName}Blocks[ruleName];
     var blocktext = isShadow?'shadow':'block';
     var xmlText = [];
-    xmlText.push('<'+blocktext+' type="'+ruleName+'">');
+    xmlText.push('<'+blocktext+' type="'+ruleName+'"');
+    for (var attr in attribute) {
+        xmlText.push(' '+attr+'="'+attribute[attr]+'"');
+    }
+    xmlText.push('>');
     if(!inputs)inputs=[];
     for (var ii=0,inputType;inputType=rule.argsType[ii];ii++) {
         var input = inputs[ii];
@@ -200,7 +201,7 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
                 subrule = ${grammerName}Blocks[subrulename];
                 subList = true;
             }
-            _input = subrule.xmlText([],true);
+            _input = subrule.xmlText([],null,true);
             if(noinput && !subList && !isShadow) {
                 //无输入的默认行为是: 如果语句块的备选方块只有一个,直接代入方块
                 input = subrule.xmlText();
@@ -215,8 +216,7 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,isShadow,comment) {
         xmlText.push(comment.replace(/\]\]>/g,'] ] >'));
         xmlText.push(']]></comment>');
     }
-    var next = inputs[rule.args.length];
-    if (next) {//next
+    if (next) {
         xmlText.push('<next>');
         xmlText.push(next);
         xmlText.push('</next>');

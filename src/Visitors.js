@@ -520,10 +520,10 @@ EvalVisitor.prototype.assemble = function() {
         }
         var grammerName=this.grammerName;
         var ruleName=rule.check[0];
-        text.push(pre+'function (inputs,isShadow,comment) {\n');
+        text.push(pre+'function (inputs,next,isShadow,comment,attribute) {\n');
         cpre(1);
         text.push(pre+'return '+grammerName+"Functions.xmlText('");
-        text.push(ruleName+"',inputs,isShadow,comment);\n");
+        text.push(ruleName+"',inputs,next,isShadow,comment,attribute);\n");
         cpre(-1);
         text.push(pre+'}');
         rule.xmlText=text.join('');
@@ -567,9 +567,9 @@ EvalVisitor.prototype.assemble = function() {
  *          ['function(block){return "菜单项2"}','console.log(block);alert(2)'],
  *           ...] 方块的右键菜单中的增项
  *   ...: String 其他注入的属性
- *   xmlText: function([...args,next],isShadow,comment){...}
+ *   xmlText: function([...args],next,isShadow,comment,attribute){...}
  *            第一个参数的第i个元素是第i个args的xmlText,null或undefined表示空
- *            第一个参数的第args.length个元素是其下一个语句的xmlText
+ *            next是其下一个语句的xmlText
  * }
  * AbcBlocks在构建时会先生成为只含语句集合的对象,用Object.assign来添加方块
  * 以支持在方块中使用AbcBlocks.collection
