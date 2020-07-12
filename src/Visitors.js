@@ -610,7 +610,13 @@ EvalVisitor.prototype.generBlocks = function() {
     }
     // field使用引用
     for(var jj=0,index=0,arg;arg=rule.blockobj.args[jj];jj++){
-      if (!arg.id || arg.data.type=='field_image')continue;
+      if (!arg.id)continue;
+      if (arg.data.type=='field_image'){
+        replaceobj['"1_fry2_3_inrgv'+arg.id+'_'+jj+'"']=
+          'Object.assign({},'+obj.grammerName+'Blocks.'+arg.id+')';
+        blockjs.args0[jj]='1_fry2_3_inrgv'+arg.id+'_'+jj;
+        continue;
+      }
       if (rule.argsType[index++]!='field')continue;
       replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']=
         'Object.assign({},'+

@@ -83,11 +83,10 @@ ${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
   for(var ii=0,jj=0;ii<args0.length;ii++){
     message=message.split(new RegExp('%'+(ii+1)+'\\\\b'));
     var content='\\n';
-    if (['input_dummy'].indexOf(args0[ii].type)!==-1) {
+    if (args0[ii].type==='input_dummy') {
       message[1]=message[1].slice(1);
-    } else if(['field_image'].indexOf(args0[ii].type)!==-1) {
-      message[1]=message[1].slice(1);
-      content='';
+    } else if(args0[ii].type==='field_image') {
+      content=args0[ii].alt;
     } else {
       content=args[jj++];
     }
