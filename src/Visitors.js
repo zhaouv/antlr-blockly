@@ -2,9 +2,11 @@
 var BlocklyGrammerVisitor = require('./gen/BlocklyGrammerVisitor').
     BlocklyGrammerVisitor;
 
+/**
+ * @class
+ */
 function SymbolVisitor() {
 	BlocklyGrammerVisitor.call(this);
-	return this;
 }
 
 SymbolVisitor.prototype = Object.create(BlocklyGrammerVisitor.prototype);
@@ -165,10 +167,11 @@ var json={
     },
 }
 //============================================================================
-
+/**
+ * @class
+ */
 function EvalVisitor() {
 	BlocklyGrammerVisitor.call(this);
-	return this;
 }
 
 EvalVisitor.prototype = Object.create(BlocklyGrammerVisitor.prototype);
@@ -602,7 +605,7 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'}\n');
     //添加域
     text.push(pre+'// 所有域的默认行为\n');
-    text.push(pre+this.grammerName+'Blocks = Object.assign(');
+    text.push(pre+'Object.assign(');
     text.push(this.grammerName+'Blocks,');
     function renderLexerRules(lexerRules) {
         var rcount=0;
@@ -624,7 +627,7 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+');\n');
     //添加所有方块
     text.push(pre+'// 所有方块的实际内容\n');
-    text.push(pre+this.grammerName+'Blocks = Object.assign(');
+    text.push(pre+'Object.assign(');
     text.push(this.grammerName+'Blocks,{\n');
     cpre(1);
     //此函数的目的是将块中的语句集合和表达式集合在生成为文件时
@@ -884,12 +887,12 @@ EvalVisitor.prototype.visitStatValue = function(ctx) {
     }
     this.visitChildren(ctx);
     var obj = this.status;
-    delete(this.status);
+    this.status=null;
     this.initAssemble(obj);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#arithmeticRuleCollection.
-BlocklyGrammerVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
+EvalVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
     //'expression' parserRuleAtom* '|'
     this.status={
         'name': 'expression',
@@ -910,12 +913,12 @@ BlocklyGrammerVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
     this.status.name='expression_arithmetic_'+this.expression_arithmetic_num;
     this.expression_arithmetic_num++;
     var obj = this.status;
-    delete(this.status);
+    this.status=null;
     this.initAssemble(obj);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
-BlocklyGrammerVisitor.prototype.visitExprValue = function(ctx) {
+EvalVisitor.prototype.visitExprValue = function(ctx) {
     //ParserIdentifier ':' parserRuleAtom* ';'
     this.status={
         'name': ctx.ParserIdentifier(0).getText(),
@@ -925,7 +928,7 @@ BlocklyGrammerVisitor.prototype.visitExprValue = function(ctx) {
     }
     this.visitChildren(ctx);
     var obj = this.status;
-    delete(this.status);
+    this.status=null;
     this.initAssemble(obj);
 };
 
