@@ -587,6 +587,7 @@ EvalVisitor.prototype.generBlocks = function() {
     //添加所有语句集合和表达式集合
     text.push(pre+'// 语句集合和表达式集合\n');
     text.push(pre+this.grammerName+'Blocks = {\n');
+    text.push('');
     cpre(1);
     for(var ii=0,crule;crule=temp_collection[ii];ii++){
         text.push(pre+'"'+crule[0]+'": ');
