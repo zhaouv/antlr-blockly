@@ -665,7 +665,7 @@ EvalVisitor.prototype.generBlocks = function() {
             replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']=
                 'Object.assign({},'+
                 obj.grammerName+'Blocks.'+arg.id+','+
-                JSON.stringify(blockjs.args0[jj],null,4).split('\n').join('\n'+pre+'    ')
+                JSON.stringify(blockjs.args0[jj],null,4).split('\n').join('\n'+pre+'        ')
                 +')';
             blockjs.args0[jj]='1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name;
         }
