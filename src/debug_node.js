@@ -9,3 +9,5 @@ converter.generBlocks(grammerFile);
 converter.renderGrammerName();
 converter.generToolbox();
 converter.generMainFile();
+let blockls=eval(converter.blocks)
+'end'

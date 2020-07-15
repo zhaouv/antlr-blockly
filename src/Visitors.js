@@ -99,6 +99,8 @@ SymbolVisitor.prototype.visitExprExpression = function(ctx) {
     this.expression_arithmetic_num=ctx.arithmeticRuleCollection().length;
     for(var ii=0;ii<this.expression_arithmetic_num;ii++){
         var exprname = 'expression_arithmetic_'+ii;
+        var named = ctx.arithmeticRuleCollection(ii).blockName;
+        if (named) exprname=named.text;
         exprs.push(exprname);
         this.expressionRules.push([exprname,[exprname]]);
     }
@@ -910,7 +912,8 @@ EvalVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
         ]
     }
     this.visitChildren(ctx);
-    this.status.name='expression_arithmetic_'+this.expression_arithmetic_num;
+    this.status.name=ctx.blockName && ctx.blockName.text || 
+        'expression_arithmetic_'+this.expression_arithmetic_num;
     this.expression_arithmetic_num++;
     var obj = this.status;
     this.status=null;

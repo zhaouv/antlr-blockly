@@ -25,7 +25,7 @@ expressionRule
     ;
 
 arithmeticRuleCollection
-    :   'expression' parserRuleAtom*
+    :   'expression' parserRuleAtom* ('#' blockName=ParserIdentifier)?
     ;
 
 parserRuleAtom
