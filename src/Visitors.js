@@ -342,6 +342,9 @@ EvalVisitor.prototype.initAssemble = function(obj) {
             if (obj.inject.name[validinputNum_-1]){
                 args_.name=obj.inject.name[validinputNum_-1];
             }
+            if (args.varName) {
+                args_.name=args.varName;
+            }
             obj.vars.push(args_.name);
         } else {
             obj.vars.push(null);
@@ -907,7 +910,8 @@ EvalVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
                 'omitted': false,
                 'data': {
                     'type': 'input_value'
-                }
+                },
+                'varName': ctx.varName && ctx.varName.text || null
             }
         ]
     }
@@ -941,10 +945,11 @@ EvalVisitor.prototype.visitParserAtomExpr = function(ctx) {
     var parservalue={
         'id': 'expression',
         'blockType': 'value',
-        'omitted': ctx.children.length>1,
+        'omitted': ctx.ex!=null,
         'data': {
             'type': 'input_value'
-        }
+        },
+        'varName': ctx.varName && ctx.varName.text || null
     }
     this.status.args.push(parservalue);
     this.status.message.push('%'+this.status.args.length);
@@ -953,8 +958,8 @@ EvalVisitor.prototype.visitParserAtomExpr = function(ctx) {
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomParserId.
 EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
     //ParserIdentifier ('+' | '*' | '?')?
-    var parserId = ctx.children[0].getText();
-    var ex = (ctx.children.length>1 && ctx.children[1].getText()) || '';
+    var parserId = ctx.parserId.text;
+    var ex = ctx.ex && ctx.ex.text || '';
     var blockType = this.getRule('value',parserId)?'value':'statement';
     var parservalue={
         'id':parserId,
@@ -963,7 +968,8 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
         'multi': ex==='+' || ex==='*',
         'data': {
             'type': 'input_'+blockType
-        }
+        },
+        'varName': ctx.varName && ctx.varName.text || null
     }
     if (blockType==='value' && parservalue.multi) {
         this.error(this.status.name+' 下出现了复数组合的表达式 '+parserId+ex);
@@ -975,14 +981,15 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomLexerId.
 EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     //LexerIdentifier '?'?
-    var lexerId = ctx.children[0].getText();
+    var lexerId = ctx.lexerId.text;
     var lexervalue = this.getRule('lexer',lexerId);
     if (!lexervalue) return;//分隔符之下的词法规则直接丢弃
     var parservalue={
         'id': lexerId,
         'blockType': 'field',
-        'omitted': ctx.children.length>1,
-        'data': lexervalue
+        'omitted': ctx.ex!=null,
+        'data': lexervalue,
+        'varName': ctx.varName && ctx.varName.text || null
     }
     //特殊规则BGNL对应换行,没有id和blockType
     if (lexerId==='BGNL') {

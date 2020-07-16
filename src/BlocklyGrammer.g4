@@ -25,14 +25,14 @@ expressionRule
     ;
 
 arithmeticRuleCollection
-    :   'expression' parserRuleAtom* ('#' blockName=ParserIdentifier)?
+    :   (varName=(LexerIdentifier|ParserIdentifier) '=')? 'expression' parserRuleAtom* ('#' blockName=ParserIdentifier)?
     ;
 
 parserRuleAtom
-    :   'expression' ('?' '?'?)? # ParserAtomExpr
-    |   ParserIdentifier (('+' | '*' | '?') '?'?)? # ParserAtomParserId
-    |   LexerIdentifier ('?' '?'?)? # ParserAtomLexerId
-    |   String ('?' '?'?)? # ParserAtomStr
+    :   (varName=(LexerIdentifier|ParserIdentifier) '=')? 'expression' (ex='?' '?'?)? # ParserAtomExpr
+    |   (varName=(LexerIdentifier|ParserIdentifier) '=')? parserId=ParserIdentifier (ex=('+' | '*' | '?') '?'?)? # ParserAtomParserId
+    |   (varName=(LexerIdentifier|ParserIdentifier) '=')? lexerId=LexerIdentifier (ex='?' '?'?)? # ParserAtomLexerId
+    |   (varName=(LexerIdentifier|ParserIdentifier) '=')? String ('?' '?'?)? # ParserAtomStr
     ;
 
 lexerRuleCollection

@@ -417,7 +417,7 @@ statExprSplit : '=== statement ^ === expression v ===' ;
 //===blockly表达式===
 
 expression
-    :   expression Arithmetic_List expression # arithmetic
+    :   a=expression op=Arithmetic_List b=expression # arithmetic
     |   negate_e
     |   bool_e
     |   idString_e
