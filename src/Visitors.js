@@ -15,7 +15,7 @@ SymbolVisitor.prototype.constructor = SymbolVisitor;
 SymbolVisitor.prototype.init = function() {
     this.statementRules=[];
     this.expressionRules=[];
-    this.expression_arithmetic_num=0;
+    this.arithmetic={};
     this.lexerRules={};
     this.grammerName='';
     return this;
@@ -50,12 +50,7 @@ SymbolVisitor.prototype.checkSymbol = function() {
             }
         }
     }
-    //检查是否有expression之外的表达式集合
-    for(var ii=0,expressionRule;expressionRule=this.expressionRules[ii];ii++){
-        if (expressionRule[1].length>1 && expressionRule[0]!=='expression'){
-            this.error('表达式 '+expressionRule[0]+' 包含了"|"');
-        }
-    }
+    // 允许一个表达式出现在多个表达式集合中
 }
 
 // Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
@@ -74,48 +69,55 @@ SymbolVisitor.prototype.visitGrammerDecl = function(ctx) {
     this.grammerName = ctx.children[1].getText();
 };
 
+SymbolVisitor.prototype.getNameOfListMember = function (ctx) {
+    var name = ctx.name && ctx.name.text;
+    if (name) return name;
+    var bctx = ctx.blockContentCollection();
+    name = bctx && 
+           bctx.blockName && 
+           bctx.blockName.text;
+    if (name) return name;
+    return null
+}
+
+SymbolVisitor.prototype.processList = function(ctx, Rules) {
+    //处理集合,parserId和pIds分别是集合名字和子规则名字数组
+    var parserId = ctx.ParserIdentifier().getText();
+    var pIds = ctx.ruleListMember();
+    for(var ii=0,value;value=pIds[ii];ii++){
+        pIds[ii]=this.getNameOfListMember(value);
+        if (value.name==null) {
+            if (pIds[ii]==null) pIds[ii]=parserId+'_arithmetic_'+(this.arithmetic[parserId]||0);
+            this.arithmetic[parserId]=(this.arithmetic[parserId]||0)+1;
+            Rules.push([pIds[ii],[pIds[ii]]]);
+        }
+    }
+    Rules.push([parserId,pIds]);
+};
+
+SymbolVisitor.prototype.processValue = function(ctx, Rules) {
+    var parserId = ctx.ParserIdentifier(0).getText();
+    Rules.push([parserId,[parserId]]);
+};
+
 // Visit a parse tree produced by BlocklyGrammerParser#StatList.
 SymbolVisitor.prototype.visitStatList = function(ctx) {
-    //处理语句集合,statId和pIds分别是集合名字和子规则名字数组
-    var pIds = ctx.ParserIdentifier();
-    for(var ii=0,value;value=pIds[ii];ii++){
-        pIds[ii]=value.getText();
-    }
-    var statId = pIds.shift();
-    this.statementRules.push([statId,pIds]);
+    this.processList(ctx,this.statementRules);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#StatValue.
 SymbolVisitor.prototype.visitStatValue = function(ctx) {
-    var statId = ctx.ParserIdentifier(0).getText();
-    this.statementRules.push([statId,[statId]]);
+    this.processValue(ctx,this.statementRules);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprExpression.
-SymbolVisitor.prototype.visitExprExpression = function(ctx) {
-    //解析表达式的符号,以'expression'开头的,
-    //用expression_arithmetic_[num]来依次命名
-    var exprs=[];
-    this.expression_arithmetic_num=ctx.arithmeticRuleCollection().length;
-    for(var ii=0;ii<this.expression_arithmetic_num;ii++){
-        var exprname = 'expression_arithmetic_'+ii;
-        var named = ctx.arithmeticRuleCollection(ii).blockName;
-        if (named) exprname=named.text;
-        exprs.push(exprname);
-        this.expressionRules.push([exprname,[exprname]]);
-    }
-    var pIds = ctx.ParserIdentifier();
-    for(var ii=0,value;value=pIds[ii];ii++){
-        pIds[ii]=value.getText();
-    }
-    exprs=exprs.concat(pIds);
-    this.expressionRules.push(['expression',exprs]);
+// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
+SymbolVisitor.prototype.visitExprList = function(ctx) {
+    this.processList(ctx,this.expressionRules);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
 SymbolVisitor.prototype.visitExprValue = function(ctx) {
-    var exprId = ctx.ParserIdentifier(0).getText();
-    this.expressionRules.push([exprId,[exprId]]);
+    this.processValue(ctx,this.expressionRules);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#lexerRuleCollection.
@@ -740,7 +742,7 @@ EvalVisitor.prototype.generBlocks = function() {
     this.blocks=text.join('');
 }
 
-EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
+EvalVisitor.prototype.speicalLexerRule = function(lexerId) {
     //当识别出特定的语法规格后,生成内容并返回true
     var lexervalue = {};
     if (lexerId==='Bool') {
@@ -799,8 +801,8 @@ EvalVisitor.prototype.SpeicalLexerRule = function(lexerId) {
 EvalVisitor.prototype.visitGrammarFile = function(ctx) {
     //先生成词法规则再组装块.调整了遍历顺序
     this.visit(ctx.lexerRuleCollection(0));
+    this.arithmetic={};
     this.visit(ctx.statementRule());
-    this.expression_arithmetic_num=0;
     this.visit(ctx.expressionRule());
     this.assemble();
 };
@@ -817,7 +819,7 @@ EvalVisitor.prototype.visitStrings = function(ctx) {
 // Visit a parse tree produced by BlocklyGrammerParser#LexerRuleStrings.
 EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
-    if (this.SpeicalLexerRule(lexerId)) return;
+    if (this.speicalLexerRule(lexerId)) return;
     var strings = this.visit(ctx.strings(0));
     //只包含字符串的词法规则直接代入
     this.setRule('lexer',lexerId,strings);
@@ -826,7 +828,7 @@ EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
 // Visit a parse tree produced by BlocklyGrammerParser#LexerRuleList.
 EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
-    if (this.SpeicalLexerRule(lexerId)) return;
+    if (this.speicalLexerRule(lexerId)) return;
     if (lexerId.slice(-5)!=='_List' && lexerId.slice(-4)!=='_Img') {
         this.visitLexerRuleComplex(ctx);
         return;
@@ -872,7 +874,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
 // Visit a parse tree produced by BlocklyGrammerParser#LexerRuleComplex.
 EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
-    if (this.SpeicalLexerRule(lexerId)) return;
+    if (this.speicalLexerRule(lexerId)) return;
     //复杂词法规则作为文本域让用户输入
     var lexervalue = {
         'type': lexerId.slice(-6)!=='_Multi'?'field_input':'field_multilinetext',
@@ -881,78 +883,66 @@ EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
     this.setRule('lexer',lexerId,lexervalue);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#StatValue.
-EvalVisitor.prototype.visitStatValue = function(ctx) {
+EvalVisitor.prototype.processList = function (ctx, typeStr) {
+    //ParserIdentifier ':' ruleListMember ('|' ruleListMember)+ ';'
+    this.listInformation={
+        'name': ctx.ParserIdentifier().getText(),
+        'type': typeStr
+    }
+    this.visitChildren(ctx);
+    this.listInformation=null;
+}
+
+EvalVisitor.prototype.processValue = function (ctx, typeStr) {
     //ParserIdentifier ':' parserRuleAtom* ';'
-    this.status={
+    this.blockInformation={
         'name': ctx.ParserIdentifier(0).getText(),
-        'type': 'statement',
+        'type': typeStr,
         'message': [],
         'args': []
     }
     this.visitChildren(ctx);
-    var obj = this.status;
-    this.status=null;
+    var obj = this.blockInformation;
+    this.blockInformation=null;
     this.initAssemble(obj);
+}
+
+// Visit a parse tree produced by BlocklyGrammerParser#StatList.
+EvalVisitor.prototype.visitStatList = function(ctx) {
+    this.processList(ctx,'statement');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#arithmeticRuleCollection.
-EvalVisitor.prototype.visitArithmeticRuleCollection = function(ctx) {
-    //'expression' parserRuleAtom* '|'
-    this.status={
-        'name': 'expression',
-        'type': 'value',
-        'message': ['%1'],
-        'args': [
-            {
-                'id': 'expression',
-                'blockType': 'value',
-                'omitted': false,
-                'data': {
-                    'type': 'input_value'
-                },
-                'varName': ctx.varName && ctx.varName.text || null
-            }
-        ]
-    }
-    this.visitChildren(ctx);
-    this.status.name=ctx.blockName && ctx.blockName.text || 
-        'expression_arithmetic_'+this.expression_arithmetic_num;
-    this.expression_arithmetic_num++;
-    var obj = this.status;
-    this.status=null;
-    this.initAssemble(obj);
+// Visit a parse tree produced by BlocklyGrammerParser#StatValue.
+EvalVisitor.prototype.visitStatValue = function(ctx) {
+    this.processValue(ctx,'statement');
+};
+
+// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
+EvalVisitor.prototype.visitExprList = function(ctx) {
+    this.processList(ctx,'value');
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
 EvalVisitor.prototype.visitExprValue = function(ctx) {
-    //ParserIdentifier ':' parserRuleAtom* ';'
-    this.status={
-        'name': ctx.ParserIdentifier(0).getText(),
-        'type': 'value',
+    this.processValue(ctx,'value');
+};
+
+// Visit a parse tree produced by BlocklyGrammerParser#blockContentCollection.
+EvalVisitor.prototype.visitBlockContentCollection = function(ctx) {
+    //parserRuleAtom+ ('#' blockName=ParserIdentifier)?
+    var parserId = this.listInformation.name;
+    this.blockInformation={
+        'name': ctx.blockName && ctx.blockName.text || 
+                parserId+'_arithmetic_'+(this.arithmetic[parserId]||0),
+        'type': this.listInformation.type,
         'message': [],
         'args': []
     }
+    this.arithmetic[parserId]=(this.arithmetic[parserId]||0)+1;
     this.visitChildren(ctx);
-    var obj = this.status;
-    this.status=null;
+    var obj = this.blockInformation;
+    this.blockInformation=null;
     this.initAssemble(obj);
-};
-
-// Visit a parse tree produced by BlocklyGrammerParser#ParserAtomExpr.
-EvalVisitor.prototype.visitParserAtomExpr = function(ctx) {
-    //'expression' '?'?
-    var parservalue={
-        'id': 'expression',
-        'blockType': 'value',
-        'omitted': ctx.ex!=null,
-        'data': {
-            'type': 'input_value'
-        },
-        'varName': ctx.varName && ctx.varName.text || null
-    }
-    this.status.args.push(parservalue);
-    this.status.message.push('%'+this.status.args.length);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomParserId.
@@ -972,10 +962,10 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
         'varName': ctx.varName && ctx.varName.text || null
     }
     if (blockType==='value' && parservalue.multi) {
-        this.error(this.status.name+' 下出现了复数组合的表达式 '+parserId+ex);
+        this.error(this.blockInformation.name+' 下出现了复数组合的表达式 '+parserId+ex);
     }
-    this.status.args.push(parservalue);
-    this.status.message.push('%'+this.status.args.length);
+    this.blockInformation.args.push(parservalue);
+    this.blockInformation.message.push('%'+this.blockInformation.args.length);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomLexerId.
@@ -997,12 +987,12 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     }
     //纯字符串的词法规则直接代入
     if (typeof(lexervalue)===typeof('')) {
-        this.status.message.push(lexervalue);
+        this.blockInformation.message.push(lexervalue);
         return;
     }
-    this.status.args.push(parservalue);
+    this.blockInformation.args.push(parservalue);
     //message0中的'%num'是从1开头的
-    this.status.message.push('%'+this.status.args.length);
+    this.blockInformation.message.push('%'+this.blockInformation.args.length);
 };
 
 // Visit a parse tree produced by BlocklyGrammerParser#ParserAtomStr.
@@ -1010,7 +1000,7 @@ EvalVisitor.prototype.visitParserAtomStr = function(ctx) {
     //String
     var string_ = this.escapeString(ctx.String().getText());
     //纯字符串直接代入
-    this.status.message.push(string_);
+    this.blockInformation.message.push(string_);
 };
 
 exports.SymbolVisitor = SymbolVisitor;

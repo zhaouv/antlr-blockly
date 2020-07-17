@@ -5,7 +5,7 @@ grammar MotaActionPure;
 
 //事件 事件编辑器入口之一
 event_m
-    :   A_Img '事件' BGNL? Newline '覆盖触发器' Bool '启用' Bool '通行状态' B_0_List '显伤' Bool BGNL? Newline action+ Colour Angle 'testinput' EvalString DymanicTest_List BEND
+    :   A_Img '事件' BGNL? Newline '覆盖触发器' trigger=Bool '启用' enable=Bool '通行状态' noPass=B_0_List '显伤' displayDamage=Bool BGNL? Newline data=action+ Colour Angle 'testinput' EvalString DymanicTest_List BEND
     ;
 
 
@@ -24,21 +24,9 @@ shop_m
 
 
 shoplist
-    :   shopsub
-    |   emptyshop
+    :   '商店 id' IdString '标题' EvalString '图标' IdString BGNL? Newline '快捷商店栏中名称' EvalString BGNL? Newline '使用' ShopUse_List '消耗' EvalString BGNL? Newline '显示文字' EvalString BGNL? Newline shopChoices+ BEND # shopsub
+    |   Newline # emptyshop
     ;
-
-emptyshop
-    :   Newline
-    ;
-
-
-
-shopsub
-    :   '商店 id' IdString '标题' EvalString '图标' IdString BGNL? Newline '快捷商店栏中名称' EvalString BGNL? Newline '使用' ShopUse_List '消耗' EvalString BGNL? Newline '显示文字' EvalString BGNL? Newline shopChoices+ BEND
-    ;
-
-
 
 shopChoices
     :   '商店选项' EvalString '消耗' EvalString? BGNL? Newline shopEffect+
@@ -418,51 +406,31 @@ statExprSplit : '=== statement ^ === expression v ===' ;
 
 expression
     :   a=expression op=Arithmetic_List b=expression # arithmetic
-    |   negate_e
-    |   bool_e
-    |   idString_e
-    |   evalString_e
+    |   '非' expression # negate_e
+    |   Bool # bool_e
+    |   idString_0_e
+    |   idString_1_e
+    |   idString_2_e
+    |   EvalString # evalString_e
     ;
-
-
-
-negate_e
-    :   '非' expression
-    ;
-
-
-
-bool_e
-    :   Bool
-    ;
-
-
-
 
 idString_e
+    :   idString_0_e
+    |   idString_1_e
+    |   idString_2_e
+    ;
+
+idString_0_e
     :   IdString
     ;
 
-
-
-//这一条不会被antlr识别,总是会被归到idString_e
 idString_1_e
     :   Id_List ':' IdText
     ;
 
-
-
-//这一条不会被antlr识别,总是会被归到idString_e
 idString_2_e
     :   FixedId_List
     ;
-
-
-
-evalString_e
-    :   EvalString
-    ;
-
 
 
 //===============lexer===============

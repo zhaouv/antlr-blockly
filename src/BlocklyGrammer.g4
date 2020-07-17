@@ -15,22 +15,25 @@ statExprSplit
     ;
 
 statementRule
-    :   ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)+ ';' # StatList
-    |   ParserIdentifier ':' parserRuleAtom* ';' # StatValue
+    :   ParserIdentifier ':' ruleListMember ('|' ruleListMember)+ ';' # StatList
+    |   ParserIdentifier ':' parserRuleAtom+ ';' # StatValue
     ;
 
 expressionRule
-    :   'expression' ':' (arithmeticRuleCollection|ParserIdentifier) ('|' (arithmeticRuleCollection|ParserIdentifier))* ';' # ExprExpression
-    |   ParserIdentifier ':' parserRuleAtom* ';' # ExprValue
+    :   ParserIdentifier ':' ruleListMember ('|' ruleListMember)+ ';' # ExprList
+    |   ParserIdentifier ':' parserRuleAtom+ ';' # ExprValue
     ;
 
-arithmeticRuleCollection
-    :   (varName=(LexerIdentifier|ParserIdentifier) '=')? 'expression' parserRuleAtom* ('#' blockName=ParserIdentifier)?
+ruleListMember
+    :   name=ParserIdentifier|blockContentCollection
+    ;
+
+blockContentCollection
+    :   parserRuleAtom+ ('#' blockName=ParserIdentifier)?
     ;
 
 parserRuleAtom
-    :   (varName=(LexerIdentifier|ParserIdentifier) '=')? 'expression' (ex='?' '?'?)? # ParserAtomExpr
-    |   (varName=(LexerIdentifier|ParserIdentifier) '=')? parserId=ParserIdentifier (ex=('+' | '*' | '?') '?'?)? # ParserAtomParserId
+    :   (varName=(LexerIdentifier|ParserIdentifier) '=')? parserId=ParserIdentifier (ex=('+' | '*' | '?') '?'?)? # ParserAtomParserId
     |   (varName=(LexerIdentifier|ParserIdentifier) '=')? lexerId=LexerIdentifier (ex='?' '?'?)? # ParserAtomLexerId
     |   (varName=(LexerIdentifier|ParserIdentifier) '=')? String ('?' '?'?)? # ParserAtomStr
     ;

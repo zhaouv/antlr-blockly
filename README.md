@@ -14,15 +14,21 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 ## Todo
 
-+ [ ] ?单语句的支持: json中不再是数组, 放入多个语句时报错
++ 单语句的支持: json中不再是数组, 放入多个语句时报错
 
 + [ ] 默认值提供defaultMap, 优先级大于default数组
 
-+ [ ] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行, 算数规则可以用`# id`来命名
++ [x] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行, 算数规则可以用`# id`来命名
 
 + [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground
 
-+ [ ] 表达式支持expression之外的集合, 只有expression允许直接的左递归 (?所有都允许左递归, 只有expression允许直接的左递归且不命名方块)
++ [x] 语句集合和表达式集合内允许定义一般方块, 通过` # id`规则来命名方块, 或者使用xxx_arithmetic_ii的默认名称
+
++ [x] 表达式集合支持expression之外的集合, 选择一种方案支持
+  + ~~只有expression允许直接的左递归~~
+  + ~~所有都允许左递归, 只有expression允许直接的左递归且不命名方块~~
+  + ~~所有都允许左递归, 放弃expression的特殊地位, 不兼容旧的.g4~~
+  + [x] 所有都允许左递归, 放弃expression的特殊地位, 所有的列表都用xxx_arithmetic_ii给默认名称
 
 + [ ] 文档:api说明
 
