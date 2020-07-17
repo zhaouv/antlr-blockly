@@ -30,7 +30,7 @@ Typical applications: DSL editor and JSON editor. Additional design is made for 
 
 ## Todo
 
-+ 单语句的支持: json中不再是数组, 放入多个语句时报错
++ [ ] 单语句的支持: json中不再是数组, 放入多个语句时报错
 
 + [ ] demos按照新的设计改写
 

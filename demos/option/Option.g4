@@ -2,15 +2,32 @@ grammar Option;
 
 option:
     'option' BGNL
-    KeepG4_List BGNL
-    'default blockly generating:' BlocklyGenerating_List BGNL
-    'blocklyDiv' BGNL
-    'toolbox' BGNL
-    'codeArea' BGNL
-    
-/* option
-name : ['keepG4','blocklyGenerating']
-*/;
+    keepG4=KeepG4_List BGNL
+    'default blockly generating:' defaultGenerating=BlocklyGenerating_List BGNL
+    'grammarFile' BGNL grammarFile=grammarStatement
+    'blocklyDiv' BGNL blocklyDiv=blocklyDivStatement
+    'toolbox' BGNL toolbox=toolboxStatement
+    'codeArea' BGNL codeArea=codeAreaStatement
+    ;
+
+grammarStatement
+    :   'content' BGNL source=BlockString_Multi BGNL # grammarContent
+    |   'filename' filename=NormalString BGNL # grammarFilename
+    |   'function' func=RawString BGNL # grammarFunction
+    ;
+
+blocklyDivStatement
+    :   'id :' id=NormalString BGNL 'dymanic' # dymanicSizeBlocklyDiv
+    |   'id :' id=NormalString BGNL 'fix size' 'x:' x=Int 'y:' y=Int # fixSizeBlocklyDiv
+    ;
+
+toolboxStatement
+    :   'function' func=RawString BGNL
+    ;
+
+codeAreaStatement
+    :   'output' output=RawString BGNL 'input (JSON only)' input=RawString?
+    ;
 
 statExprSplit : '=== statement ^ === expression v ===' ;
 
@@ -20,8 +37,12 @@ statExprSplit : '=== statement ^ === expression v ===' ;
 //     |   intExpr
 //     ;
 
-KeepG4_List : 'Generate target source without keeping .g4'|'Keep .g4 and antlr-blockly as source' /*KeepG4_List ['no','yes']*/;
+KeepG4_List : 'Generate target source without keeping grammar'|'Keep grammar and antlr-blockly as source' /*KeepG4_List ['no','yes']*/;
 BlocklyGenerating_List : 'JSON'|'TEXT';
+BlockString_Multi: ('asdaw'+)*;
+RawString: ('asdsaw'+)*;
+NormalString: ('asdsaw'+)*;
+
 
 Int :   [0-9]+ ;
 Bool:   'true'|'false' ;
