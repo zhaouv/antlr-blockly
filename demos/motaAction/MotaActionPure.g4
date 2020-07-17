@@ -7,7 +7,9 @@ grammar MotaActionPure;
 event_m
     :   A_Img '事件' BGNL? Newline '覆盖触发器' trigger=Bool '启用' enable=Bool '通行状态' noPass=B_0_List '显伤' displayDamage=Bool BGNL? Newline data=action+ Colour Angle 'testinput' EvalString DymanicTest_List BEND
     ;
-
+/* event_m
+defaultMap : {trigger:false,enable:true}
+*/
 
 
 //加点 事件编辑器入口之一

@@ -267,11 +267,11 @@ EvalVisitor.prototype.inject = [
     'type','json','generFunc','args','argsType',
     'argsGrammarName','fieldDefault','menu','xmlText',
 
-    'colour','tooltip','helpUrl','default','override','name'
+    'colour','tooltip','helpUrl','default','defaultMap','override','name'
 ]
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
-    if(!injectStr)return {'default':[],'name':[]};
+    if(!injectStr)return {'default':[],'defaultMap':{},'name':[]};
     var obj = {};
     var keyvaluepart=
         /^((?:(?:[^\S\r\n]+|\s*\w+\s*:[^\r\n]*)[\r\n]*)*)/.exec(injectStr)
@@ -285,9 +285,9 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
         obj[match[1]]=match[2];
     }
     if(obj.colour) obj.colour=eval(obj.colour);
-    for(var ii=0,key;key=['default','name'][ii];ii++){
+    for(var ii=0,key;key=['default','defaultMap','name'][ii];ii++){
         if(obj[key]){
-            obj[key]=eval(obj[key]);
+            obj[key]=eval('('+obj[key]+')');
         } else {
             obj[key]=[];
         }
@@ -307,6 +307,7 @@ EvalVisitor.prototype.initAssemble = function(obj) {
     //并额外记录在vars中
     for(var ii=0,args,ids={};args=obj.args[ii];ii++){
         var args_ = JSON.parse(JSON.stringify(args.data));
+        var setDeafault = null;
         var default_ = null;
         if (args.id && args.data.type!='field_image') { // 既不是换行也不是图片
             ids[args.id]=ids[args.id]?ids[args.id]:0;
@@ -331,10 +332,13 @@ EvalVisitor.prototype.initAssemble = function(obj) {
                     'field_angle':'angle',
                     // 'field_image':'src'
                 })[args.data.type];
+                setDeafault=function (default_) {
+                    args_[key]=default_;
+                }
                 default_ = obj.inject.default[fieldNum_];
                 if (default_===undefined)default_=null;
                 if (default_!==null){
-                    args_[key]=default_;
+                    setDeafault(default_);
                 }
                 fieldNum_++;
             }
@@ -348,6 +352,9 @@ EvalVisitor.prototype.initAssemble = function(obj) {
                 args_.name=args.varName;
             }
             obj.vars.push(args_.name);
+            if (obj.inject.defaultMap[args_.name]!=null) {
+                setDeafault(obj.inject.defaultMap[args_.name]);
+            }
         } else {
             obj.vars.push(null);
             manualWrap = true;

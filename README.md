@@ -16,7 +16,14 @@ Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 t
 
 + 单语句的支持: json中不再是数组, 放入多个语句时报错
 
-+ [ ] 默认值提供defaultMap, 优先级大于default数组
++ [ ] 文档
+  + [ ] xmlText函数attribute
+  + [ ] defaultCode_JSON
+  + [ ] `# id`
+  + [ ] `abc=Bool`
+  + [ ] defaultMap
+
++ [x] 默认值提供defaultMap, 优先级大于default数组
 
 + [x] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行, 算数规则可以用`# id`来命名
 
