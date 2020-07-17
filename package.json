@@ -1,6 +1,6 @@
 {
     "name": "antlr-blockly",
-    "description": "Generate blockly application from .g4 grammar",
+    "description": "Generate visual programming editor from BNF grammar",
     "version": "0.1.1",
     "publisher": "zhaouv",
     "main": "./Converter.bundle.min.js",

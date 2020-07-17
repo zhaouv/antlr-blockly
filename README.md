@@ -1,20 +1,38 @@
 # antlr-blockly
 
-Use [antlr](https://github.com/antlr/antlr4) to automate the conversion of .g4 to [blockly](https://github.com/google/blockly).  
+Generate visual programming editor from BNF grammar.
+
+The purely Javascript implementation of generating [blockly](https://github.com/google/blockly) visual editor from [antlr](https://github.com/antlr/antlr4) grammar file.
+
+Typical applications: DSL editor and JSON editor. Additional design is made for JSON editing. As an editor that generates JSON, it can also automatically complete reverse parsing.
+
 [Document](https://zhaouv.github.io/antlr-blockly/docs/#/en/README)
 
-用 [antlr](https://github.com/antlr/antlr4) 来完成自动的.g4转 [blockly](https://github.com/google/blockly).  
+基于BNF文法生成可视化编辑器.
+
+纯Javascript实现的[antlr](https://github.com/antlr/antlr4)语法文件生成[blockly](https://github.com/google/blockly)可视化编辑器.  
+
+典型应用: DSL编辑器 和 JSON编辑器. 针对JSON编辑做了额外的设计, 作为生成JSON的编辑器的同时, 也能够自动完成反向的解析.
+
 [文档](https://zhaouv.github.io/antlr-blockly/docs/#/README)  
 
-转化思路 [convert.md](./convert.md)
+---
+
+<!-- 转化思路 [convert.md](./convert.md) -->
 
 作为示例MotaAction.g4给项目 [mota-js](https://github.com/ckcz123/mota-js) 提供事件编辑器子模块
 
-[LICENSE](./NOTICE.md)
+## LICENSE
+
+[Apache License 2.0](./LICENSE)
+
+[NOTICE](./NOTICE.md)
 
 ## Todo
 
 + 单语句的支持: json中不再是数组, 放入多个语句时报错
+
++ [ ] demos按照新的设计改写
 
 + [ ] 文档
   + [ ] xmlText函数attribute
