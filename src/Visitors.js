@@ -50,7 +50,17 @@ SymbolVisitor.prototype.checkSymbol = function() {
             }
         }
     }
-    // 允许一个表达式出现在多个表达式集合中
+    for(var ii=0,expressionRule;expressionRule=this.expressionRules[ii];ii++){
+        if (expressionRule[0]!==expressionRule[1][0]){
+            for(var jj=0,exprname;exprname=expressionRule[1][jj];jj++){
+                //允许一个表达式出现在多个表达式集合中
+                //检查表达式集合的子规则是否有表达式集合
+                if (filter_(this.expressionRules,exprname)){
+                    this.error(expressionRule[0]+' 下的子规则 '+exprname+' 也是表达式集合');
+                }
+            }
+        }
+    }
 }
 
 // Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
