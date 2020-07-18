@@ -17,6 +17,25 @@ function OmitedError(block, var_, rule, fileName, lineNumber) {
 OmitedError.prototype = Object.create(Error.prototype);
 OmitedError.prototype.constructor = OmitedError;
 //处理此错误的omitedcheckUpdateFunction定义在下面
+
+//生成代码中,当一个不允许多个语句输入的块放入多语句时,会抛出这个错误
+function MultiStatementError(block, var_, rule, fileName, lineNumber) {
+    var message = 'no multi-Statement '+var_+' at '+rule;
+    var instance = new Error(message, fileName, lineNumber);
+    instance.block = block;
+    instance.varName = var_;
+    instance.blockName = rule;
+    instance.name = 'MultiStatementError';
+    Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(instance, MultiStatementError);
+    }
+    return instance;
+}
+
+MultiStatementError.prototype = Object.create(Error.prototype);
+MultiStatementError.prototype.constructor = MultiStatementError;
+//处理此错误的omitedcheckUpdateFunction定义在下面
 `;
 }
 
@@ -184,7 +203,7 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,commen
     for (var ii=0,inputType;inputType=rule.argsType[ii];ii++) {
         var input = inputs[ii];
         var _input = '';
-        var noinput = (input===null || input===undefined);
+        var noinput = input==null;
         if(noinput && inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type!=='field_dropdown') continue;
         if(noinput && inputType==='field') {
             noinput = false;
@@ -361,7 +380,7 @@ function omitedcheckUpdateFunction(event) {
         document.getElementById('${codeAreaId}').innerText = code;
     } catch (error) {
         document.getElementById('${codeAreaId}').innerText = String(error);
-        if (error instanceof OmitedError){
+        if (error instanceof OmitedError ||error instanceof MultiStatementError){
             var blockName = error.blockName;
             var varName = error.varName;
             var block = error.block;

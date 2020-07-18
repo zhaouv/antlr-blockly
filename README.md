@@ -30,6 +30,8 @@ Typical applications: DSL editor and JSON editor. Additional design is made for 
 
 ## Todo
 
++ [ ] 支持map作为输入的xmlText
+
 + [ ] 单语句的支持: json中不再是数组, 放入多个语句时报错
 
 + [ ] demos按照新的设计改写
@@ -40,6 +42,7 @@ Typical applications: DSL editor and JSON editor. Additional design is made for 
   + [ ] `# id`
   + [ ] `abc=Bool`
   + [ ] defaultMap
+  + ...
 
 + [x] 默认值提供defaultMap, 优先级大于default数组
 

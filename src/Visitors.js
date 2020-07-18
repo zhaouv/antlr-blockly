@@ -462,7 +462,13 @@ EvalVisitor.prototype.assemble = function() {
                     text.push(" === 'TRUE'");
                 }
                 text.push(';\n');
-                if (!arg.multi) {//不允许复数个语句
+                if (!arg.multi && arg.blockType==='statement') {//不允许复数个语句
+                    text.push(pre+"if(block.getInputTargetBlock('"+var_+"') && \n");
+                    cpre(1);
+                    text.push(pre+"block.getInputTargetBlock('"+var_+"').getNextBlock())\n");
+                    text.push(pre+"throw new MultiStatementError(block,'"+var_+"','");
+                    text.push(rulekeys[ii]+"');\n");
+                    cpre(-1);
                 }
                 var nextvar = {//不需要考虑省略
                     'field_checkbox':true,
@@ -519,11 +525,15 @@ EvalVisitor.prototype.assemble = function() {
         rule.args=[];
         rule.argsType=[];
         rule.argsGrammarName=[];
-        for(var jj=0,arg;arg=rule.blockobj.args[jj];jj++){
-            if(arg.id && arg.data.type!='field_image'){ // 既不是换行也不是图片
+        rule.omitted=[];
+        rule.multi=[];
+        for(var jj=0,args;args=rule.blockobj.args[jj];jj++){
+            if(args.id && args.data.type!='field_image'){ // 既不是换行也不是图片
                 rule.args.push(rule.blockobj.vars[jj]);
-                rule.argsType.push(arg.blockType);
-                rule.argsGrammarName.push(arg.id);
+                rule.argsType.push(args.blockType);
+                rule.argsGrammarName.push(args.id);
+                rule.omitted.push(args.omitted);
+                rule.multi.push(args.multi);
             }
         }
         //生成构造xmltext的函数
@@ -576,6 +586,8 @@ EvalVisitor.prototype.assemble = function() {
  *   args: [...]  第i个元素的是其第i个输入的域的名字或方块名(方块名数组)
  *   argsType: [...] 第i个参数的输入类型,'value','statement','field'中的一个
  *   argsGrammarName: [...] 第i个参数的输入的类型名称
+ *   omitted: [...] 第i个参数是否允许省略
+ *   multi: [...] 第i个参数是否接收多个语句
  *   fieldDefault: function(keyOrIndex){...}
  *                 根据输入是整数字符串或null
  *                 第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
@@ -717,6 +729,13 @@ EvalVisitor.prototype.generBlocks = function() {
         text.push(',\n');
         text.push(pre+'"argsGrammarName": ');
         text.push(JSON.stringify(rule.argsGrammarName,null,0));
+        text.push(',\n');
+        //块的所有输入的省略与重复
+        text.push(pre+'"omitted": ');
+        text.push(JSON.stringify(rule.omitted,null,0));
+        text.push(',\n');
+        text.push(pre+'"multi": ');
+        text.push(JSON.stringify(rule.multi,null,0));
         text.push(',\n');
         //块的获取域的默认值的方法
         text.push(pre+'"fieldDefault": ');
@@ -985,6 +1004,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
         'id': lexerId,
         'blockType': 'field',
         'omitted': ctx.ex!=null,
+        'multi': false,
         'data': lexervalue,
         'varName': ctx.varName && ctx.varName.text || null
     }

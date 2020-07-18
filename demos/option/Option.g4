@@ -63,3 +63,10 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 // this.evisitor.entryColor=250;
 */
 
+/* Functions
+for (var key in OptionBlocks) {
+    if (OptionBlocks[key].json) {
+        OptionBlocks[key].json.nextStatement=undefined;
+    }
+}
+*/
