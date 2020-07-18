@@ -29,12 +29,12 @@ SymbolVisitor.prototype.checkSymbol = function() {
     var checkdict = {}
     var filter_ = function(list,name) {
         for(var ii=0,value;value=list[ii];ii++){
-            if (value[0]===name) return value[1];
+            if (value[0]===name) return value[1][0]!==name;
         }
-        return [];
+        return false;
     }
     for(var ii=0,statementRule;statementRule=this.statementRules[ii];ii++){
-        if (statementRule[1].length>1){
+        if (statementRule[0]!==statementRule[1][0]){
             for(var jj=0,statename;statename=statementRule[1][jj];jj++){
                 //检查是否有语句出现在了两个语句集合中
                 if (checkdict[statename]) {
@@ -44,8 +44,8 @@ SymbolVisitor.prototype.checkSymbol = function() {
                 }
                 checkdict[statename] = statementRule[0];
                 //检查语句集合的子规则是否有语句集合
-                if (filter_(this.statementRules,statename).length>1){
-                    this.error(statementRule[0]+' 下的子规则 '+statename+' 包含了"|"');
+                if (filter_(this.statementRules,statename)){
+                    this.error(statementRule[0]+' 下的子规则 '+statename+' 也是语句集合');
                 }
             }
         }

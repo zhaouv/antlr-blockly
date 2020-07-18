@@ -134,6 +134,7 @@ ${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
     for (var index = 0; index < rule.args.length; index++) {
         var dobj = obj[rule.args[index]];
         if (rule.argsType[index]==='statement') {
+            if (!rule.multi[index])dobj=[dobj];
             var snext=null
             while (dobj.length) {
                 var ds=dobj.pop()
@@ -170,6 +171,7 @@ ${grammerName}Functions.defaultCode_JSON = function (ruleName,args,block) {
         var value = values[index];
         if (rule.argsType[index]==='statement') {
             output[rule.args[index]]=eval('['+value+']')
+            if (!rule.multi[index]) output[rule.args[index]]=output[rule.args[index]][0];
         } else if (rule.argsType[index]==='value') {
             output[rule.args[index]]=eval('('+value+')')
         } else {
@@ -200,8 +202,9 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,commen
     }
     xmlText.push('>');
     if(!inputs)inputs=[];
+    var inputIsArray = inputs instanceof Array;
     for (var ii=0,inputType;inputType=rule.argsType[ii];ii++) {
-        var input = inputs[ii];
+        var input = inputIsArray?inputs[ii]:inputs[rule.args[ii]];
         var _input = '';
         var noinput = input==null;
         if(noinput && inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type!=='field_dropdown') continue;

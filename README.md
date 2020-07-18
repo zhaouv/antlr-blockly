@@ -6,6 +6,8 @@ The purely Javascript implementation of generating [blockly](https://github.com/
 
 Typical applications: DSL editor and JSON editor. Additional design is made for JSON editing. As an editor that generates JSON, it can also automatically complete reverse parsing.
 
+The benefits of using a visual editor: low learning costs, the generated JSON/DSL must be a legal-format input.
+
 [Document](https://zhaouv.github.io/antlr-blockly/docs/#/en/README)
 
 基于BNF文法生成可视化编辑器.
@@ -13,6 +15,8 @@ Typical applications: DSL editor and JSON editor. Additional design is made for 
 纯Javascript实现的[antlr](https://github.com/antlr/antlr4)语法文件生成[blockly](https://github.com/google/blockly)可视化编辑器.  
 
 典型应用: DSL编辑器 和 JSON编辑器. 针对JSON编辑做了额外的设计, 作为生成JSON的编辑器的同时, 也能够自动完成反向的解析.
+
+使用可视化编辑器的好处: 低学习成本, 产生的JSON/DSL一定是形式合法的输入.
 
 [文档](https://zhaouv.github.io/antlr-blockly/docs/#/README)  
 
@@ -30,9 +34,11 @@ Typical applications: DSL editor and JSON editor. Additional design is made for 
 
 ## Todo
 
-+ [ ] 支持map作为输入的xmlText
++ ?精确区分undefined和null
 
-+ [ ] 单语句的支持: json中不再是数组, 放入多个语句时报错
++ [x] 支持map作为输入的xmlText
+
++ [x] 单语句的支持: json中不再是数组, 放入多个语句时报错
 
 + [ ] demos按照新的设计改写
 
