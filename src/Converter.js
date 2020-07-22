@@ -55,6 +55,11 @@ Converter.prototype.main = function (grammerFile,functions,filename) {
     return this;
 }
 
+Converter.prototype.loadOption = function(option){
+    this.option=option
+    return this
+}
+
 Converter.prototype.generBlocks = function(grammerFile,functions) {
     if(!functions)functions={};
 
@@ -111,7 +116,11 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
 
     evisitor.generBlocks();
     // console.log(evisitor);
-    this.blocks = evisitor.blocks;
+    this.blocks = [
+        evisitor.blocks_collection,
+        evisitor.blocks_field,
+        evisitor.blocks_block,
+    ].join('');
     
     /* Function_2
     // 此处是整体修改

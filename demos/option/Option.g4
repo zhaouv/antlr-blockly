@@ -1,33 +1,63 @@
 grammar Option;
 
-option:
-    'option' BGNL
-    keepG4=KeepG4_List BGNL
-    'default blockly generating:' defaultGenerating=BlocklyGenerating_List BGNL
-    'grammarFile' BGNL grammarFile=grammarStatement
-    'blocklyDiv' BGNL blocklyDiv=blocklyDivStatement
-    'toolbox' BGNL toolbox=toolboxStatement
-    'codeArea' BGNL codeArea=codeAreaStatement
-    ;
-
-grammarStatement
-    :   'content' BGNL source=BlockString_Multi BGNL # grammarContent
-    |   'filename' filename=NormalString BGNL # grammarFilename
-    |   'function' func=RawString BGNL # grammarFunction
+option
+    :   'option' BGNL
+        'default blockly generating:' defaultGenerating=BlocklyGenerating_List BGNL
+        'blocklyDiv' BGNL blocklyDiv=blocklyDivStatement
+        'toolbox' BGNL toolbox=toolboxStatement
+        'codeArea' BGNL codeArea=codeAreaStatement
+        'target' BGNL target=targetStatement
     ;
 
 blocklyDivStatement
-    :   'id :' id=NormalString BGNL 'dymanic' # dymanicSizeBlocklyDiv
-    |   'id :' id=NormalString BGNL 'fix size' 'x:' x=Int 'y:' y=Int # fixSizeBlocklyDiv
-    ;
+    :   'dymanic' BGNL 
+        'id' id=NormalString BGNL 
+        # dymanicSizeBlocklyDiv
+    |   'fixed size' BGNL
+        'id' id=NormalString BGNL 
+        'height' height=NormalString 'width' width=NormalString
+        # fixedSizeBlocklyDiv
+/* dymanicSizeBlocklyDiv
+defaultMap:{id:"blocklyDiv"}
+*/
+/* fixedSizeBlocklyDiv
+tooltip:height,width are only used in generated html
+defaultMap:{id:"blocklyDiv",height:"480px",width:"940px"}
+*/;
 
 toolboxStatement
-    :   'function' func=RawString BGNL
-    ;
+    :   'function' BGNL
+        'id' id=NormalString 'function' func=RawString BGNL 
+        # toolboxFunc
+    |   'default' BGNL
+        'id' id=NormalString 'gap' gap=Int BGNL
+        # toolboxDefault
+/* toolboxFunc
+defaultMap:{id:"toolbox",func:"function(){return document.getElementById('toolboxXml')}"}
+*/
+/* toolboxDefault
+defaultMap:{id:"toolbox",gap:5}
+*/;
 
 codeAreaStatement
-    :   'output' output=RawString BGNL 'input (JSON only)' input=RawString?
-    ;
+    :   'output' output=RawString BGNL
+/* codeAreaStatement
+defaultMap:{output:"function(err,data){document.getElementById('abc').innerText=err||data}"}
+*/;
+
+targetStatement
+    :   'Generate target source without keeping grammar' BGNL
+        'output' output=RawString BGNL
+        # independentFile
+    |   'Keep grammar and antlr-blockly as source' BGNL
+        'output' output=RawString BGNL
+        # keepGrammar
+/* independentFile
+defaultMap:{output:"function(html,js){console.log(html,js)}"}
+*/
+/* keepGrammar
+defaultMap:{output:"function(html,js){console.log(html,js)}"}
+*/;
 
 statExprSplit : '=== statement ^ === expression v ===' ;
 
@@ -37,9 +67,7 @@ statExprSplit : '=== statement ^ === expression v ===' ;
 //     |   intExpr
 //     ;
 
-KeepG4_List : 'Generate target source without keeping grammar'|'Keep grammar and antlr-blockly as source' /*KeepG4_List ['no','yes']*/;
 BlocklyGenerating_List : 'JSON'|'TEXT';
-BlockString_Multi: ('asdaw'+)*;
 RawString: ('asdsaw'+)*;
 NormalString: ('asdsaw'+)*;
 

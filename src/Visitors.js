@@ -224,7 +224,9 @@ EvalVisitor.prototype.init = function(symbols,rawInput) {
     this.sendOrder='ORDER_NONE';
     this.varPrefix='';
 
-    this.blocks='';
+    this.blocks_collection='';
+    this.blocks_field='';
+    this.blocks_block='';
 
     return this;
 }
@@ -639,6 +641,8 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push('\n');
     cpre(-1);
     text.push(pre+'}\n');
+    this.blocks_collection=text.join('');
+    text=[];
     //添加域
     text.push(pre+'// 所有域的默认行为\n');
     text.push(pre+'Object.assign(');
@@ -661,6 +665,8 @@ EvalVisitor.prototype.generBlocks = function() {
     }
     text.push(renderLexerRules(this.lexerRules));
     text.push(pre+');\n');
+    this.blocks_field=text.join('');
+    text=[];
     //添加所有方块
     text.push(pre+'// 所有方块的实际内容\n');
     text.push(pre+'Object.assign(');
@@ -775,7 +781,7 @@ EvalVisitor.prototype.generBlocks = function() {
     text.push(pre+'}\n');
     cpre(-1);
     text.push(pre+'});\n');
-    this.blocks=text.join('');
+    this.blocks_block=text.join('');
 }
 
 EvalVisitor.prototype.speicalLexerRule = function(lexerId) {
