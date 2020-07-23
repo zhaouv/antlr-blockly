@@ -151,9 +151,9 @@ ${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
 }
 ${grammerName}Functions.parser=new ${grammerName}Functions.parserClass()
 ${grammerName}Functions.parse=function(obj){
-    ${grammerName}Functions.workspace().clear();
     var xml_text = ${grammerName}Functions.parser.parse(obj);
     var xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
+    ${grammerName}Functions.workspace().clear();
     Blockly.Xml.domToWorkspace(xml, ${grammerName}Functions.workspace());
 }
 
@@ -333,20 +333,24 @@ var ${toolboxId} = (function(){
 var mainFileTPL = function(
     grammerName,language,
     blocklyDivId,codeAreaId,
-    toolboxArea,workspaceName,toolboxId,
-    blocklyScripts
+    workspaceName,toolboxId,
 ){
-return [/*0*/`<!doctype html>
+return {
+html:{
+    htmlStart:`<!doctype html>
 <head>
 <meta charset="utf-8">
-<title>${grammerName} --antlr-blockly</title>`,/*1*/`
+<title>${grammerName} --antlr-blockly</title>`,
+    headScripts:`
 <script src="blockly_compressed.js"></script>
 <script src="blocks_compressed.js"></script>
 <script src="javascript_compressed.js"></script>
 <script src="zh-hans.js"></script>
-<!-- <script src="en.js"></script> -->`,/*2*/`
+<!-- <script src="en.js"></script> -->`,
+    head_body:`
 </head>
-<body>`,/*3*/`
+<body>`,
+    bodyContent:`
 
 <p>
 <button onclick="showXML()">Show XML</button>
@@ -354,13 +358,16 @@ return [/*0*/`<!doctype html>
 </p>
 <div id="${blocklyDivId}" style="height: 480px; width: 940px;"></div>
 <pre id="${codeAreaId}"></pre>
-`,/*4*/`
-<script>
-`,/*5*/`
-${blocklyScripts}
-`,/*6*/`
-${toolboxArea}
-
+`,
+    bodyScripts:`
+<script src="${grammerName}.js"></script>
+`,
+    htmlEnd:`</body>
+</html>
+`
+},
+js:{
+    BlocklyInject:`
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     media: 'media/',
     toolbox: ${toolboxId},
@@ -375,7 +382,8 @@ var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     trashcan: false,
 });
 ${grammerName}Functions.workspace = function(){return ${workspaceName}}
-
+`,
+    checkUpdateFunction:`
 function omitedcheckUpdateFunction(event) {
     console.log(event);
     try {
@@ -393,10 +401,12 @@ function omitedcheckUpdateFunction(event) {
 }
 
 ${workspaceName}.addChangeListener(omitedcheckUpdateFunction);
-
-${workspaceName}.addChangeListener(Blockly.Events.disableOrphans);
+`,
+    disableOrphans:`
 //自动禁用任何未连接到根块的块
-`,/*7*/`
+${workspaceName}.addChangeListener(Blockly.Events.disableOrphans);
+`,
+    debugFunctions:`
 
 function showXML() {
     xml = Blockly.Xml.workspaceToDom(${workspaceName});
@@ -421,12 +431,10 @@ function runCode() {
         alert(e);
     }
 }
-`,/*8*/`
-</script>
+`
+}
+}
 
-`,/*9*/`</body>
-</html>
-`];
 }
 
 exports.OmitedError = OmitedError;

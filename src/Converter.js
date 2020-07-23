@@ -116,12 +116,11 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
 
     evisitor.generBlocks();
     // console.log(evisitor);
-    this.blocks = [
-        evisitor.blocks_collection,
-        evisitor.blocks_field,
-        evisitor.blocks_block,
-    ].join('');
     
+    this.blocks_collection=evisitor.blocks_collection;
+    this.blocks_field=evisitor.blocks_field;
+    this.blocks_block=evisitor.blocks_block;
+
     /* Function_2
     // 此处是整体修改
     可以通过对this.blocks进行replace替换,
@@ -178,47 +177,75 @@ Converter.prototype.generToolbox = function() {
 Converter.prototype.generMainFile = function(functions){
     if(!functions)functions={};
 
-    var text = [];
-
     var grammerName = this.grammerName;
 
-    text.push(this.blocks);
-    text.push('\n\n');
-    text.push(this.OmitedError);
-    text.push('\n\n');
-    text.push(grammerName+'Functions={}\n\n');
-    text.push(this.evisitor.matchInject('Functions'));
-    /* Functions
-    // 此处可以嵌入词法规则的转义函数,例如
-    XxxFunctions.IdString_pre = function(IdString){
-        if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');
-        if (IdString && !(/^[a-zA-Z_][0-9a-zA-Z_\-]*$/.test(IdString)))throw new Error('id: '+IdString+'中包含了0-9 a-z A-Z _ - 之外的字符');
-        return IdString;
+    this.js={
+        blocks_collection:this.blocks_collection+'\n\n',
+        blocks_field:this.blocks_field+'\n\n',
+        blocks_block:this.blocks_block+'\n\n',
+        OmitedError:this.OmitedError+'\n\n',
+        Functions_define:grammerName+'Functions={}\n\n',
+        injectFunctions:this.evisitor.matchInject('Functions'),
+        insertFunctions:functions['Functions']||'',
+        Functions_pre:this.Functions_pre+'\n\n',
+        Functions_fieldDefault:this.Functions_fieldDefault+'\n\n',
+        Functions_defaultCode:this.Functions_defaultCode+'\n\n',
+        Functions_xmlText:this.Functions_xmlText+'\n\n',
+        Functions_blocksIniter:this.Functions_blocksIniter+'\n\n',
+        callIniter:grammerName+'Functions.blocksIniter();\n\n',
+        toolbox:this.toolbox+'\n\n',
     }
-     */
-    if(functions['Functions'])text.push(functions['Functions']);
-    text.push('\n\n');
-    text.push(this.Functions_pre);
-    text.push('\n\n');
-    text.push(this.Functions_fieldDefault);
-    text.push('\n\n');
-    text.push(this.Functions_defaultCode);
-    text.push('\n\n');
-    text.push(this.Functions_xmlText);
-    text.push('\n\n');
-    text.push(this.Functions_blocksIniter);
-    text.push('\n\n');
-    text.push(grammerName+'Functions.blocksIniter();\n\n');
+    this.html={
+    }
 
-    this.mainFile = this.mainFileTPL(
+    var mainFile = this.mainFileTPL(
         grammerName,this.generLanguage,
         this.blocklyDivId,this.codeAreaId,
-        this.toolbox,this.workSpaceName,this.toolboxId,
-        text.join('')
+        this.workSpaceName,this.toolboxId,
     );
+
+    var text=function(){
+        var obj=this
+        return obj._text.map(function(v){return obj[v]}).join('')
+    }
+    Object.assign(this.html,mainFile.html)
+    Object.assign(this.js,mainFile.js)
+    this.html._text=[
+        // from tpl
+        'htmlStart',
+        'headScripts',
+        'head_body',
+        'bodyContent',
+        'bodyScripts',
+        'htmlEnd'
+    ]
+    this.js._text=[
+        'blocks_collection',
+        'blocks_field',
+        'blocks_block',
+        'OmitedError',
+        'Functions_define',
+        'injectFunctions',
+        'insertFunctions',
+        'Functions_pre',
+        'Functions_fieldDefault',
+        'Functions_defaultCode',
+        'Functions_xmlText',
+        'Functions_blocksIniter',
+        'callIniter',
+        'toolbox',
+        // from tpl
+        'BlocklyInject',
+        'checkUpdateFunction',
+        'disableOrphans',
+        'debugFunctions'
+    ]
+    this.html.text=text
+    this.js.text=text
 }
 
 Converter.prototype.writeMainFile = function(filename) {
+    throw '需要引入jszip并重写此函数'
     if(!filename)filename=this.grammerName+'index.html';
     this.createAndDownloadFile(this.mainFile.join(''), filename, 'html');
 }

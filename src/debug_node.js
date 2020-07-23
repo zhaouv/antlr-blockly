@@ -9,5 +9,5 @@ converter.generBlocks(grammerFile);
 converter.renderGrammerName();
 converter.generToolbox();
 converter.generMainFile();
-let blocks=eval(converter.blocks)
+let blocks=eval(['blocks_collection','blocks_field','blocks_block'].map(v=>converter.js[v]).join(''))
 'end'

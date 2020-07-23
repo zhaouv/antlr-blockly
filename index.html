@@ -173,7 +173,7 @@ function func_Run(){
     left.style.width='100%';
     left.style.display='block';
     left.style.backgroundColor = 'white';
-    left.innerHTML = converter.mainFile[3];
+    left.innerHTML = converter.html.bodyContent;
     var loadjs = function(src,callback){
         var script = document.createElement('script');
         script.src = src;
@@ -195,7 +195,7 @@ function func_Run(){
             if(++lnum[0]!==3)return;
             loadlib[0]=true;
             var script = document.createElement('script');
-            script.innerHTML = converter.mainFile.slice(5,8).join('');
+            script.innerHTML = converter.js.text();
             document.body.appendChild(script);
         }
 
@@ -243,7 +243,12 @@ function runOne(callback){
     converter.generToolbox();
 
     converter.generMainFile();
-    printf(converter.mainFile.join(''));
+    printf([
+        'html :\n\n',
+        converter.html.text(),
+        '\njs :\n\n',
+        converter.js.text()
+    ].join(''));
 
     console.log(converter);
 
