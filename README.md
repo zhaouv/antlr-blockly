@@ -32,10 +32,12 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 [NOTICE](./NOTICE.md)
 
+# CHANGELOG
+
 ## Todo
 
 + [x] 引入jszip, 网页端的下载不再是一整个html
-  - [ ] 提供一个blockly.3.20200402.1.zip以供下载
+  - [x] 提供一个blockly.3.20200402.1.zip以供下载
   - [ ] node环境下先暂时需要新写一个脚本来执行, 之后在考虑commander.js之类的
 
 + ?通过注入给一般域加默认值

@@ -244,29 +244,6 @@ Converter.prototype.generMainFile = function (functions) {
     this.js.text = text
 }
 
-Converter.prototype.writeMainFile = function (JSZip, filename) {
-    JSZip = JSZip || window.JSZip;
-    var zip = new JSZip();
-    zip.file('index.html', this.html.text())
-    zip.file(this.grammerName + '.js', this.js.text())
-    var thisobj = this;
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-
-        var clickEvent = new MouseEvent("click", {
-            "view": window,
-            "bubbles": true,
-            "cancelable": false
-        });
-
-        var a = document.createElement('a');
-        a.href = window.URL.createObjectURL(content);
-        a.download = thisobj.grammerName + '.zip';
-        a.textContent = 'Download file!';
-        a.dispatchEvent(clickEvent);
-
-    });
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 Converter.prototype.block = function (blockname) {
