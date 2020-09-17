@@ -342,6 +342,8 @@ html:{
 <meta charset="utf-8">
 <title>${grammerName} --antlr-blockly</title>`,
     headScripts:`
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/blockly.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/msg/zh-hans.min.js"></script> -->
 <script src="blockly_compressed.js"></script>
 <script src="blocks_compressed.js"></script>
 <script src="javascript_compressed.js"></script>
@@ -370,6 +372,7 @@ js:{
     BlocklyInject:`
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     media: 'media/',
+    // media: 'https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/media/',
     toolbox: ${toolboxId},
     zoom:{
         controls: true,

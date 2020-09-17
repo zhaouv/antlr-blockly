@@ -1,4 +1,11 @@
 # NOTICE
+
++ File 
+`jszip.min.js`  
+from  
+https://github.com/Stuk/jszip  
+it is under [The MIT License](https://github.com/Stuk/jszip/blob/master/LICENSE.markdown)
+
 + Files 
 `blockly_compressed.js`
 `blocks_compressed.js`

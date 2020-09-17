@@ -23,8 +23,8 @@ var antlr4 = require('antlr4/index');
 var BlocklyGrammerLexer = require('./gen/BlocklyGrammerLexer').BlocklyGrammerLexer;
 var BlocklyGrammerParser = require('./gen/BlocklyGrammerParser').BlocklyGrammerParser;
 var Visitors = require('./Visitors');
-var SymbolVisitor=Visitors.SymbolVisitor;
-var EvalVisitor=Visitors.EvalVisitor;
+var SymbolVisitor = Visitors.SymbolVisitor;
+var EvalVisitor = Visitors.EvalVisitor;
 var tpl = require('./tpl');
 
 /**
@@ -37,17 +37,17 @@ function Converter() {
 Converter.prototype.constructor = Converter;
 
 Converter.prototype.init = function () {
-    this.toolboxGap=5;
-    this.toolboxId='toolbox';
-    this.blocklyDivId='blocklyDiv';
-    this.workSpaceName='workspace';
-    this.codeAreaId='codeArea';
+    this.toolboxGap = 5;
+    this.toolboxId = 'toolbox';
+    this.blocklyDivId = 'blocklyDiv';
+    this.workSpaceName = 'workspace';
+    this.codeAreaId = 'codeArea';
     return this;
 }
 
-Converter.prototype.main = function (grammerFile,functions,filename) {
+Converter.prototype.main = function (grammerFile, functions, filename) {
     this.init();
-    this.generBlocks(grammerFile,functions);
+    this.generBlocks(grammerFile, functions);
     this.renderGrammerName();
     this.generToolbox();
     this.generMainFile(functions);
@@ -55,24 +55,24 @@ Converter.prototype.main = function (grammerFile,functions,filename) {
     return this;
 }
 
-Converter.prototype.loadOption = function(option){
-    this.option=option
+Converter.prototype.loadOption = function (option) {
+    this.option = option
     return this
 }
 
-Converter.prototype.generBlocks = function(grammerFile,functions) {
-    if(!functions)functions={};
+Converter.prototype.generBlocks = function (grammerFile, functions) {
+    if (!functions) functions = {};
 
     var temp_consoleError = console.error;
-    console.error = function(err){throw new Error(err);}
+    console.error = function (err) { throw new Error(err); }
     var chars = new antlr4.InputStream(grammerFile);
     var lexer = new BlocklyGrammerLexer(chars);
-    var tokens  = new antlr4.CommonTokenStream(lexer);
+    var tokens = new antlr4.CommonTokenStream(lexer);
     var parser = new BlocklyGrammerParser(tokens);
     parser.buildParseTrees = true;
     var tree = parser.grammarFile();
     console.error = temp_consoleError;
-    
+
     //test: print all tokens
     //tokens.tokens.forEach(function(v){console.log(v.toString())});
 
@@ -83,7 +83,7 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
 
     svisitor.checkSymbol();
 
-    var evisitor = new EvalVisitor().init(svisitor,grammerFile);
+    var evisitor = new EvalVisitor().init(svisitor, grammerFile);
     this.evisitor = evisitor;
 
     /* Function_0
@@ -105,21 +105,21 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
     this.codeAreaId='codeArea';
      */
     eval(this.evisitor.matchInject('Function_0'));
-    if(functions['Function_0'])functions['Function_0'].call(this);
+    if (functions['Function_0']) functions['Function_0'].call(this);
 
     evisitor.visit(tree);
     /* Function_1
     // 此处修改各个具体方块
      */
     eval(this.evisitor.matchInject('Function_1'));
-    if(functions['Function_1'])functions['Function_1'].call(this);
+    if (functions['Function_1']) functions['Function_1'].call(this);
 
     evisitor.generBlocks();
     // console.log(evisitor);
-    
-    this.blocks_collection=evisitor.blocks_collection;
-    this.blocks_field=evisitor.blocks_field;
-    this.blocks_block=evisitor.blocks_block;
+
+    this.blocks_collection = evisitor.blocks_collection;
+    this.blocks_field = evisitor.blocks_field;
+    this.blocks_block = evisitor.blocks_block;
 
     /* Function_2
     // 此处是整体修改
@@ -127,11 +127,11 @@ Converter.prototype.generBlocks = function(grammerFile,functions) {
     修改各复杂词法规则的默认值
      */
     eval(this.evisitor.matchInject('Function_2'));
-    if(functions['Function_2'])functions['Function_2'].call(this);
+    if (functions['Function_2']) functions['Function_2'].call(this);
     return this;
 }
 
-Converter.prototype.renderGrammerName = function() {
+Converter.prototype.renderGrammerName = function () {
     this.grammerName = this.svisitor.grammerName;
     this.generLanguage = this.evisitor.generLanguage;//在generBlocks中可修改
 
@@ -142,75 +142,75 @@ Converter.prototype.renderGrammerName = function() {
     this.Functions_pre = tpl.Functions_pre(grammerName);
     this.Functions_fieldDefault = tpl.Functions_fieldDefault(grammerName);
     this.Functions_defaultCode = tpl.Functions_defaultCode(grammerName);
-    this.Functions_xmlText=tpl.Functions_xmlText(grammerName);
-    this.Functions_blocksIniter = 
-        tpl.Functions_blocksIniter(grammerName,generLanguage);
+    this.Functions_xmlText = tpl.Functions_xmlText(grammerName);
+    this.Functions_blocksIniter =
+        tpl.Functions_blocksIniter(grammerName, generLanguage);
 
     this.mainFileTPL = tpl.mainFileTPL;
     return this;
 }
 
-Converter.prototype.generToolbox = function() {
+Converter.prototype.generToolbox = function () {
     var text = [];
     text.push('{');
     text.push('        // 每个键值对作为一页');
     text.push('        "statement": [');
     text.push('            // 所有语句块');
-    for (var key in this.evisitor.statementRules){
+    for (var key in this.evisitor.statementRules) {
         if (!this.evisitor.statementRules[key].type) continue;
-        text.push('            '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
+        text.push('            ' + this.grammerName + 'Blocks["' + key + '"].xmlText(),');
     }
     text.push('        ],');
     text.push('        "value": [');
     text.push('            // 所有值块');
-    for (var key in this.evisitor.expressionRules){
+    for (var key in this.evisitor.expressionRules) {
         if (!this.evisitor.expressionRules[key].type) continue;
-        text.push('            '+this.grammerName+'Blocks["'+key+'"].xmlText(),');
+        text.push('            ' + this.grammerName + 'Blocks["' + key + '"].xmlText(),');
     }
     text.push('        ]');
     text.push('    }');
-    var toolboxObj=text.join('\n');
-    this.toolbox=tpl.ToolboxObj(this.toolboxId,toolboxObj,this.toolboxGap);
+    var toolboxObj = text.join('\n');
+    this.toolbox = tpl.ToolboxObj(this.toolboxId, toolboxObj, this.toolboxGap);
     return this;
 }
 
-Converter.prototype.generMainFile = function(functions){
-    if(!functions)functions={};
+Converter.prototype.generMainFile = function (functions) {
+    if (!functions) functions = {};
 
     var grammerName = this.grammerName;
 
-    this.js={
-        blocks_collection:this.blocks_collection+'\n\n',
-        blocks_field:this.blocks_field+'\n\n',
-        blocks_block:this.blocks_block+'\n\n',
-        OmitedError:this.OmitedError+'\n\n',
-        Functions_define:grammerName+'Functions={}\n\n',
-        injectFunctions:this.evisitor.matchInject('Functions'),
-        insertFunctions:functions['Functions']||'',
-        Functions_pre:this.Functions_pre+'\n\n',
-        Functions_fieldDefault:this.Functions_fieldDefault+'\n\n',
-        Functions_defaultCode:this.Functions_defaultCode+'\n\n',
-        Functions_xmlText:this.Functions_xmlText+'\n\n',
-        Functions_blocksIniter:this.Functions_blocksIniter+'\n\n',
-        callIniter:grammerName+'Functions.blocksIniter();\n\n',
-        toolbox:this.toolbox+'\n\n',
+    this.js = {
+        blocks_collection: this.blocks_collection + '\n\n',
+        blocks_field: this.blocks_field + '\n\n',
+        blocks_block: this.blocks_block + '\n\n',
+        OmitedError: this.OmitedError + '\n\n',
+        Functions_define: grammerName + 'Functions={}\n\n',
+        injectFunctions: this.evisitor.matchInject('Functions'),
+        insertFunctions: functions['Functions'] || '',
+        Functions_pre: this.Functions_pre + '\n\n',
+        Functions_fieldDefault: this.Functions_fieldDefault + '\n\n',
+        Functions_defaultCode: this.Functions_defaultCode + '\n\n',
+        Functions_xmlText: this.Functions_xmlText + '\n\n',
+        Functions_blocksIniter: this.Functions_blocksIniter + '\n\n',
+        callIniter: grammerName + 'Functions.blocksIniter();\n\n',
+        toolbox: this.toolbox + '\n\n',
     }
-    this.html={
+    this.html = {
     }
 
     var mainFile = this.mainFileTPL(
-        grammerName,this.generLanguage,
-        this.blocklyDivId,this.codeAreaId,
-        this.workSpaceName,this.toolboxId,
+        grammerName, this.generLanguage,
+        this.blocklyDivId, this.codeAreaId,
+        this.workSpaceName, this.toolboxId,
     );
 
-    var text=function(){
-        var obj=this
-        return obj._text.map(function(v){return obj[v]}).join('')
+    var text = function () {
+        var obj = this
+        return obj._text.map(function (v) { return obj[v] }).join('')
     }
-    Object.assign(this.html,mainFile.html)
-    Object.assign(this.js,mainFile.js)
-    this.html._text=[
+    Object.assign(this.html, mainFile.html)
+    Object.assign(this.js, mainFile.js)
+    this.html._text = [
         // from tpl
         'htmlStart',
         'headScripts',
@@ -219,7 +219,7 @@ Converter.prototype.generMainFile = function(functions){
         'bodyScripts',
         'htmlEnd'
     ]
-    this.js._text=[
+    this.js._text = [
         'blocks_collection',
         'blocks_field',
         'blocks_block',
@@ -240,46 +240,40 @@ Converter.prototype.generMainFile = function(functions){
         'disableOrphans',
         'debugFunctions'
     ]
-    this.html.text=text
-    this.js.text=text
+    this.html.text = text
+    this.js.text = text
 }
 
-Converter.prototype.writeMainFile = function(filename) {
-    throw '需要引入jszip并重写此函数'
-    if(!filename)filename=this.grammerName+'index.html';
-    this.createAndDownloadFile(this.mainFile.join(''), filename, 'html');
+Converter.prototype.writeMainFile = function (JSZip, filename) {
+    JSZip = JSZip || window.JSZip;
+    var zip = new JSZip();
+    zip.file('index.html', this.html.text())
+    zip.file(this.grammerName + '.js', this.js.text())
+    var thisobj = this;
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+
+        var clickEvent = new MouseEvent("click", {
+            "view": window,
+            "bubbles": true,
+            "cancelable": false
+        });
+
+        var a = document.createElement('a');
+        a.href = window.URL.createObjectURL(content);
+        a.download = thisobj.grammerName + '.zip';
+        a.textContent = 'Download file!';
+        a.dispatchEvent(clickEvent);
+
+    });
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Converter.prototype.block = function(blockname) {
+Converter.prototype.block = function (blockname) {
     var obj = this.evisitor.expressionRules[blockname];
-    if(!obj) obj = this.evisitor.statementRules[blockname];
-    if(!obj || obj.checklength===1)return null;
+    if (!obj) obj = this.evisitor.statementRules[blockname];
+    if (!obj || obj.checklength === 1) return null;
     return obj.blockjs;
 }
-
-/**
- * Create a file with the given attributes and download it.
- * from FactoryUtils.createAndDownloadFile
- * https://github.com/google/blockly/blob/master/demos/blockfactory/factory_utils.js
- * @param {string} contents The contents of the file.
- * @param {string} filename The name of the file to save to.
- * @param {string} fileType The type of the file to save.
- */
-Converter.prototype.createAndDownloadFile = function(contents, filename, fileType) {
-    var data = new Blob([contents], {type: 'text/' + fileType});
-    var clickEvent = new MouseEvent("click", {
-        "view": window,
-        "bubbles": true,
-        "cancelable": false
-    });
-
-    var a = document.createElement('a');
-    a.href = window.URL.createObjectURL(data);
-    a.download = filename;
-    a.textContent = 'Download file!';
-    a.dispatchEvent(clickEvent);
-};
 
 exports.Converter = Converter;

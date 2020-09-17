@@ -12,11 +12,11 @@ option
 blocklyDivStatement
     :   'dymanic' BGNL 
         'id' id=NormalString BGNL 
-        # dymanicSizeBlocklyDiv
+    # dymanicSizeBlocklyDiv
     |   'fixed size' BGNL
         'id' id=NormalString BGNL 
         'height' height=NormalString 'width' width=NormalString
-        # fixedSizeBlocklyDiv
+    # fixedSizeBlocklyDiv
 /* dymanicSizeBlocklyDiv
 defaultMap:{id:"blocklyDiv"}
 */
@@ -28,10 +28,10 @@ defaultMap:{id:"blocklyDiv",height:"480px",width:"940px"}
 toolboxStatement
     :   'function' BGNL
         'id' id=NormalString 'function' func=RawString BGNL 
-        # toolboxFunc
+    # toolboxFunc
     |   'default' BGNL
         'id' id=NormalString 'gap' gap=Int BGNL
-        # toolboxDefault
+    # toolboxDefault
 /* toolboxFunc
 defaultMap:{id:"toolbox",func:"function(){return document.getElementById('toolboxXml')}"}
 */
@@ -48,10 +48,10 @@ defaultMap:{output:"function(err,data){document.getElementById('abc').innerText=
 targetStatement
     :   'Generate target source without keeping grammar' BGNL
         'output' output=RawString BGNL
-        # independentFile
+    # independentFile
     |   'Keep grammar and antlr-blockly as source' BGNL
         'output' output=RawString BGNL
-        # keepGrammar
+    # keepGrammar
 /* independentFile
 defaultMap:{output:"function(html,js){console.log(html,js)}"}
 */

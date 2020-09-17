@@ -184,12 +184,6 @@ function func_Run(){
     }
     if(!loadlib[0]){
         
-        /* loadjs('blocklyRuntime.bundle.min.js',function(){
-            loadlib[0]=true;
-            var script = document.createElement('script');
-            script.innerHTML = converter.mainFile.slice(5,8).join('');
-            document.body.appendChild(script);
-        }); */
         var lnum=[0];
         var tcb = function(){
             if(++lnum[0]!==3)return;
@@ -205,10 +199,18 @@ function func_Run(){
             loadjs('zh-hans.js',tcb);
             //loadjs('en.js',tcb);
         });
+        // loadjs('https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/blockly.min.js',function(){
+        //     loadjs('https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/msg/zh-hans.min.js',function(){
+        //         loadlib[0]=true;
+        //         var script = document.createElement('script');
+        //         script.innerHTML = converter.js.text();
+        //         document.body.appendChild(script);
+        //     });
+        // });
 
     } else {
         var script = document.createElement('script');
-        script.innerHTML = converter.mainFile.slice(5,8).join('');
+        script.innerHTML = converter.js.text();
         document.body.appendChild(script);
     }
     //暂时只支持点一次
@@ -217,7 +219,7 @@ function func_Run(){
     document.querySelector('input[type=button][value=Parse]').style.display='none';
 }
 function func_Download(){
-    converter.writeMainFile();
+    converter.writeMainFile(window.JSZip);
 }
 </script>
 
@@ -228,6 +230,7 @@ input_B.value='';
 
 
 <script src="Converter.bundle.min.js"></script>
+<script src="jszip.min.js"></script>
 
 
 <script>
