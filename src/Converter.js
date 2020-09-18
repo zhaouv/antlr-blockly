@@ -13,7 +13,7 @@
  * 
  * ---
  * 
- * converter = new Converter().main(grammerFile,null,'Abc.html');
+ * converter = new Converter().main(grammerFile,null);
  * 
  * ===
  * @param {!String} grammerFile is [.g4 File] as String
@@ -36,6 +36,34 @@ function Converter() {
 
 Converter.prototype.constructor = Converter;
 
+
+Converter.fromOption = function (option) {
+    var converter = new this();
+    converter.option = option;
+
+    converter.init();
+    converter.blocklyDivId=option.blocklyDiv.id;
+    converter.toolboxId=option.toolbox.id;
+
+    throw 'unfinished';
+
+    converter.generBlocks(grammerFile, {});
+    converter.renderGrammerName();
+    converter.generToolbox();
+    converter.generMainFile({});
+
+    return converter
+}
+
+Converter.prototype.main = function (grammerFile, functions) {
+    this.init();
+    this.generBlocks(grammerFile, functions);
+    this.renderGrammerName();
+    this.generToolbox();
+    this.generMainFile(functions);
+    return this;
+}
+
 Converter.prototype.init = function () {
     this.toolboxGap = 5;
     this.toolboxId = 'toolbox';
@@ -43,21 +71,6 @@ Converter.prototype.init = function () {
     this.workSpaceName = 'workspace';
     this.codeAreaId = 'codeArea';
     return this;
-}
-
-Converter.prototype.main = function (grammerFile, functions, filename) {
-    this.init();
-    this.generBlocks(grammerFile, functions);
-    this.renderGrammerName();
-    this.generToolbox();
-    this.generMainFile(functions);
-    this.writeMainFile(filename);
-    return this;
-}
-
-Converter.prototype.loadOption = function (option) {
-    this.option = option
-    return this
 }
 
 Converter.prototype.generBlocks = function (grammerFile, functions) {
