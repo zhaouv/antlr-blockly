@@ -279,7 +279,8 @@ EvalVisitor.prototype.inject = [
     'type','json','generFunc','args','argsType',
     'argsGrammarName','fieldDefault','menu','xmlText',
 
-    'colour','tooltip','helpUrl','default','defaultMap','override','name'
+    'colour','tooltip','helpUrl','default','defaultMap','override','name',
+    'color',//alias of 'colour'
 ]
 
 EvalVisitor.prototype.loadInject = function(injectStr) {
@@ -296,6 +297,7 @@ EvalVisitor.prototype.loadInject = function(injectStr) {
         var match = /^\s*(\w+)\s*:\s*([^\r\n]*?)\s*$/.exec(line);
         obj[match[1]]=match[2];
     }
+    if(obj.color) obj.colour=obj.color;
     if(obj.colour) obj.colour=eval(obj.colour);
     for(var ii=0,key;key=['default','defaultMap','name'][ii];ii++){
         if(obj[key]){

@@ -223,8 +223,8 @@ function func_Download(){
     function writeMainFile(JSZip, filename) {
         JSZip = JSZip || window.JSZip;
         var zip = new JSZip();
-        zip.file('index.html', this.html.text())
-        zip.file(this.grammerName + '.js', this.js.text())
+        zip.file(this.html._name, this.html.text())
+        zip.file(this.js._name + '.js', this.js.text())
         var thisobj = this;
         zip.generateAsync({ type: "blob" }).then(function (content) {
 

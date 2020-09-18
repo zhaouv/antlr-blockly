@@ -19,11 +19,14 @@ blocklyDivStatement
     # fixedSizeBlocklyDiv
 /* dymanicSizeBlocklyDiv
 defaultMap:{id:"blocklyDiv"}
+color : this.blocklyDivStatementColor
 */
 /* fixedSizeBlocklyDiv
 tooltip:height,width are only used in generated html
 defaultMap:{id:"blocklyDiv",height:"480px",width:"940px"}
-*/;
+color : this.blocklyDivStatementColor
+*/
+;
 
 toolboxStatement
     :   'function' BGNL
@@ -34,30 +37,38 @@ toolboxStatement
     # toolboxDefault
 /* toolboxFunc
 defaultMap:{id:"toolbox",func:"function(){return document.getElementById('toolboxXml')}"}
+color : this.toolboxStatementColor
 */
 /* toolboxDefault
 defaultMap:{id:"toolbox",gap:5}
-*/;
+color : this.toolboxStatementColor
+*/
+;
 
 codeAreaStatement
     :   'output' output=RawString BGNL
 /* codeAreaStatement
 defaultMap:{output:"function(err,data){document.getElementById('abc').innerText=err||data}"}
-*/;
+color : this.codeAreaStatementColor
+*/
+;
 
 targetStatement
-    :   'Generate target source without keeping grammar' BGNL
-        'output' output=RawString BGNL
-    # independentFile
-    |   'Keep grammar and antlr-blockly as source' BGNL
+    :   'Keep grammar and antlr-blockly as source' BGNL
         'output' output=RawString BGNL
     # keepGrammar
-/* independentFile
-defaultMap:{output:"function(html,js){console.log(html,js)}"}
-*/
+    |   'Generate target source without keeping grammar' BGNL
+        'output' output=RawString BGNL
+    # independentFile
 /* keepGrammar
 defaultMap:{output:"function(html,js){console.log(html,js)}"}
-*/;
+color : this.targetStatementColor
+*/
+/* independentFile
+defaultMap:{output:"function(html,js){console.log(html,js)}"}
+color : this.targetStatementColor
+*/
+;
 
 statExprSplit : '=== statement ^ === expression v ===' ;
 
@@ -74,7 +85,7 @@ NormalString: ('asdsaw'+)*;
 
 Int :   [0-9]+ ;
 Bool:   'true'|'false' ;
-Colour:   'asdfgdh'* ;
+Color:   'asdfgdh'* ;
 BGNL:   'asfvaswvr'? 'asdvaswvr'? ;
 
 MeaningfulSplit : '=== meaningful ^ ===' ;
@@ -89,6 +100,10 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 // this.evisitor.valueColor=330;
 // this.evisitor.statementColor=300;
 // this.evisitor.entryColor=250;
+this.evisitor.blocklyDivStatementColor=160;
+this.evisitor.toolboxStatementColor=180;
+this.evisitor.codeAreaStatementColor=200;
+this.evisitor.targetStatementColor=220;
 */
 
 /* Functions

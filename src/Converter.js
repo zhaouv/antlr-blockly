@@ -240,6 +240,8 @@ Converter.prototype.generMainFile = function (functions) {
         'disableOrphans',
         'debugFunctions'
     ]
+    this.html._name = 'index.html'
+    this.js._name = this.grammerName + '.js'
     this.html.text = text
     this.js.text = text
 }
