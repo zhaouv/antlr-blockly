@@ -332,7 +332,7 @@ var ${toolboxId} = (function(){
 
 var mainFileTPL = function(
     grammerName,language,
-    blocklyDivId,codeAreaId,
+    blocklyDivId,blocklyDivStyle,codeAreaId,
     workspaceName,toolboxId,
 ){
 return {
@@ -353,12 +353,20 @@ html:{
 </head>
 <body>`,
     bodyContent:`
-
 <p>
 <button onclick="showXML()">Show XML</button>
 <button onclick="runCode()">console.log(obj=code)</button>
 </p>
-<div id="${blocklyDivId}" style="height: 480px; width: 940px;"></div>
+<div id="${blocklyDivId}" ${blocklyDivStyle}></div>
+<pre id="${codeAreaId}"></pre>
+`,
+    bodyContent_dymanicSize:`
+<p>
+<button onclick="showXML()">Show XML</button>
+<button onclick="runCode()">console.log(obj=code)</button>
+</p>
+<div id="${blocklyDivId}_Area"></div>
+<div id="${blocklyDivId}" style="position: absolute"></div>
 <pre id="${codeAreaId}"></pre>
 `,
     bodyScripts:`
@@ -434,6 +442,29 @@ function runCode() {
         alert(e);
     }
 }
+`,
+    dymanicSize:`
+var blocklyArea = document.getElementById('${blocklyDivId}_Area');
+var blocklyDiv = document.getElementById('${blocklyDivId}');
+var onresize = function(e) {
+  // Compute the absolute coordinates and dimensions of blocklyArea.
+  var element = blocklyArea;
+  var x = 0;
+  var y = 0;
+  do {
+    x += element.offsetLeft;
+    y += element.offsetTop;
+    element = element.offsetParent;
+  } while (element);
+  // Position blocklyDiv over blocklyArea.
+  blocklyDiv.style.left = x + 'px';
+  blocklyDiv.style.top = y + 'px';
+  blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+  blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+};
+window.addEventListener('resize', onresize, false);
+onresize();
+Blockly.svgResize(${grammerName}Functions.workspace());
 `
 }
 }

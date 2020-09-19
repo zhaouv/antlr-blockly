@@ -40,17 +40,24 @@ Converter.prototype.constructor = Converter;
 Converter.fromOption = function (option) {
     var converter = new this();
     converter.option = option;
+    // throw 'unfinished';
 
     converter.init();
     converter.blocklyDivId=option.blocklyDiv.id;
     converter.toolboxId=option.toolbox.id;
+    if (option.blocklyDiv.type==='fixedSizeBlocklyDiv') {
+        converter.blocklyDivStyle = `style="height: ${option.blocklyDiv.height}; width: ${option.blocklyDiv.width};"`;
+    }
 
-    throw 'unfinished';
 
     converter.generBlocks(grammerFile, {});
     converter.renderGrammerName();
     converter.generToolbox();
     converter.generMainFile({});
+    if (option.blocklyDiv.type==='dymanicSizeBlocklyDiv') {
+        converter.html._text[converter.html._text.indexOf('bodyContent')]='bodyContent_dymanicSize';
+        converter.js._text.push('dymanicSize');
+    }
 
     return converter
 }
@@ -68,6 +75,7 @@ Converter.prototype.init = function () {
     this.toolboxGap = 5;
     this.toolboxId = 'toolbox';
     this.blocklyDivId = 'blocklyDiv';
+    this.blocklyDivStyle = 'style="height: 480px; width: 940px;"';
     this.workSpaceName = 'workspace';
     this.codeAreaId = 'codeArea';
     return this;
@@ -213,7 +221,7 @@ Converter.prototype.generMainFile = function (functions) {
 
     var mainFile = this.mainFileTPL(
         grammerName, this.generLanguage,
-        this.blocklyDivId, this.codeAreaId,
+        this.blocklyDivId, this.blocklyDivStyle, this.codeAreaId,
         this.workSpaceName, this.toolboxId,
     );
 

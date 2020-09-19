@@ -64,7 +64,12 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + [x] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行, 算数规则可以用`# id`来命名
 
-+ [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground
++ [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground  
+  + [ ] defaultGenerating
+  + [x] blocklyDiv
+  + [ ] toolbox
+  + [ ] codeArea
+  + [ ] target
 
 + [x] 语句集合和表达式集合内允许定义一般方块, 通过` # id`规则来命名方块, 或者使用xxx_arithmetic_ii的默认名称
 
