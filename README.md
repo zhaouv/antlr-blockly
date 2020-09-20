@@ -39,8 +39,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 + [x] 注入中使用color和colour均可以
 
 + [x] 引入jszip, 网页端的下载不再是一整个html
-  - [x] 提供一个blockly.3.20200402.1.zip以供下载
-  - [ ] node环境下先暂时需要新写一个脚本来执行, 之后在考虑commander.js之类的
+  + [x] 提供一个blockly.3.20200402.1.zip以供下载
+  + [ ] node环境下先暂时需要新写一个脚本来执行, 之后在考虑commander.js之类的
 
 + ?通过注入给一般域加默认值
 
@@ -67,9 +67,10 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 + [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground  
   + [ ] defaultGenerating
   + [x] blocklyDiv
-  + [ ] toolbox
+  + [x] toolbox
   + [ ] codeArea
   + [ ] target
+  + ...
 
 + [x] 语句集合和表达式集合内允许定义一般方块, 通过` # id`规则来命名方块, 或者使用xxx_arithmetic_ii的默认名称
 

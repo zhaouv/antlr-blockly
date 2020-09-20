@@ -332,7 +332,7 @@ var ${toolboxId} = (function(){
 
 var mainFileTPL = function(
     grammerName,language,
-    blocklyDivId,blocklyDivStyle,codeAreaId,
+    blocklyDivId,blocklyDivFixedSizeStyle,codeAreaId,
     workspaceName,toolboxId,
 ){
 return {
@@ -357,7 +357,7 @@ html:{
 <button onclick="showXML()">Show XML</button>
 <button onclick="runCode()">console.log(obj=code)</button>
 </p>
-<div id="${blocklyDivId}" ${blocklyDivStyle}></div>
+<div id="${blocklyDivId}" ${blocklyDivFixedSizeStyle}></div>
 <pre id="${codeAreaId}"></pre>
 `,
     bodyContent_dymanicSize:`
