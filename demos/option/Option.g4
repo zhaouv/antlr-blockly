@@ -48,7 +48,7 @@ color : this.toolboxStatementColor
 codeAreaStatement
     :   'output' output=RawString BGNL
 /* codeAreaStatement
-defaultMap:{output:"function(err,data){document.getElementById('abc').innerText=err||data}"}
+defaultMap:{output:"function(err,data){document.getElementById('codeArea').innerText=err?String(err):data}"}
 color : this.codeAreaStatementColor
 */
 ;

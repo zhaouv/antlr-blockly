@@ -332,7 +332,8 @@ var ${toolboxId} = (function(){
 
 var mainFileTPL = function(
     grammerName,language,
-    blocklyDivId,blocklyDivFixedSizeStyle,codeAreaId,
+    blocklyDivId,blocklyDivFixedSizeStyle,
+    codeAreaId,codeAreaFunc,
     workspaceName,toolboxId,
 ){
 return {
@@ -397,11 +398,13 @@ ${grammerName}Functions.workspace = function(){return ${workspaceName}}
     checkUpdateFunction:`
 function omitedcheckUpdateFunction(event) {
     console.log(event);
+    var codeArea = document.getElementById('${codeAreaId}');
+    var codeAreaFunc = ${codeAreaFunc};
     try {
         var code = Blockly.${language}.workspaceToCode(${workspaceName});
-        document.getElementById('${codeAreaId}').innerText = code;
+        codeAreaFunc(null,code);
     } catch (error) {
-        document.getElementById('${codeAreaId}').innerText = String(error);
+        codeAreaFunc(error,null);
         if (error instanceof OmitedError ||error instanceof MultiStatementError){
             var blockName = error.blockName;
             var varName = error.varName;

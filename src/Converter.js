@@ -37,10 +37,10 @@ function Converter() {
 Converter.prototype.constructor = Converter;
 
 
-Converter.fromOption = function (option) {
+Converter.withOption = function (grammerFile, option) {
     // throw 'unfinished';
     var converter = new this();
-    converter.option = option;
+    // converter.option = option;
 
     converter.init();
     converter.blocklyDivId = option.blocklyDiv.id;
@@ -60,6 +60,7 @@ Converter.fromOption = function (option) {
     } else {
         converter.generToolbox();
     }
+    converter.codeAreaFunc = option.codeArea.output;
     converter.generMainFile({});
     if (option.blocklyDiv.type === 'dymanicSizeBlocklyDiv') {
         converter.html._text[converter.html._text.indexOf('bodyContent')] = 'bodyContent_dymanicSize';
@@ -85,6 +86,7 @@ Converter.prototype.init = function () {
     this.blocklyDivFixedSizeStyle = 'style="height: 480px; width: 940px;"';
     this.workSpaceName = 'workspace';
     this.codeAreaId = 'codeArea';
+    this.codeAreaFunc = 'function(err,data){codeArea.innerText = err?String(err):data}';
     return this;
 }
 
@@ -228,7 +230,8 @@ Converter.prototype.generMainFile = function (functions) {
 
     var mainFile = this.mainFileTPL(
         grammerName, this.generLanguage,
-        this.blocklyDivId, this.blocklyDivFixedSizeStyle, this.codeAreaId,
+        this.blocklyDivId, this.blocklyDivFixedSizeStyle,
+        this.codeAreaId, this.codeAreaFunc,
         this.workSpaceName, this.toolboxId,
     );
 

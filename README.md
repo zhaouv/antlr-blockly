@@ -68,7 +68,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   + [ ] defaultGenerating
   + [x] blocklyDiv
   + [x] toolbox
-  + [ ] codeArea
+  + [x] codeArea
   + [ ] target
   + ...
 

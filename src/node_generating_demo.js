@@ -2,7 +2,7 @@ const {Converter} = require('./Converter')
 const fs = require('fs')
 
 // Converter.setfs(fs)
-let converter = Converter.fromOption({
+let converter = Converter.withOption({
     "type": "option",
     "defaultGenerating": "JSON",
     "blocklyDiv": {
@@ -18,7 +18,7 @@ let converter = Converter.fromOption({
     },
     "codeArea": {
         "type": "codeAreaStatement",
-        "output": "function(err,data){document.getElementById('abc').innerText=err||data}"
+        "output": "function(err,data){document.getElementById('codeArea').innerText=err?String(err):data}"
     },
     "target": {
         "type": "independentFile",
