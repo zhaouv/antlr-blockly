@@ -6,6 +6,11 @@ let grammerFile = fs.readFileSync('demos/motaAction/MotaActionPure.g4',{encoding
 let converter = Converter.withOption(grammerFile,{
     "type": "option",
     "defaultGenerating": "JSON",
+    "blocklyRuntime": {
+        "type": "blocklyRuntimeStatement",
+        "path": "blockly/",
+        "files": "blockly_compressed.js, blocks_compressed.js, javascript_compressed.js, zh-hans.js"
+    },
     "blocklyDiv": {
         "type": "fixedSizeBlocklyDiv",
         "id": "blocklyDiv",
@@ -23,8 +28,11 @@ let converter = Converter.withOption(grammerFile,{
     },
     "target": {
         "type": "independentFile",
-        "output": "function(html,js){console.log(html.text(),js.text())}"
+        "output": "function(html,js){}"
     }
 })
-let blocks=eval(['blocks_collection','blocks_field','blocks_block'].map(v=>converter.js[v]).join(''))
+fs.writeFileSync('gen/'+converter.html._name,converter.html.text(),{encoding:'utf8'})
+fs.writeFileSync('gen/'+converter.js._name,converter.js.text(),{encoding:'utf8'})
+if(!fs.existsSync('gen/blockly/blockly_compressed.js')) throw 'unzip blockly.3.20200402.1.zip to get blockly runtime `7z x blockly.3.20200402.1.zip -ogen/blockly`';
+// let blocks=eval(['blocks_collection','blocks_field','blocks_block'].map(v=>converter.js[v]).join(''))
 'end'
