@@ -2,7 +2,8 @@ const {Converter} = require('./Converter')
 const fs = require('fs')
 
 // Converter.setfs(fs)
-let converter = Converter.withOption({
+let grammerFile = fs.readFileSync('demos/motaAction/MotaActionPure.g4',{encoding:'utf-8'})
+let converter = Converter.withOption(grammerFile,{
     "type": "option",
     "defaultGenerating": "JSON",
     "blocklyDiv": {
@@ -22,7 +23,8 @@ let converter = Converter.withOption({
     },
     "target": {
         "type": "independentFile",
-        "output": "function(html,js){console.log(html,js)}"
+        "output": "function(html,js){console.log(html.text(),js.text())}"
     }
 })
+let blocks=eval(['blocks_collection','blocks_field','blocks_block'].map(v=>converter.js[v]).join(''))
 'end'

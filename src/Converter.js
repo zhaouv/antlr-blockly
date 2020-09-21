@@ -43,13 +43,16 @@ Converter.withOption = function (grammerFile, option) {
     // converter.option = option;
 
     converter.init();
+    converter.defaultGenerating = option.defaultGenerating;
     converter.blocklyDivId = option.blocklyDiv.id;
+    converter.blocklyRuntimePath = option.blocklyRuntime.path;
+    converter.blocklyRuntimeFiles = option.blocklyRuntime.files;
     if (option.blocklyDiv.type === 'fixedSizeBlocklyDiv') {
         converter.blocklyDivFixedSizeStyle = `style="height: ${option.blocklyDiv.height}; width: ${option.blocklyDiv.width};"`;
     }
     converter.toolboxId = option.toolbox.id;
     if (option.toolbox.type === 'toolboxDefault') {
-        converter.toolboxGap = option.toolbox.gap
+        converter.toolboxGap = option.toolbox.gap;
     }
 
     converter.generBlocks(grammerFile, {});
@@ -57,7 +60,8 @@ Converter.withOption = function (grammerFile, option) {
 
     if (option.toolbox.type === 'toolboxFunc') {
         converter.toolbox = `var ${converter.toolboxId} = (${option.toolbox.func})();`;
-    } else {
+    }
+    if (option.toolbox.type === 'toolboxDefault') {
         converter.generToolbox();
     }
     converter.codeAreaFunc = option.codeArea.output;
@@ -67,7 +71,14 @@ Converter.withOption = function (grammerFile, option) {
         converter.js._text.push('dymanicSize');
     }
 
-    return converter
+    if (option.target.type === 'independentFile') {
+    }
+    if (option.target.type === 'keepGrammar') {
+    }
+    var targetFunc = eval('(' + option.target.output + ')');
+    targetFunc.apply(converter, [converter.html, converter.js]);
+
+    return converter;
 }
 
 Converter.prototype.main = function (grammerFile, functions) {
@@ -86,7 +97,10 @@ Converter.prototype.init = function () {
     this.blocklyDivFixedSizeStyle = 'style="height: 480px; width: 940px;"';
     this.workSpaceName = 'workspace';
     this.codeAreaId = 'codeArea';
-    this.codeAreaFunc = 'function(err,data){codeArea.innerText = err?String(err):data}';
+    this.codeAreaFunc = 'function(err,data){codeAreaElement.innerText = err?String(err):data}';
+    this.defaultGenerating = 'JSON';
+    this.blocklyRuntimePath = './';
+    this.blocklyRuntimeFiles = 'blockly_compressed.js, blocks_compressed.js, javascript_compressed.js, zh-hans.js';
     return this;
 }
 
@@ -167,11 +181,12 @@ Converter.prototype.renderGrammerName = function () {
 
     var grammerName = this.grammerName;
     var generLanguage = this.generLanguage;
+    var defaultGenerating = this.defaultGenerating;
 
     this.OmitedError = tpl.OmitedError();
     this.Functions_pre = tpl.Functions_pre(grammerName);
     this.Functions_fieldDefault = tpl.Functions_fieldDefault(grammerName);
-    this.Functions_defaultCode = tpl.Functions_defaultCode(grammerName);
+    this.Functions_defaultCode = tpl.Functions_defaultCode(grammerName, defaultGenerating);
     this.Functions_xmlText = tpl.Functions_xmlText(grammerName);
     this.Functions_blocksIniter =
         tpl.Functions_blocksIniter(grammerName, generLanguage);
@@ -230,6 +245,7 @@ Converter.prototype.generMainFile = function (functions) {
 
     var mainFile = this.mainFileTPL(
         grammerName, this.generLanguage,
+        this.blocklyRuntimePath, this.blocklyRuntimeFiles,
         this.blocklyDivId, this.blocklyDivFixedSizeStyle,
         this.codeAreaId, this.codeAreaFunc,
         this.workSpaceName, this.toolboxId,

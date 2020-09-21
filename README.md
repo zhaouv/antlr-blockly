@@ -65,7 +65,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 + [x] name也可以用`event : '覆盖触发器' abc=Bool '启用' def=Bool ;`来进行, 算数规则可以用`# id`来命名
 
 + [ ] 更可控的配置, 提供一个option对象作为接口, 分为保留g4和不保留两类部署方案, blockly可以选择文件或者cdn等等, 目前的主页作为playground  
-  + [ ] defaultGenerating
+  + [x] defaultGenerating
+  + [x] blocklyRuntime
   + [x] blocklyDiv
   + [x] toolbox
   + [x] codeArea

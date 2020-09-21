@@ -3,11 +3,23 @@ grammar Option;
 option
     :   'option' BGNL
         'default blockly generating:' defaultGenerating=BlocklyGenerating_List BGNL
+        'blockly runtime' BGNL blocklyRuntime=blocklyRuntimeStatement
         'blocklyDiv' BGNL blocklyDiv=blocklyDivStatement
         'toolbox' BGNL toolbox=toolboxStatement
         'codeArea' BGNL codeArea=codeAreaStatement
         'target' BGNL target=targetStatement
     ;
+
+blocklyRuntimeStatement
+    :   'path' path=NormalString BGNL 
+        'files' files=NormalString BGNL 
+/* blocklyRuntimeStatement
+defaultMap:{path:"./",files:'blockly_compressed.js, blocks_compressed.js, javascript_compressed.js, zh-hans.js'}
+color : this.blocklyRuntimeStatementColor
+*/
+// cdn demo:
+// {path:"https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/",files:'blockly.min.js, msg/zh-hans.min.js'}
+;
 
 blocklyDivStatement
     :   'dymanic' BGNL 
@@ -61,11 +73,11 @@ targetStatement
         'output' output=RawString BGNL
     # independentFile
 /* keepGrammar
-defaultMap:{output:"function(html,js){console.log(html,js)}"}
+defaultMap:{output:"function(html,js){console.log(html.text(),js.text())}"}
 color : this.targetStatementColor
 */
 /* independentFile
-defaultMap:{output:"function(html,js){console.log(html,js)}"}
+defaultMap:{output:"function(html,js){console.log(html.text(),js.text())}"}
 color : this.targetStatementColor
 */
 ;
@@ -100,6 +112,7 @@ WS  :   [ \t]+ -> skip ;         // toss out whitespace
 // this.evisitor.valueColor=330;
 // this.evisitor.statementColor=300;
 // this.evisitor.entryColor=250;
+this.evisitor.blocklyRuntimeStatementColor=135;
 this.evisitor.blocklyDivStatementColor=160;
 this.evisitor.toolboxStatementColor=180;
 this.evisitor.codeAreaStatementColor=200;

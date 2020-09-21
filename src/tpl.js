@@ -93,7 +93,7 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
 `;
 }
 
-var Functions_defaultCode = function(grammerName) {
+var Functions_defaultCode = function(grammerName,defaultGenerating) {
 return /* js */`// ${grammerName}Functions.defaultCode_TEXT
 ${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
     var rule = ${grammerName}Blocks[ruleName];
@@ -183,7 +183,7 @@ ${grammerName}Functions.defaultCode_JSON = function (ruleName,args,block) {
 }
 
 // ${grammerName}Functions.defaultCode
-${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_JSON
+${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_${defaultGenerating}
 `;
 }
 
@@ -332,6 +332,7 @@ var ${toolboxId} = (function(){
 
 var mainFileTPL = function(
     grammerName,language,
+    blocklyRuntimePath,blocklyRuntimeFiles,
     blocklyDivId,blocklyDivFixedSizeStyle,
     codeAreaId,codeAreaFunc,
     workspaceName,toolboxId,
@@ -342,14 +343,11 @@ html:{
 <head>
 <meta charset="utf-8">
 <title>${grammerName} --antlr-blockly</title>`,
-    headScripts:`
-<!-- <script src="https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/blockly.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/msg/zh-hans.min.js"></script> -->
-<script src="blockly_compressed.js"></script>
-<script src="blocks_compressed.js"></script>
-<script src="javascript_compressed.js"></script>
-<script src="zh-hans.js"></script>
-<!-- <script src="en.js"></script> -->`,
+    headScripts: `
+`+blocklyRuntimeFiles.trim().split(/\s*,\s*/).map(function(file){
+    return `<script src="${blocklyRuntimePath}${file}"></script>`
+}).join(`
+`),
     head_body:`
 </head>
 <body>`,
@@ -380,8 +378,7 @@ html:{
 js:{
     BlocklyInject:`
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
-    media: 'media/',
-    // media: 'https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/media/',
+    media: '${blocklyRuntimePath}media/',
     toolbox: ${toolboxId},
     zoom:{
         controls: true,
@@ -398,7 +395,7 @@ ${grammerName}Functions.workspace = function(){return ${workspaceName}}
     checkUpdateFunction:`
 function omitedcheckUpdateFunction(event) {
     console.log(event);
-    var codeArea = document.getElementById('${codeAreaId}');
+    var codeAreaElement = document.getElementById('${codeAreaId}');
     var codeAreaFunc = ${codeAreaFunc};
     try {
         var code = Blockly.${language}.workspaceToCode(${workspaceName});
