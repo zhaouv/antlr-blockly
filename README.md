@@ -36,6 +36,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 ## Todo
 
++ [ ] Function_0等注入的函数改名字
+
 + [x] 注入中使用color和colour均可以
 
 + [x] 引入jszip, 网页端的下载不再是一整个html
