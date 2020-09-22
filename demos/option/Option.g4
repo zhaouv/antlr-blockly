@@ -67,17 +67,13 @@ color : this.codeAreaStatementColor
 
 targetStatement
     :   'Keep grammar and antlr-blockly as source' BGNL
-        'output' output=RawString BGNL
     # keepGrammar
     |   'Generate target source without keeping grammar' BGNL
-        'output' output=RawString BGNL
     # independentFile
 /* keepGrammar
-defaultMap:{output:"function(html,js){console.log(html.text(),js.text())}"}
 color : this.targetStatementColor
 */
 /* independentFile
-defaultMap:{output:"function(html,js){console.log(html.text(),js.text())}"}
 color : this.targetStatementColor
 */
 ;

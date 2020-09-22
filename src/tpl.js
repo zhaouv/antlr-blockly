@@ -371,6 +371,10 @@ html:{
     bodyScripts:`
 <script src="${grammerName}.js"></script>
 `,
+    bodyScripts_keepGrammar:`
+<script src="Converter.bundle.min.js"></script>
+<script src="${grammerName}.js"></script>
+`,
     htmlEnd:`</body>
 </html>
 `
@@ -447,24 +451,33 @@ function runCode() {
 var blocklyArea = document.getElementById('${blocklyDivId}_Area');
 var blocklyDiv = document.getElementById('${blocklyDivId}');
 var onresize = function(e) {
-  // Compute the absolute coordinates and dimensions of blocklyArea.
-  var element = blocklyArea;
-  var x = 0;
-  var y = 0;
-  do {
-    x += element.offsetLeft;
-    y += element.offsetTop;
-    element = element.offsetParent;
-  } while (element);
-  // Position blocklyDiv over blocklyArea.
-  blocklyDiv.style.left = x + 'px';
-  blocklyDiv.style.top = y + 'px';
-  blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
-  blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+    // Compute the absolute coordinates and dimensions of blocklyArea.
+    var element = blocklyArea;
+    var x = 0;
+    var y = 0;
+    do {
+        x += element.offsetLeft;
+        y += element.offsetTop;
+        element = element.offsetParent;
+    } while (element);
+    // Position blocklyDiv over blocklyArea.
+    blocklyDiv.style.left = x + 'px';
+    blocklyDiv.style.top = y + 'px';
+    blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+    blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
 };
 window.addEventListener('resize', onresize, false);
 onresize();
 Blockly.svgResize(${grammerName}Functions.workspace());
+`,
+    keepGrammar:`
+var grammarFile=__grammarFile__;
+var option=__option__;
+option.target.type="independentFile";
+var converter = Converter.withOption(grammarFile,option);
+var script = document.createElement('script');
+script.innerHTML = converter.js.text();
+document.body.appendChild(script);
 `
 }
 }

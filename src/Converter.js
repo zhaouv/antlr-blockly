@@ -74,9 +74,11 @@ Converter.withOption = function (grammerFile, option) {
     if (option.target.type === 'independentFile') {
     }
     if (option.target.type === 'keepGrammar') {
+        converter.html._text[converter.html._text.indexOf('bodyScripts')] = 'bodyScripts_keepGrammar';
+        converter.js._text = ['keepGrammar']
+        converter.js.keepGrammar = converter.js.keepGrammar.replace('__grammarFile__', JSON.stringify(grammerFile))
+            .replace('__option__', JSON.stringify(option));
     }
-    var targetFunc = eval('(' + option.target.output + ')');
-    targetFunc.apply(converter, [converter.html, converter.js]);
 
     return converter;
 }
