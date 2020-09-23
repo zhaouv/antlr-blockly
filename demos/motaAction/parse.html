@@ -313,11 +313,11 @@ editor_blockly.initscript=String.raw/* js */`
 var input_='';
 editor_blockly.runOne = function (){
     var printf = console.log;
-    var grammerFile = input_;
+    var grammarFile = input_;
     converter = new Converter().init();
-    converter.generBlocks(grammerFile);
+    converter.generBlocks(grammarFile);
     printf(converter.blocks);
-    converter.renderGrammerName();
+    converter.renderGrammarName();
     //converter.generToolbox();
     converter.generMainFile();
     printf(converter.mainFile.join(''));

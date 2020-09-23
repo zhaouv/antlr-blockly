@@ -1,12 +1,12 @@
-grammar BlocklyGrammer;
+grammar BlocklyGrammar;
 
 //===============parser===============
 
 grammarFile
-    :   grammerDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection
+    :   grammarDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection
     ;
 
-grammerDecl
+grammarDecl
     :   'grammar' LexerIdentifier ';'
     ;
 

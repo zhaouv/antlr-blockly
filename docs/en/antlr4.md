@@ -25,7 +25,7 @@ NEWLINE: '\ r'? '\ N';
 WS: [\ t] + -> skip; // toss out whitespace
 ```
 Describes an `AddSubMulDiv program consists of a number of statements, there are three statements , print expressions or assignment or blank lines, the expression by expression multiplication or subtraction or parentheses expressions and integer or variable name`.  
-The antlr statement is separated by `;`, the first is `grammer`, followed by the name of the grammar with the same name as the file, followed by the lower case, parsed by the parser (parser rule ), Capitalized at the beginning of the token parsed by the lexical analyzer (lexical rules token). The colon is the contents of the rule name, you can [string, regular expression, parser rules, lexical rules] in accordance with similar regular expressions A combination of ways, that is
+The antlr statement is separated by `;`, the first is `grammar`, followed by the name of the grammar with the same name as the file, followed by the lower case, parsed by the parser (parser rule ), Capitalized at the beginning of the token parsed by the lexical analyzer (lexical rules token). The colon is the contents of the rule name, you can [string, regular expression, parser rules, lexical rules] in accordance with similar regular expressions A combination of ways, that is
 ```
 a b on behalf of a first match then b
 a | b on behalf of the match a or b, and a higher priority than b, (as in the regular expression, said the local multi-select braces)
@@ -46,12 +46,12 @@ a + b * 2
 ![Please read docsify version. parse_tree] (./img/expr_parse_tree.png)
 
 + > `expr` in the order of priority: Multiplication and division at the same level greater than the addition and subtraction of this level,`Atomic` need not participate in the priority on the last, and bracket group due to parentheses match, itself is Atomic level Intensity  
-+ > antlr-blockly uses a subset of the syntax rules for antlr4, which is a weak version that works in antlr4, using the antlr-blockly unrecognized `.g4` file for more advanced features. This section [Grammar Document rules](en/grammerfile.md) in detail.
++ > antlr-blockly uses a subset of the syntax rules for antlr4, which is a weak version that works in antlr4, using the antlr-blockly unrecognized `.g4` file for more advanced features. This section [Grammar Document rules](en/grammarfile.md) in detail.
 
 - - -
 
 - [Start Page](en/README.md)
 - **antlr4 syntax introduction**
 - [blockly operation mechanism](en/blockly.md)
-- [grammar file rules](en/grammerfile.md)
+- [grammar file rules](en/grammarfile.md)
 - [demo](en/demo.md)

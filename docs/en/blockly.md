@@ -295,5 +295,5 @@ Blockly.FieldColour.prototype.createWidget_ = function() {
 - [Start Page](en/README.md)  
 - [antlr4 syntax introduction](en/antlr4.md)
 - **blockly running mechanism**
-- [grammar file rules](en/grammerfile.md)
+- [grammar file rules](en/grammarfile.md)
 - [demo](en/demo.md)

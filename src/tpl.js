@@ -1,5 +1,6 @@
 var OmitedError = function(){ 
-return /* js */`//生成代码中,当一个不允许省略的值或块省略时,会抛出这个错误
+return /* js */`
+//生成代码中,当一个不允许省略的值或块省略时,会抛出这个错误
 function OmitedError(block, var_, rule, fileName, lineNumber) {
     var message = 'no omitted '+var_+' at '+rule;
     var instance = new Error(message, fileName, lineNumber);
@@ -39,31 +40,33 @@ MultiStatementError.prototype.constructor = MultiStatementError;
 `;
 }
 
-var Functions_pre = function(grammerName) {
-return /* js */`${grammerName}Functions.Int_pre = function(intstr) {
+var Functions_pre = function(grammarName) {
+return /* js */`
+${grammarName}Functions.Int_pre = function(intstr) {
     return parseInt(intstr);
 }
 
-${grammerName}Functions.Number_pre = function(intstr) {
+${grammarName}Functions.Number_pre = function(intstr) {
     return parseFloat(intstr);
 }
 
 //返回各LexerRule文本域的预处理函数,方便用来统一转义等等
-${grammerName}Functions.pre = function(LexerId) {
-    if (${grammerName}Functions.hasOwnProperty(LexerId+'_pre')) {
-        return ${grammerName}Functions[LexerId+'_pre'];
+${grammarName}Functions.pre = function(LexerId) {
+    if (${grammarName}Functions.hasOwnProperty(LexerId+'_pre')) {
+        return ${grammarName}Functions[LexerId+'_pre'];
     }
     return function(obj,block,fieldName,blockType){return obj}
 }
 `;
 }
 
-var Functions_fieldDefault = function(grammerName) {
-return /* js */`// ${grammerName}Functions.fieldDefault
+var Functions_fieldDefault = function(grammarName) {
+return /* js */`
+// ${grammarName}Functions.fieldDefault
 // 根据输入是整数字符串或null
 // 第index个或者名字为key的域的默认值, null时返回所有field默认值的数组
-${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
-    var rule = ${grammerName}Blocks[ruleName];
+${grammarName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
+    var rule = ${grammarName}Blocks[ruleName];
     var iskey=typeof keyOrIndex==typeof '';
     var isindex=typeof keyOrIndex==typeof 0;
     function args0_content_to_default(cnt) {
@@ -93,10 +96,11 @@ ${grammerName}Functions.fieldDefault = function (ruleName,keyOrIndex) {
 `;
 }
 
-var Functions_defaultCode = function(grammerName,defaultGenerating) {
-return /* js */`// ${grammerName}Functions.defaultCode_TEXT
-${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
-    var rule = ${grammerName}Blocks[ruleName];
+var Functions_defaultCode = function(grammarName,defaultGenerating) {
+return /* js */`
+// ${grammarName}Functions.defaultCode_TEXT
+${grammarName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
+    var rule = ${grammarName}Blocks[ruleName];
     var message=rule.json.message0;
     var args0=rule.json.args0;
     for(var ii=0,jj=0;ii<args0.length;ii++){
@@ -121,15 +125,15 @@ ${grammerName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
     return message;
 }
 
-${grammerName}Functions.defaultCode_JSON_TYPE='type'
+${grammarName}Functions.defaultCode_JSON_TYPE='type'
 
 /**
  * @class
  */
-${grammerName}Functions.parserClass = function (params) {
+${grammarName}Functions.parserClass = function (params) {
 }
-${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
-    var rule = ${grammerName}Blocks[obj[${grammerName}Functions.defaultCode_JSON_TYPE]]
+${grammarName}Functions.parserClass.prototype.parse = function (obj,next) {
+    var rule = ${grammarName}Blocks[obj[${grammarName}Functions.defaultCode_JSON_TYPE]]
     var input = []
     for (var index = 0; index < rule.args.length; index++) {
         var dobj = obj[rule.args[index]];
@@ -149,22 +153,22 @@ ${grammerName}Functions.parserClass.prototype.parse = function (obj,next) {
     }
     return rule.xmlText(input,next)
 }
-${grammerName}Functions.parser=new ${grammerName}Functions.parserClass()
-${grammerName}Functions.parse=function(obj){
-    var xml_text = ${grammerName}Functions.parser.parse(obj);
+${grammarName}Functions.parser=new ${grammarName}Functions.parserClass()
+${grammarName}Functions.parse=function(obj){
+    var xml_text = ${grammarName}Functions.parser.parse(obj);
     var xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
-    ${grammerName}Functions.workspace().clear();
-    Blockly.Xml.domToWorkspace(xml, ${grammerName}Functions.workspace());
+    ${grammarName}Functions.workspace().clear();
+    Blockly.Xml.domToWorkspace(xml, ${grammarName}Functions.workspace());
 }
 
-// ${grammerName}Functions.defaultCode_JSON
-${grammerName}Functions.defaultCode_JSON = function (ruleName,args,block) {
-    var rule = ${grammerName}Blocks[ruleName];
+// ${grammarName}Functions.defaultCode_JSON
+${grammarName}Functions.defaultCode_JSON = function (ruleName,args,block) {
+    var rule = ${grammarName}Blocks[ruleName];
     var values=args
     var output={}
     var ret=''
     if (rule.type==='statement'||rule.type==='value') {
-        output[${grammerName}Functions.defaultCode_JSON_TYPE]=rule.json.type
+        output[${grammarName}Functions.defaultCode_JSON_TYPE]=rule.json.type
         ret=block.getNextBlock()==null?'':','
     }
     for (var index = 0; index < values.length; index++) {
@@ -182,18 +186,19 @@ ${grammerName}Functions.defaultCode_JSON = function (ruleName,args,block) {
     return ret
 }
 
-// ${grammerName}Functions.defaultCode
-${grammerName}Functions.defaultCode=${grammerName}Functions.defaultCode_${defaultGenerating}
+// ${grammarName}Functions.defaultCode
+${grammarName}Functions.defaultCode=${grammarName}Functions.defaultCode_${defaultGenerating}
 `;
 }
 
-var Functions_xmlText = function(grammerName) {
-return /* js */`// ${grammerName}Functions.xmlText
+var Functions_xmlText = function(grammarName) {
+return /* js */`
+// ${grammarName}Functions.xmlText
 // 构造这个方法是为了能够不借助workspace,从语法树直接构造图块结构
 // inputs的第i个元素是第i个args的xmlText,null或undefined表示空
 // next是其下一个语句的xmlText
-${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,comment,attribute) {
-    var rule = ${grammerName}Blocks[ruleName];
+${grammarName}Functions.xmlText = function (ruleName,inputs,next,isShadow,comment,attribute) {
+    var rule = ${grammarName}Blocks[ruleName];
     var blocktext = isShadow?'shadow':'block';
     var xmlText = [];
     xmlText.push('<'+blocktext+' type="'+ruleName+'"');
@@ -207,20 +212,20 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,commen
         var input = inputIsArray?inputs[ii]:inputs[rule.args[ii]];
         var _input = '';
         var noinput = input==null;
-        if(noinput && inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type!=='field_dropdown') continue;
+        if(noinput && inputType==='field' && ${grammarName}Blocks[rule.argsGrammarName[ii]].type!=='field_dropdown') continue;
         if(noinput && inputType==='field') {
             noinput = false;
             input = rule.fieldDefault(rule.args[ii])
         }
         if(noinput) input = '';
-        if(inputType==='field' && ${grammerName}Blocks[rule.argsGrammarName[ii]].type==='field_checkbox')input=input?'TRUE':'FALSE';
+        if(inputType==='field' && ${grammarName}Blocks[rule.argsGrammarName[ii]].type==='field_checkbox')input=input?'TRUE':'FALSE';
         if(inputType!=='field') {
             var subList = false;
             var subrulename = rule.argsGrammarName[ii];
-            var subrule = ${grammerName}Blocks[subrulename];
+            var subrule = ${grammarName}Blocks[subrulename];
             if (subrule instanceof Array) {
                 subrulename=subrule[subrule.length-1];
-                subrule = ${grammerName}Blocks[subrulename];
+                subrule = ${grammarName}Blocks[subrulename];
                 subList = true;
             }
             _input = subrule.xmlText([],null,true);
@@ -249,11 +254,12 @@ ${grammerName}Functions.xmlText = function (ruleName,inputs,next,isShadow,commen
 `;
 }
 
-var Functions_blocksIniter = function(grammerName,language) {
-return /* js */`// ${grammerName}Functions.blocksIniter
+var Functions_blocksIniter = function(grammarName,language) {
+return /* js */`
+// ${grammarName}Functions.blocksIniter
 // 把各方块的信息注册到Blockly中
-${grammerName}Functions.blocksIniter = function(){
-    var blocksobj = ${grammerName}Blocks;
+${grammarName}Functions.blocksIniter = function(){
+    var blocksobj = ${grammarName}Blocks;
     for(var key in blocksobj) {
         var value = blocksobj[key];
         if(value instanceof Array)continue;
@@ -279,7 +285,7 @@ ${grammerName}Functions.blocksIniter = function(){
                     }
                 };
                 value.json.extensions=value.json.extensions||[];
-                var mixinName = 'contextMenu_${grammerName}_'+value.json.type
+                var mixinName = 'contextMenu_${grammarName}_'+value.json.type
                 value.json.extensions.push(mixinName)
                 Blockly.Extensions.registerMixin(mixinName,menuRegisterMixin);
             }
@@ -331,7 +337,7 @@ var ${toolboxId} = (function(){
 }
 
 var mainFileTPL = function(
-    grammerName,language,
+    grammarName,language,
     blocklyRuntimePath,blocklyRuntimeFiles,
     blocklyDivId,blocklyDivFixedSizeStyle,
     codeAreaId,codeAreaFunc,
@@ -342,7 +348,7 @@ html:{
     htmlStart:`<!doctype html>
 <head>
 <meta charset="utf-8">
-<title>${grammerName} --antlr-blockly</title>`,
+<title>${grammarName} --antlr-blockly</title>`,
     headScripts: `
 `+blocklyRuntimeFiles.trim().split(/\s*,\s*/).map(function(file){
     return `<script src="${blocklyRuntimePath}${file}"></script>`
@@ -351,29 +357,27 @@ html:{
     head_body:`
 </head>
 <body>`,
-    bodyContent:`
+    bodyDebugButtons:`
 <p>
 <button onclick="showXML()">Show XML</button>
 <button onclick="runCode()">console.log(obj=code)</button>
 </p>
+`,
+    bodyContent:`
 <div id="${blocklyDivId}" ${blocklyDivFixedSizeStyle}></div>
 <pre id="${codeAreaId}"></pre>
 `,
     bodyContent_dymanicSize:`
-<p>
-<button onclick="showXML()">Show XML</button>
-<button onclick="runCode()">console.log(obj=code)</button>
-</p>
 <div id="${blocklyDivId}_Area"></div>
 <div id="${blocklyDivId}" style="position: absolute"></div>
 <pre id="${codeAreaId}"></pre>
 `,
     bodyScripts:`
-<script src="${grammerName}.js"></script>
+<script src="${grammarName}.js"></script>
 `,
     bodyScripts_keepGrammar:`
 <script src="Converter.bundle.min.js"></script>
-<script src="${grammerName}.js"></script>
+<script src="${grammarName}.js"></script>
 `,
     htmlEnd:`</body>
 </html>
@@ -394,7 +398,7 @@ var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     },
     trashcan: false,
 });
-${grammerName}Functions.workspace = function(){return ${workspaceName}}
+${grammarName}Functions.workspace = function(){return ${workspaceName}}
 `,
     checkUpdateFunction:`
 function omitedcheckUpdateFunction(event) {
@@ -423,6 +427,7 @@ ${workspaceName}.addChangeListener(Blockly.Events.disableOrphans);
 `,
     debugFunctions:`
 
+// debugFunctions
 function showXML() {
     xml = Blockly.Xml.workspaceToDom(${workspaceName});
     xml_text = Blockly.Xml.domToPrettyText(xml);
@@ -468,7 +473,7 @@ var onresize = function(e) {
 };
 window.addEventListener('resize', onresize, false);
 onresize();
-Blockly.svgResize(${grammerName}Functions.workspace());
+Blockly.svgResize(${grammarName}Functions.workspace());
 `,
     keepGrammar:`
 var grammarFile=__grammarFile__;

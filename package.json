@@ -5,7 +5,7 @@
     "publisher": "zhaouv",
     "main": "./Converter.bundle.min.js",
     "scripts": {
-        "antlr4js": "antlr4-tool --no-listener --language javascript -o src/gen src/BlocklyGrammer.g4",
+        "antlr4js": "antlr4-tool --no-listener --language javascript -o src/gen src/BlocklyGrammar.g4",
         "bundle": "webpack"
     },
     "repository": {

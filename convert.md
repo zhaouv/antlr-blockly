@@ -1,5 +1,5 @@
 # .g4转blockly思路
-限制.g4的规则,约定作为其子规则的blockly grammer
+限制.g4的规则,约定作为其子规则的blockly grammar
 
 ## parser
 

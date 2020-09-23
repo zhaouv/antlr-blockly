@@ -99,7 +99,7 @@ The first line, `override: true`, is the convention at embed code that does not 
 This is used here to declare variables before traversing substructures. Since globals are not in scope, it is recommended to use the form `MulDivAddSub = {vars: {}, blocks: {}, printf: console.log};` .  
 A similar convention is `color: 300`, which specifies the block as a hue color.  
 `tooltip: Help hint when the mouse is over the block`.  
-`helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile` right click on the help will pop up the page.  
+`helpUrl: https://zhaouv.github.io/antlr-blockly/docs/#/grammarfile` right click on the help will pop up the page.  
 `default:[null,"hello",1,true,null]` The default value of the field, `null` represents does not change.  
 `name : ['name1','name2']` change the names of fields and blocks, do not use the default form `ID_0`.  
 `menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` add items in the right-click menu of the blocks.  
@@ -209,7 +209,7 @@ Other fields will be converted to text input. The default for the rule name `Xxx
 
 The statement set such as `xxx: xxx | xxx | xxx;` Each `xxx` is the name of the statement block at the beginning of a different lowercase, do not allow extra symbols.
 
-> Definition in [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4)
+> Definition in [BlocklyGrammar.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammar.g4)
 > `ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier) ​​+ ';'`
 
 Used to refer to a type of statement in the stitching, itself not as a block.  
@@ -262,7 +262,7 @@ A statement block is not used by any grammar rules outdated, will be identified 
 ### grammar file
 
 A complete antlr-blockly recognized grammar file consists of `grammar declaration, statement blocks collection, statement block and value block delimiter, value block collection, lexer rule collection, meaningful lexer rule delimiter, lexer rule collection`.  
-> `grammerDecl statementRule *? statExprSplit expressionRule *? lexerRuleCollection meaningfulSplit lexerRuleCollection`
+> `grammarDecl statementRule *? statExprSplit expressionRule *? lexerRuleCollection meaningfulSplit lexerRuleCollection`
 
 The grammar declaration is the first statement, in the form `grammar Xxx;`, indicating that the name of this grammar is `Xxx`
 

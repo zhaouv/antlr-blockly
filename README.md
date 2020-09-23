@@ -129,7 +129,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 strings 中要支持`??`,parserRule中要支持非贪婪匹配的形式
 
 + [x] `lexerRuleAtom`的命名不合理,应改成`lexerRuleExpr`  
-`grammerDecl`中不应包含`ParserIdentifier`
+`grammarDecl`中不应包含`ParserIdentifier`
 
 + [x] 支持colour,tooltip,helpUrl  
   默认值default的设置  

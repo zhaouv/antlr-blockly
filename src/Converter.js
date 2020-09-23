@@ -2,26 +2,26 @@
  * use : 
  * ---
  * 
- * converter = new Converter().main(grammerFile);
+ * converter = new Converter().main(grammarFile);
  * 
  * ---
  * 
  * converter = new Converter();
- * converter.main(grammerFile,{Function_0:function(){
+ * converter.main(grammarFile,{Function_0:function(){
  *   this.evisitor.statementColor=230;
  * }});
  * 
  * ---
  * 
- * converter = new Converter().main(grammerFile,null);
+ * converter = new Converter().main(grammarFile,null);
  * 
  * ===
- * @param {!String} grammerFile is [.g4 File] as String
+ * @param {!String} grammarFile is [.g4 File] as String
  */
 
 var antlr4 = require('antlr4/index');
-var BlocklyGrammerLexer = require('./gen/BlocklyGrammerLexer').BlocklyGrammerLexer;
-var BlocklyGrammerParser = require('./gen/BlocklyGrammerParser').BlocklyGrammerParser;
+var BlocklyGrammarLexer = require('./gen/BlocklyGrammarLexer').BlocklyGrammarLexer;
+var BlocklyGrammarParser = require('./gen/BlocklyGrammarParser').BlocklyGrammarParser;
 var Visitors = require('./Visitors');
 var SymbolVisitor = Visitors.SymbolVisitor;
 var EvalVisitor = Visitors.EvalVisitor;
@@ -37,7 +37,7 @@ function Converter() {
 Converter.prototype.constructor = Converter;
 
 
-Converter.withOption = function (grammerFile, option) {
+Converter.withOption = function (grammarFile, option) {
     // throw 'unfinished';
     var converter = new this();
     // converter.option = option;
@@ -55,8 +55,8 @@ Converter.withOption = function (grammerFile, option) {
         converter.toolboxGap = option.toolbox.gap;
     }
 
-    converter.generBlocks(grammerFile, {});
-    converter.renderGrammerName();
+    converter.generBlocks(grammarFile, {});
+    converter.renderGrammarName();
 
     if (option.toolbox.type === 'toolboxFunc') {
         converter.toolbox = `var ${converter.toolboxId} = (${option.toolbox.func})();`;
@@ -76,17 +76,17 @@ Converter.withOption = function (grammerFile, option) {
     if (option.target.type === 'keepGrammar') {
         converter.html._text[converter.html._text.indexOf('bodyScripts')] = 'bodyScripts_keepGrammar';
         converter.js._text = ['keepGrammar']
-        converter.js.keepGrammar = converter.js.keepGrammar.replace('__grammarFile__', JSON.stringify(grammerFile))
+        converter.js.keepGrammar = converter.js.keepGrammar.replace('__grammarFile__', JSON.stringify(grammarFile))
             .replace('__option__', JSON.stringify(option));
     }
 
     return converter;
 }
 
-Converter.prototype.main = function (grammerFile, functions) {
+Converter.prototype.main = function (grammarFile, functions) {
     this.init();
-    this.generBlocks(grammerFile, functions);
-    this.renderGrammerName();
+    this.generBlocks(grammarFile, functions);
+    this.renderGrammarName();
     this.generToolbox();
     this.generMainFile(functions);
     return this;
@@ -106,15 +106,15 @@ Converter.prototype.init = function () {
     return this;
 }
 
-Converter.prototype.generBlocks = function (grammerFile, functions) {
+Converter.prototype.generBlocks = function (grammarFile, functions) {
     if (!functions) functions = {};
 
     var temp_consoleError = console.error;
     console.error = function (err) { throw new Error(err); }
-    var chars = new antlr4.InputStream(grammerFile);
-    var lexer = new BlocklyGrammerLexer(chars);
+    var chars = new antlr4.InputStream(grammarFile);
+    var lexer = new BlocklyGrammarLexer(chars);
     var tokens = new antlr4.CommonTokenStream(lexer);
-    var parser = new BlocklyGrammerParser(tokens);
+    var parser = new BlocklyGrammarParser(tokens);
     parser.buildParseTrees = true;
     var tree = parser.grammarFile();
     console.error = temp_consoleError;
@@ -129,7 +129,7 @@ Converter.prototype.generBlocks = function (grammerFile, functions) {
 
     svisitor.checkSymbol();
 
-    var evisitor = new EvalVisitor().init(svisitor, grammerFile);
+    var evisitor = new EvalVisitor().init(svisitor, grammarFile);
     this.evisitor = evisitor;
 
     /* Function_0
@@ -177,21 +177,21 @@ Converter.prototype.generBlocks = function (grammerFile, functions) {
     return this;
 }
 
-Converter.prototype.renderGrammerName = function () {
-    this.grammerName = this.svisitor.grammerName;
+Converter.prototype.renderGrammarName = function () {
+    this.grammarName = this.svisitor.grammarName;
     this.generLanguage = this.evisitor.generLanguage;//在generBlocks中可修改
 
-    var grammerName = this.grammerName;
+    var grammarName = this.grammarName;
     var generLanguage = this.generLanguage;
     var defaultGenerating = this.defaultGenerating;
 
     this.OmitedError = tpl.OmitedError();
-    this.Functions_pre = tpl.Functions_pre(grammerName);
-    this.Functions_fieldDefault = tpl.Functions_fieldDefault(grammerName);
-    this.Functions_defaultCode = tpl.Functions_defaultCode(grammerName, defaultGenerating);
-    this.Functions_xmlText = tpl.Functions_xmlText(grammerName);
+    this.Functions_pre = tpl.Functions_pre(grammarName);
+    this.Functions_fieldDefault = tpl.Functions_fieldDefault(grammarName);
+    this.Functions_defaultCode = tpl.Functions_defaultCode(grammarName, defaultGenerating);
+    this.Functions_xmlText = tpl.Functions_xmlText(grammarName);
     this.Functions_blocksIniter =
-        tpl.Functions_blocksIniter(grammerName, generLanguage);
+        tpl.Functions_blocksIniter(grammarName, generLanguage);
 
     this.mainFileTPL = tpl.mainFileTPL;
     return this;
@@ -205,14 +205,14 @@ Converter.prototype.generToolbox = function () {
     text.push('            // 所有语句块');
     for (var key in this.evisitor.statementRules) {
         if (!this.evisitor.statementRules[key].type) continue;
-        text.push('            ' + this.grammerName + 'Blocks["' + key + '"].xmlText(),');
+        text.push('            ' + this.grammarName + 'Blocks["' + key + '"].xmlText(),');
     }
     text.push('        ],');
     text.push('        "value": [');
     text.push('            // 所有值块');
     for (var key in this.evisitor.expressionRules) {
         if (!this.evisitor.expressionRules[key].type) continue;
-        text.push('            ' + this.grammerName + 'Blocks["' + key + '"].xmlText(),');
+        text.push('            ' + this.grammarName + 'Blocks["' + key + '"].xmlText(),');
     }
     text.push('        ]');
     text.push('    }');
@@ -224,14 +224,14 @@ Converter.prototype.generToolbox = function () {
 Converter.prototype.generMainFile = function (functions) {
     if (!functions) functions = {};
 
-    var grammerName = this.grammerName;
+    var grammarName = this.grammarName;
 
     this.js = {
         blocks_collection: this.blocks_collection + '\n\n',
         blocks_field: this.blocks_field + '\n\n',
         blocks_block: this.blocks_block + '\n\n',
         OmitedError: this.OmitedError + '\n\n',
-        Functions_define: grammerName + 'Functions={}\n\n',
+        Functions_define: grammarName + 'Functions={}\n\n',
         injectFunctions: this.evisitor.matchInject('Functions'),
         insertFunctions: functions['Functions'] || '',
         Functions_pre: this.Functions_pre + '\n\n',
@@ -239,14 +239,14 @@ Converter.prototype.generMainFile = function (functions) {
         Functions_defaultCode: this.Functions_defaultCode + '\n\n',
         Functions_xmlText: this.Functions_xmlText + '\n\n',
         Functions_blocksIniter: this.Functions_blocksIniter + '\n\n',
-        callIniter: grammerName + 'Functions.blocksIniter();\n\n',
+        callIniter: grammarName + 'Functions.blocksIniter();\n\n',
         toolbox: this.toolbox + '\n\n',
     }
     this.html = {
     }
 
     var mainFile = this.mainFileTPL(
-        grammerName, this.generLanguage,
+        grammarName, this.generLanguage,
         this.blocklyRuntimePath, this.blocklyRuntimeFiles,
         this.blocklyDivId, this.blocklyDivFixedSizeStyle,
         this.codeAreaId, this.codeAreaFunc,
@@ -264,6 +264,7 @@ Converter.prototype.generMainFile = function (functions) {
         'htmlStart',
         'headScripts',
         'head_body',
+        'bodyDebugButtons',
         'bodyContent',
         'bodyScripts',
         'htmlEnd'
@@ -290,7 +291,7 @@ Converter.prototype.generMainFile = function (functions) {
         'debugFunctions'
     ]
     this.html._name = 'index.html'
-    this.js._name = this.grammerName + '.js'
+    this.js._name = this.grammarName + '.js'
     this.html.text = text
     this.js.text = text
 }

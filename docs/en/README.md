@@ -29,5 +29,5 @@ For antlr4 users, it provides a means to efficiently generate their dsl developm
 - **Start Page**
 - [antlr4 syntax introduction](en/antlr4.md)
 - [blockly running mechanism](en/blockly.md)
-- [grammar file rules](en/grammerfile.md)
+- [grammar file rules](en/grammarfile.md)
 - [demo](en/demo.md)

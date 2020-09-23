@@ -120,5 +120,5 @@ for (var key in OptionBlocks) {
     if (OptionBlocks[key].json) {
         OptionBlocks[key].json.nextStatement=undefined;
     }
-}
+};
 */

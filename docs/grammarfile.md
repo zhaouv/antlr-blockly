@@ -99,7 +99,7 @@ return <span style="font-weight: bold;color:teal">block.id</span>;
 此处使用是为了在遍历子结构前声明变量. 由于不在一个作用域内, 需要使用全局量. 推荐使用`MulDivAddSub = {vars : {}, blocks : {}, printf : console.log};`的形式.  
 类似的约定还有`colour : 300`, 把方块指定为hue颜色.  
 `tooltip : 鼠标悬浮在方块上时显示的帮助提示`.  
-`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammerfile`右键点击帮助会弹出该页面.  
+`helpUrl : https://zhaouv.github.io/antlr-blockly/docs/#/grammarfile`右键点击帮助会弹出该页面.  
 `default : [null,"hello",1,true,null]`设置方块中域的默认值, `null`代表不改变.  
 `name : ['name1','name2']`更改域和方块的变量的名字,不再使用默认的`ID_0`的形式.  
 `menu: [['菜单项1','alert(1)'],['function(block){return "菜单项2"}','console.log(block);alert(2)']]` 方块的右键菜单中的增项.  
@@ -209,7 +209,7 @@ return [<span style="font-weight: bold;color:teal">block.id</span>, <span style=
 
 语句集合形如`xxx : xxx | xxx | xxx ;`每个`xxx`都是不同的小写开头的语句块的名, 不允许有多余的符号.  
 
-> 在 [BlocklyGrammer.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammer.g4) 中定义如下  
+> 在 [BlocklyGrammar.g4](https://github.com/zhaouv/antlr-blockly/blob/master/src/BlocklyGrammar.g4) 中定义如下  
 > `ParserIdentifier ':' ParserIdentifier ('|' ParserIdentifier)+ ';'`  
 
 用来在拼接时指代一类语句, 本身不作为方块.  
@@ -262,7 +262,7 @@ parserRuleAtom
 ### 语法文件
 
 一个完整的antlr-blockly识别的语法文件, 由`语法声明,语句块集合,语句块和值块分隔符,值块集合,词法集合,有意义词法分隔符,词法集合`构成.  
-> `grammerDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection`
+> `grammarDecl statementRule*? statExprSplit expressionRule*? lexerRuleCollection meaningfulSplit lexerRuleCollection`
 
 语法声明是第一句, 具有`grammar Xxx ;`的形式, 表明这个语法的名字是`Xxx`
 

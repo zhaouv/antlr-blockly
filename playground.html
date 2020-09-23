@@ -236,7 +236,7 @@ function func_Download(){
 
             var a = document.createElement('a');
             a.href = window.URL.createObjectURL(content);
-            a.download = thisobj.grammerName + '.zip';
+            a.download = thisobj.grammarName + '.zip';
             a.textContent = 'Download file!';
             a.dispatchEvent(clickEvent);
 
@@ -270,13 +270,13 @@ input_B.value='';
 
 <script>
 function runOne(callback){
-    var grammerFile = input_B.value;
+    var grammarFile = input_B.value;
     
     converter = new Converter().init();
-    converter.generBlocks(grammerFile);
+    converter.generBlocks(grammarFile);
     printf(converter.blocks);
 
-    converter.renderGrammerName();
+    converter.renderGrammarName();
 
     converter.generToolbox();
 

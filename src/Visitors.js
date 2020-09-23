@@ -1,15 +1,15 @@
 
-var BlocklyGrammerVisitor = require('./gen/BlocklyGrammerVisitor').
-    BlocklyGrammerVisitor;
+var BlocklyGrammarVisitor = require('./gen/BlocklyGrammarVisitor').
+    BlocklyGrammarVisitor;
 
 /**
  * @class
  */
 function SymbolVisitor() {
-	BlocklyGrammerVisitor.call(this);
+	BlocklyGrammarVisitor.call(this);
 }
 
-SymbolVisitor.prototype = Object.create(BlocklyGrammerVisitor.prototype);
+SymbolVisitor.prototype = Object.create(BlocklyGrammarVisitor.prototype);
 SymbolVisitor.prototype.constructor = SymbolVisitor;
 
 SymbolVisitor.prototype.init = function() {
@@ -17,7 +17,7 @@ SymbolVisitor.prototype.init = function() {
     this.expressionRules=[];
     this.arithmetic={};
     this.lexerRules={};
-    this.grammerName='';
+    this.grammarName='';
     return this;
 }
 
@@ -63,9 +63,9 @@ SymbolVisitor.prototype.checkSymbol = function() {
     }
 }
 
-// Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
+// Visit a parse tree produced by BlocklyGrammarParser#grammarFile.
 SymbolVisitor.prototype.visitGrammarFile = function(ctx) {
-    this.visit(ctx.grammerDecl());
+    this.visit(ctx.grammarDecl());
     this.visit(ctx.statementRule());
     this.visit(ctx.expressionRule());
     //只检查meaningful之前的词法规则
@@ -73,10 +73,10 @@ SymbolVisitor.prototype.visitGrammarFile = function(ctx) {
     return this;
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#grammerDecl.
-SymbolVisitor.prototype.visitGrammerDecl = function(ctx) {
+// Visit a parse tree produced by BlocklyGrammarParser#grammarDecl.
+SymbolVisitor.prototype.visitGrammarDecl = function(ctx) {
     //获取名字
-    this.grammerName = ctx.children[1].getText();
+    this.grammarName = ctx.children[1].getText();
 };
 
 SymbolVisitor.prototype.getNameOfListMember = function (ctx) {
@@ -110,27 +110,27 @@ SymbolVisitor.prototype.processValue = function(ctx, Rules) {
     Rules.push([parserId,[parserId]]);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#StatList.
+// Visit a parse tree produced by BlocklyGrammarParser#StatList.
 SymbolVisitor.prototype.visitStatList = function(ctx) {
     this.processList(ctx,this.statementRules);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#StatValue.
+// Visit a parse tree produced by BlocklyGrammarParser#StatValue.
 SymbolVisitor.prototype.visitStatValue = function(ctx) {
     this.processValue(ctx,this.statementRules);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
+// Visit a parse tree produced by BlocklyGrammarParser#ExprList.
 SymbolVisitor.prototype.visitExprList = function(ctx) {
     this.processList(ctx,this.expressionRules);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
+// Visit a parse tree produced by BlocklyGrammarParser#ExprValue.
 SymbolVisitor.prototype.visitExprValue = function(ctx) {
     this.processValue(ctx,this.expressionRules);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#lexerRuleCollection.
+// Visit a parse tree produced by BlocklyGrammarParser#lexerRuleCollection.
 SymbolVisitor.prototype.visitLexerRuleCollection = function(ctx) {
     var lexerRules = ctx.lexerRule() || [];
     for(var ii=0,value;value=lexerRules[ii];ii++){
@@ -185,10 +185,10 @@ var json={
  * @class
  */
 function EvalVisitor() {
-	BlocklyGrammerVisitor.call(this);
+	BlocklyGrammarVisitor.call(this);
 }
 
-EvalVisitor.prototype = Object.create(BlocklyGrammerVisitor.prototype);
+EvalVisitor.prototype = Object.create(BlocklyGrammarVisitor.prototype);
 EvalVisitor.prototype.constructor = EvalVisitor;
 
 /**
@@ -207,7 +207,7 @@ EvalVisitor.prototype.init = function(symbols,rawInput) {
         }
         return ruledict;
     }
-    this.grammerName=symbols.grammerName;
+    this.grammarName=symbols.grammarName;
     this.statementRules=convert(symbols.statementRules);
     this.expressionRules=convert(symbols.expressionRules);
     this.lexerRules=symbols.lexerRules;
@@ -501,7 +501,7 @@ EvalVisitor.prototype.assemble = function() {
                     text.push(pre+'}\n');
                 }
                 if (arg.blockType==='field'){
-                    text.push(pre+var_+' = '+this.grammerName+"Functions.pre('");
+                    text.push(pre+var_+' = '+this.grammarName+"Functions.pre('");
                     text.push(arg.id+"')("+var_+",block,'"+var_+"','");
                     text.push(rulekeys[ii]+"');\n");
                 }
@@ -517,8 +517,8 @@ EvalVisitor.prototype.assemble = function() {
                     rule.blockobj.inject.generFunc.split('\n').join('\n'+pre));
                 text.push('\n');
             } else {
-                text.push(pre+"var code = "+this.grammerName+"Functions.defaultCode('");
-                text.push(rule.check[0]+"',eval('['+"+this.grammerName+"Blocks['");
+                text.push(pre+"var code = "+this.grammarName+"Functions.defaultCode('");
+                text.push(rule.check[0]+"',eval('['+"+this.grammarName+"Blocks['");
                 text.push(rule.check[0]+"'].args.join(',')+']'),block);\n");
                 if(rule_type==='statement'){
                     text.push(pre+'return code;\n');
@@ -558,11 +558,11 @@ EvalVisitor.prototype.assemble = function() {
             if(point>0)pre+=Array(4*point+1).join(' ');
             if(point<0)pre=pre.slice(0,4*point);
         }
-        var grammerName=this.grammerName;
+        var grammarName=this.grammarName;
         var ruleName=rule.check[0];
         text.push(pre+'function (inputs,next,isShadow,comment,attribute) {\n');
         cpre(1);
-        text.push(pre+'return '+grammerName+"Functions.xmlText('");
+        text.push(pre+'return '+grammarName+"Functions.xmlText('");
         text.push(ruleName+"',inputs,next,isShadow,comment,attribute);\n");
         cpre(-1);
         text.push(pre+'}');
@@ -572,7 +572,7 @@ EvalVisitor.prototype.assemble = function() {
         cpre(-9999);
         text.push(pre+'function (keyOrIndex) {\n');
         cpre(1);
-        text.push(pre+'return '+grammerName+"Functions.fieldDefault('");
+        text.push(pre+'return '+grammarName+"Functions.fieldDefault('");
         text.push(ruleName+"',keyOrIndex);\n");
         cpre(-1);
         text.push(pre+'}');
@@ -583,8 +583,8 @@ EvalVisitor.prototype.assemble = function() {
 }
 
 /**
- * 生成grammerName Blocks
- * 数据结构 以grammerName是Abc为例
+ * 生成grammarName Blocks
+ * 数据结构 以grammarName是Abc为例
  * AbcBlocks = {
  *   rule1: rule1_data
  *   rule2: rule2_data
@@ -629,7 +629,7 @@ EvalVisitor.prototype.generBlocks = function() {
     delete(this.temp_collection);
     //添加所有语句集合和表达式集合
     text.push(pre+'// 语句集合和表达式集合\n');
-    text.push(pre+this.grammerName+'Blocks = {\n');
+    text.push(pre+this.grammarName+'Blocks = {\n');
     text.push('');
     cpre(1);
     for(var ii=0,crule;crule=temp_collection[ii];ii++){
@@ -648,7 +648,7 @@ EvalVisitor.prototype.generBlocks = function() {
     //添加域
     text.push(pre+'// 所有域的默认行为\n');
     text.push(pre+'Object.assign(');
-    text.push(this.grammerName+'Blocks,');
+    text.push(this.grammarName+'Blocks,');
     function renderLexerRules(lexerRules) {
         var rcount=0;
         var replaceobj={};
@@ -672,7 +672,7 @@ EvalVisitor.prototype.generBlocks = function() {
     //添加所有方块
     text.push(pre+'// 所有方块的实际内容\n');
     text.push(pre+'Object.assign(');
-    text.push(this.grammerName+'Blocks,{\n');
+    text.push(this.grammarName+'Blocks,{\n');
     cpre(1);
     //此函数的目的是将块中的语句集合和表达式集合在生成为文件时
     //从展开的数组换回AbcBlock.expression的形式
@@ -686,14 +686,14 @@ EvalVisitor.prototype.generBlocks = function() {
             if(!usedrule)continue;
             if(usedrule.check.length===1)continue;
             blockjs.args0[jj].check='1_fry2_3_inrgv'+arg.id;
-            replaceobj['"1_fry2_3_inrgv'+arg.id+'"']=obj.grammerName+'Blocks.'+arg.id;
+            replaceobj['"1_fry2_3_inrgv'+arg.id+'"']=obj.grammarName+'Blocks.'+arg.id;
         }
         // 语句集合
         if (blockjs.nextStatement) {
             for(var kk=0,crule;crule=temp_collection[kk];kk++){
                 if (crule[1].check.indexOf(blockjs.type)!==-1){
                     blockjs.nextStatement='1_fry2_3_inrgv'+crule[0];
-                    replaceobj['"1_fry2_3_inrgv'+crule[0]+'"']=obj.grammerName+
+                    replaceobj['"1_fry2_3_inrgv'+crule[0]+'"']=obj.grammarName+
                         'Blocks.'+crule[0];
                     break;
                 }
@@ -704,14 +704,14 @@ EvalVisitor.prototype.generBlocks = function() {
             if (!arg.id)continue;
             if (arg.data.type=='field_image'){
                 replaceobj['"1_fry2_3_inrgv'+arg.id+'_'+jj+'"']=
-                    'Object.assign({},'+obj.grammerName+'Blocks.'+arg.id+')';
+                    'Object.assign({},'+obj.grammarName+'Blocks.'+arg.id+')';
                 blockjs.args0[jj]='1_fry2_3_inrgv'+arg.id+'_'+jj;
                 continue;
             }
             if (rule.argsType[index++]!='field')continue;
             replaceobj['"1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name+'"']=
                 'Object.assign({},'+
-                obj.grammerName+'Blocks.'+arg.id+','+
+                obj.grammarName+'Blocks.'+arg.id+','+
                 JSON.stringify(blockjs.args0[jj],null,4).split('\n').join('\n'+pre+'        ')
                 +')';
             blockjs.args0[jj]='1_fry2_3_inrgv'+arg.id+blockjs.args0[jj].name;
@@ -841,7 +841,7 @@ EvalVisitor.prototype.speicalLexerRule = function(lexerId) {
     return false;
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#grammarFile.
+// Visit a parse tree produced by BlocklyGrammarParser#grammarFile.
 EvalVisitor.prototype.visitGrammarFile = function(ctx) {
     //先生成词法规则再组装块.调整了遍历顺序
     this.visit(ctx.lexerRuleCollection(0));
@@ -851,7 +851,7 @@ EvalVisitor.prototype.visitGrammarFile = function(ctx) {
     this.assemble();
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#strings.
+// Visit a parse tree produced by BlocklyGrammarParser#strings.
 EvalVisitor.prototype.visitStrings = function(ctx) {
     var Strings = ctx.String();
     for(var ii=0,value;value=Strings[ii];ii++){
@@ -860,7 +860,7 @@ EvalVisitor.prototype.visitStrings = function(ctx) {
     return Strings.join(' ');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#LexerRuleStrings.
+// Visit a parse tree produced by BlocklyGrammarParser#LexerRuleStrings.
 EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
     if (this.speicalLexerRule(lexerId)) return;
@@ -869,7 +869,7 @@ EvalVisitor.prototype.visitLexerRuleStrings = function(ctx) {
     this.setRule('lexer',lexerId,strings);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#LexerRuleList.
+// Visit a parse tree produced by BlocklyGrammarParser#LexerRuleList.
 EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
     if (this.speicalLexerRule(lexerId)) return;
@@ -915,7 +915,7 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
     this.setRule('lexer',lexerId,lexervalue);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#LexerRuleComplex.
+// Visit a parse tree produced by BlocklyGrammarParser#LexerRuleComplex.
 EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
     if (this.speicalLexerRule(lexerId)) return;
@@ -951,27 +951,27 @@ EvalVisitor.prototype.processValue = function (ctx, typeStr) {
     this.initAssemble(obj);
 }
 
-// Visit a parse tree produced by BlocklyGrammerParser#StatList.
+// Visit a parse tree produced by BlocklyGrammarParser#StatList.
 EvalVisitor.prototype.visitStatList = function(ctx) {
     this.processList(ctx,'statement');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#StatValue.
+// Visit a parse tree produced by BlocklyGrammarParser#StatValue.
 EvalVisitor.prototype.visitStatValue = function(ctx) {
     this.processValue(ctx,'statement');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprList.
+// Visit a parse tree produced by BlocklyGrammarParser#ExprList.
 EvalVisitor.prototype.visitExprList = function(ctx) {
     this.processList(ctx,'value');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ExprValue.
+// Visit a parse tree produced by BlocklyGrammarParser#ExprValue.
 EvalVisitor.prototype.visitExprValue = function(ctx) {
     this.processValue(ctx,'value');
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#blockContentCollection.
+// Visit a parse tree produced by BlocklyGrammarParser#blockContentCollection.
 EvalVisitor.prototype.visitBlockContentCollection = function(ctx) {
     //parserRuleAtom+ ('#' blockName=ParserIdentifier)?
     var parserId = this.listInformation.name;
@@ -989,7 +989,7 @@ EvalVisitor.prototype.visitBlockContentCollection = function(ctx) {
     this.initAssemble(obj);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ParserAtomParserId.
+// Visit a parse tree produced by BlocklyGrammarParser#ParserAtomParserId.
 EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
     //ParserIdentifier ('+' | '*' | '?')?
     var parserId = ctx.parserId.text;
@@ -1012,7 +1012,7 @@ EvalVisitor.prototype.visitParserAtomParserId = function(ctx) {
     this.blockInformation.message.push('%'+this.blockInformation.args.length);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ParserAtomLexerId.
+// Visit a parse tree produced by BlocklyGrammarParser#ParserAtomLexerId.
 EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     //LexerIdentifier '?'?
     var lexerId = ctx.lexerId.text;
@@ -1040,7 +1040,7 @@ EvalVisitor.prototype.visitParserAtomLexerId = function(ctx) {
     this.blockInformation.message.push('%'+this.blockInformation.args.length);
 };
 
-// Visit a parse tree produced by BlocklyGrammerParser#ParserAtomStr.
+// Visit a parse tree produced by BlocklyGrammarParser#ParserAtomStr.
 EvalVisitor.prototype.visitParserAtomStr = function(ctx) {
     //String
     var string_ = this.escapeString(ctx.String().getText());
