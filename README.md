@@ -36,6 +36,14 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 ## Todo
 
++ [ ] 生成的文件前打上生成标注
+
++ [ ] json作为defaultCode时, 更多基于类型的处理
+
++ [ ] 发布到npm  
+  ?更改类Converter的名字  
+  提供把blockly runtime以及bundle复制到目标位置的脚本
+
 + [ ] Function_0等注入的函数改名字
 
 + [x] 注入中使用color和colour均可以

@@ -402,7 +402,7 @@ ${grammarName}Functions.workspace = function(){return ${workspaceName}}
 `,
     checkUpdateFunction:`
 function omitedcheckUpdateFunction(event) {
-    console.log(event);
+    // console.log(event);
     var codeAreaElement = document.getElementById('${codeAreaId}');
     var codeAreaFunc = ${codeAreaFunc};
     try {

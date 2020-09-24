@@ -6,7 +6,8 @@
     "main": "./Converter.bundle.min.js",
     "scripts": {
         "antlr4js": "antlr4-tool --no-listener --language javascript -o src/gen src/BlocklyGrammar.g4",
-        "bundle": "webpack"
+        "bundle": "webpack",
+        "generate-option": "node ./demos/option/Option_generate_iframe.js"
     },
     "repository": {
         "type": "git",

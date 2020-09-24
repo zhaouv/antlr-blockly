@@ -4,6 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>antlr-blockly</title>
     <link rel="shortcut icon" type="image/png" href="./docs/img/ab2.png">
+    <script src="blockly_compressed.js"></script>
+    <script src="blocks_compressed.js"></script>
+    <script src="javascript_compressed.js"></script>
+    <script src="zh-hans.js"></script>
+    <script src="Converter.bundle.min.js"></script>
+    <script src="jszip.min.js"></script>
 <!-- css START -->
 <style>
     a {text-decoration:none;color:blue;}
@@ -70,7 +76,6 @@
         var cssNode=document.createElement("style");
         cssNode.innerHTML=document.getElementById('mobilecss').innerText;
         document.head.appendChild(cssNode);
-        //document.head.innerHTML+='<style>'+mobilecss.innerText+'</style>';
     }
 </script>
 <canvas id="background"></canvas>
@@ -113,8 +118,7 @@
 
 <!-- content START -->
 
-<input id="input_A" spellcheck="false" type="text" style="width: 100%;height: 1.5em;display:none" placeholder="input_A">
-</input> 
+<div id="content_A" style="width: 100%;display:none"></div> 
 <h1>antlr-blockly</h1>
 <textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="Paste Your Grammar File Here"></textarea>
 <br/>
@@ -136,17 +140,13 @@
 
 </div></div><div class="right">&nbsp;</div>
 
+
+
 <script type="text/javascript">
-__id__=['mobilecss','printf_target','background','input_A','input_B'];
-__all__=['isMobile','urlmap','printf','func_Parse','func_Download','antlr4'];
 
 printf_target = document.getElementById('printf_target');
 background = document.getElementById('background');
-input_A = document.getElementById('input_A');
 input_B = document.getElementById('input_B');
-
-    
-(function(){    
 document.getElementsByClassName('middletop')[0].style.marginTop=~~(innerHeight/20)+'px';
 printf = function(str,weak) {
     var node=document.createElement('span');
@@ -159,62 +159,26 @@ printf = function(str,weak) {
     printf_target.innerHTML='';
     printf_target.appendChild(node);
 }
-})();
-</script>
-<script type="text/javascript">
+
 function func_Parse(){
-    //printf(input_A.value);
     console.clear();
     runOne();
 }
-var loadlib=[false];
+
 function func_Run(){
-    var left = document.getElementsByClassName('left')[0];
-    left.style.width='100%';
-    left.style.display='block';
-    left.style.backgroundColor = 'white';
-    left.innerHTML = converter.html.bodyContent;
-    var loadjs = function(src,callback){
-        var script = document.createElement('script');
-        script.src = src;
-        document.body.appendChild(script);
-        script.onload = function () {
-            callback();
-        }
-    }
-    if(!loadlib[0]){
-        
-        var lnum=[0];
-        var tcb = function(){
-            if(++lnum[0]!==3)return;
-            loadlib[0]=true;
-            var script = document.createElement('script');
-            script.innerHTML = converter.js.text();
-            document.body.appendChild(script);
-        }
+    var content_A = document.getElementById('content_A');
+    content_A.style.width='100%';
+    content_A.style.display='block';
+    // content_A.style.backgroundColor = 'white';
+    content_A.innerHTML = converter.html.bodyContent;
 
-        loadjs('blockly_compressed.js',function(){
-            loadjs('blocks_compressed.js',tcb);
-            loadjs('javascript_compressed.js',tcb);
-            loadjs('zh-hans.js',tcb);
-            //loadjs('en.js',tcb);
-        });
-        // loadjs('https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/blockly.min.js',function(){
-        //     loadjs('https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/msg/zh-hans.min.js',function(){
-        //         loadlib[0]=true;
-        //         var script = document.createElement('script');
-        //         script.innerHTML = converter.js.text();
-        //         document.body.appendChild(script);
-        //     });
-        // });
-
-    } else {
-        var script = document.createElement('script');
-        script.innerHTML = converter.js.text();
-        document.body.appendChild(script);
-    }
+    var script = document.createElement('script');
+    script.innerHTML = converter.js.text();
+    document.body.appendChild(script);
+    
     //暂时只支持点一次
     //上面的代码多次运行会使得鼠标拖拽不正常
+    //?待重新测试
     document.querySelector('input[type=button][value=Run]').style.display='none';
     document.querySelector('input[type=button][value=Parse]').style.display='none';
 }
@@ -256,19 +220,7 @@ function func_Download(){
     }
     writeMainFile.call(converter,window.JSZip);
 }
-</script>
 
-<script>
-input_A.value='grammarFile';
-input_B.value='';
-</script>
-
-
-<script src="Converter.bundle.min.js"></script>
-<script src="jszip.min.js"></script>
-
-
-<script>
 function runOne(callback){
     var grammarFile = input_B.value;
     
