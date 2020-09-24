@@ -24,7 +24,7 @@ let option = {
     },
     "codeArea": {
         "type": "codeAreaStatement",
-        "output": "function(err,data){document.getElementById('codeArea').innerText=err?String(err):data}"
+        "output": "function(err,data){window.parent.postMessage(err?String(err):data,'*')}"
     },
     "target": {
         "type": "keepGrammar"
@@ -52,6 +52,19 @@ converter.html.bodyScripts_keepGrammar=`
 <script src="./Option.js"></script>
 `
 
+function jsContent(params) {
+    // mark for split
+    // receive messege
+    codeArea=document.getElementById('codeArea')
+    function receiveFunc(event) {
+        OptionFunctions.parse(event.data);
+    }
+    window.addEventListener("message", receiveFunc, false);
+    // mark for split
+}
+
+converter.js._text.push('message')
+converter.js.message = jsContent.toString().split('// mark for split')[1]
 
 fs.writeFileSync('demos/option/' + converter.html._name, converter.html.text(), { encoding: 'utf8' })
 fs.writeFileSync('demos/option/' + converter.js._name, converter.js.text(), { encoding: 'utf8' })

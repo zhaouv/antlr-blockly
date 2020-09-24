@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iframe test</title>
-    <style>
-        #blocklyframe {
-            height: 480px;
-            width: 940px;
-        }
-    </style>
 </head>
+
 <body>
-    <iframe id="blocklyframe" src="index.html" frameborder="0"></iframe>
+    <iframe id="blocklyframe" src="index.html" style="height: 480px;width: 940px;" frameborder="0"></iframe>
+    <pre id="codeArea"></pre>
+    <script>
+        codeArea = document.getElementById('codeArea')
+        blocklyframe = document.getElementById('blocklyframe')
+        blocklyframe.onload = function () {
+            // codeArea.innerText = 'loaded'
+            blocklyframe.contentWindow.postMessage({"type":"option","defaultGenerating":"JSON","blocklyRuntime":{"type":"blocklyRuntimeStatement","path":"../../","files":"blockly_compressed.js, blocks_compressed.js, javascript_compressed.js, zh-hans.js"},"blocklyDiv":{"type":"fixedSizeBlocklyDiv","id":"blocklyDiv","height":"480px","width":"940px"},"toolbox":{"type":"toolboxDefault","id":"toolbox","gap":5},"codeArea":{"type":"codeAreaStatement","output":"function(err,data){window.parent.postMessage(err?String(err):data,'*')}"},"target":{"type":"keepGrammar"}}, '*')
+        }
+
+        window.addEventListener("message", function (event) {
+            codeArea.innerText = event.data;
+        }, false);
+    </script>
 </body>
+
 </html>
