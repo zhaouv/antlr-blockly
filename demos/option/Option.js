@@ -9,7 +9,17 @@ document.body.appendChild(script);
 
     // receive messege
     codeArea=document.getElementById('codeArea')
+    function initAsBlock(blockName){
+        var xml_text = OptionBlocks[blockName].xmlText();
+        var xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
+        OptionFunctions.workspace().clear();
+        Blockly.Xml.domToWorkspace(xml, OptionFunctions.workspace());
+    }
     function receiveFunc(event) {
+        if (event.data._meta==='blockName') {
+            initAsBlock(event.data.blockName);
+            return;
+        }
         OptionFunctions.parse(event.data);
     }
     window.addEventListener("message", receiveFunc, false);
