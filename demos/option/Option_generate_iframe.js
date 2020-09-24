@@ -76,7 +76,7 @@ function jsContent(params) {
 converter.js._text.push('message')
 converter.js.message = jsContent.toString().split('// mark for split')[1]
 
-fs.writeFileSync('demos/option/' + converter.html._name, converter.html.text(), { encoding: 'utf8' })
+fs.writeFileSync('demos/option/' + 'iframe.html', converter.html.text(), { encoding: 'utf8' })
 fs.writeFileSync('demos/option/' + converter.js._name, converter.js.text(), { encoding: 'utf8' })
 
 

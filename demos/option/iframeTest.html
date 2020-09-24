@@ -8,14 +8,14 @@
 </head>
 
 <body>
-    <iframe id="blocklyframe" src="index.html" style="height: 480px;width: 940px;" frameborder="0"></iframe>
+    <iframe id="blocklyframe" src="iframe.html" style="height: 480px;width: 940px;" frameborder="0"></iframe>
     <pre id="codeArea"></pre>
     <script>
         codeArea = document.getElementById('codeArea')
         blocklyframe = document.getElementById('blocklyframe')
         blocklyframe.onload = function () {
             // codeArea.innerText = 'loaded'
-            blocklyframe.contentWindow.postMessage({_meta:'blockName',blockName:'option'}, '*')
+            blocklyframe.contentWindow.postMessage({ _meta: 'blockName', blockName: 'option' }, '*')
         }
 
         window.addEventListener("message", function (event) {

@@ -36,6 +36,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 ## Todo
 
++ [ ] 更加容易只覆盖toolboxobj
+
 + [ ] 生成的文件前打上生成标注
 
 + [ ] json作为defaultCode时, 更多基于类型的处理
