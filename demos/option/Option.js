@@ -11,13 +11,15 @@
         var toolboxObj = {
             "sub-options": [
                 OptionBlocks["blocklyRuntimeStatement"].xmlText(),
-                OptionBlocks["dymanicSizeBlocklyDiv"].xmlText(),
+                OptionBlocks["blocklyRuntimeStatement"].xmlText(['https://unpkg.com/blockly@3.20200402.1/','blockly.min.js, msg/en.min.js']),
+                OptionBlocks["blocklyRuntimeStatement"].xmlText(['https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/','blockly.min.js, msg/zh-hans.min.js']),
                 OptionBlocks["fixedSizeBlocklyDiv"].xmlText(),
-                OptionBlocks["toolboxFunc"].xmlText(),
+                OptionBlocks["dymanicSizeBlocklyDiv"].xmlText(),
                 OptionBlocks["toolboxDefault"].xmlText(),
+                OptionBlocks["toolboxFunc"].xmlText(),
                 OptionBlocks["codeAreaStatement"].xmlText(),
-                OptionBlocks["keepGrammar"].xmlText(),
                 OptionBlocks["independentFile"].xmlText(),
+                OptionBlocks["keepGrammar"].xmlText(),
             ],
             "templates": [
                 OptionBlocks["option"].xmlText(),
