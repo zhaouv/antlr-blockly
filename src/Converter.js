@@ -75,7 +75,7 @@ Converter.withOption = function (grammarFile, option) {
     }
     if (option.target.type === 'keepGrammar') {
         converter.html._text[converter.html._text.indexOf('bodyScripts')] = 'bodyScripts_keepGrammar';
-        converter.js._text = ['keepGrammar']
+        converter.js._text = ['generatedMark','keepGrammar']
         converter.js.keepGrammar = converter.js.keepGrammar.replace('__grammarFile__', JSON.stringify(grammarFile))
             .replace('__option__', JSON.stringify(option));
     }
@@ -261,6 +261,7 @@ Converter.prototype.generMainFile = function (functions) {
     Object.assign(this.js, mainFile.js)
     this.html._text = [
         // from tpl
+        'generatedMark',
         'htmlStart',
         'headScripts',
         'head_body',
@@ -270,6 +271,9 @@ Converter.prototype.generMainFile = function (functions) {
         'htmlEnd'
     ]
     this.js._text = [
+        // from tpl
+        'generatedMark',
+        // from this Class
         'blocks_collection',
         'blocks_field',
         'blocks_block',

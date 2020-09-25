@@ -1,7 +1,6 @@
 const { Converter } = require('./Converter')
 const fs = require('fs')
 
-// Converter.setfs(fs)
 let grammarFile = fs.readFileSync('demos/option/Option.g4', { encoding: 'utf-8' })
 let option = {
     "type": "option",
@@ -35,6 +34,3 @@ fs.writeFileSync('gen/' + converter.html._name, converter.html.text(), { encodin
 fs.writeFileSync('gen/' + converter.js._name, converter.js.text(), { encoding: 'utf8' })
 if (!fs.existsSync('gen/blockly/blockly_compressed.js')) throw 'unzip blockly.3.20200402.1.zip to get blockly runtime `7z x blockly.3.20200402.1.zip -ogen/blockly`';
 if (option.target.type === 'keepGrammar' && !fs.existsSync('gen/Converter.bundle.min.js')) throw 'copy Converter.bundle.min.js to get converter runtime `cp Converter.bundle.min.js gen/Converter.bundle.min.js`';
-
-// let blocks=eval(['blocks_collection','blocks_field','blocks_block'].map(v=>converter.js[v]).join(''))
-'end'

@@ -345,6 +345,8 @@ var mainFileTPL = function(
 ){
 return {
 html:{
+    generatedMark:`<!-- Generated from ${grammarName}.g4 by antlr-blockly -->
+`,
     htmlStart:`<!doctype html>
 <head>
 <meta charset="utf-8">
@@ -384,6 +386,8 @@ html:{
 `
 },
 js:{
+    generatedMark:`// Generated from ${grammarName}.g4 by antlr-blockly
+`,
     BlocklyInject:`
 var ${workspaceName} = Blockly.inject('${blocklyDivId}',{
     media: '${blocklyRuntimePath}media/',
