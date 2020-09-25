@@ -36,6 +36,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 ## Todo
 
++ ?playground能多次点run
+
 + [ ] 更加容易只覆盖toolboxobj
 
 + [ ] 生成的文件前打上生成标注
@@ -83,7 +85,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   + [x] toolbox
   + [x] codeArea
   + [x] target
-  + [ ] 目前的主页作为playground, 并用 iframe 引入 option
+  + [x] 目前的主页作为playground, 并用 iframe 引入 option
   + [ ] 新的主页
 
 + [x] 语句集合和表达式集合内允许定义一般方块, 通过` # id`规则来命名方块, 或者使用xxx_arithmetic_ii的默认名称

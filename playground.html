@@ -123,17 +123,22 @@
 <textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="Paste Your Grammar File Here"></textarea>
 <br/>
 <div style="margin:0;padding:0;position:relative;width:100%">
-<input type="button" value="Parse" onclick="func_Parse()"/>
-<input type="button" value="Run" onclick="func_Run()"/>
-<input type="button" value="Download" onclick="func_Download()"/>
+    <input type="button" value="Parse" onclick="func_Parse()"/>
+    <input type="button" value="Run" onclick="func_Run()"/>
+    <input type="button" value="Download" onclick="func_Download()"/>
 
-<span style="margin:0;padding:0;position:absolute;right:0;">
-<input type="button" value="docs" onclick="window.location='./docs/#/en/README'"/>
-<input type="button" value="view on Github" onclick="window.location='https://github.com/zhaouv/antlr-blockly/'"/>
-</span>
+    <span style="margin:0;padding:0;position:absolute;right:0;">
+    <input type="button" value="docs" onclick="window.location='./docs/#/en/README'"/>
+    <input type="button" value="view on Github" onclick="window.location='https://github.com/zhaouv/antlr-blockly/'"/>
+    </span>
 </div>
 <br/>
-
+<div>
+    <span>option:</span><br>
+    <iframe id="optionIframe" src="demos/option/iframe.html" style="height: 480px;width: 940px;" frameborder="0"></iframe>
+    <pre id="optionArea"></pre>
+</div>
+<hr>
 <pre id='printf_target'><span class="weakresult">result</span></pre>
 
 <!-- content END -->
@@ -160,6 +165,18 @@ printf = function(str,weak) {
     printf_target.appendChild(node);
 }
 
+// option
+optionArea = document.getElementById('optionArea')
+optionIframe = document.getElementById('optionIframe')
+optionIframe.onload = function () {
+    // optionArea.innerText = 'loaded'
+    optionIframe.contentWindow.postMessage({ _meta: 'blockName', blockName: 'option' }, '*')
+}
+window.addEventListener("message", function (event) {
+    optionArea.innerText = event.data;
+}, false);
+// ---
+
 function func_Parse(){
     console.clear();
     runOne();
@@ -181,6 +198,7 @@ function func_Run(){
     //?待重新测试
     document.querySelector('input[type=button][value=Run]').style.display='none';
     document.querySelector('input[type=button][value=Parse]').style.display='none';
+    optionIframe.style.display='none';
 }
 function func_Download(){
     
@@ -223,16 +241,20 @@ function func_Download(){
 
 function runOne(callback){
     var grammarFile = input_B.value;
-    
-    converter = new Converter().init();
-    converter.generBlocks(grammarFile);
-    printf(converter.blocks);
+    var option = null;
+    try {
+        option = JSON.parse(optionArea.innerText)
+    } catch (ee) {
+    }
+    if (option == null) {
+        setTimeout(function () {
+            console.log('loading option...');
+            runOne(callback)
+        },1000)
+        return
+    }
+    converter = Converter.withOption(grammarFile,option);
 
-    converter.renderGrammarName();
-
-    converter.generToolbox();
-
-    converter.generMainFile();
     printf([
         'html :\n\n',
         converter.html.text(),
