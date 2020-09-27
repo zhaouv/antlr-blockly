@@ -42,13 +42,18 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + [x] 生成的文件前打上生成标注
 
-+ [ ] json作为defaultCode时, 更多基于类型的处理
++ [ ] **!** json作为defaultCode时, 更多基于类型的处理
 
 + [ ] 发布到npm  
   ?更改类Converter的名字  
   提供把blockly runtime以及bundle复制到目标位置的脚本
 
-+ [ ] Function_0等注入的函数改名字
++ [x] 注入的函数改名字  
+  Function_0 -> Call_BeforeType  
+  Function_1 -> Call_BeforeBlock  
+  Function_2 -> 移除  
+  Functions -> Insert_FunctionStart  
+  新增 Call_AfterAllContent  
 
 + [x] 注入中使用color和colour均可以
 
@@ -73,6 +78,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   + [ ] `abc=Bool`
   + [ ] defaultMap
   + ...
+  + [ ] Insert_BeforeCallIniter,Call_AfterAllContent
 
 + [x] 默认值提供defaultMap, 优先级大于default数组
 

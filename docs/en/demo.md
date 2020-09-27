@@ -29,7 +29,7 @@ var code = '{"type": "playSound", "name": "'+EvalString_0+'"},\n';
 return code;
 */
 <span style="font-weight: bold;color:teal">...</span>
-/* Function_0
+/* Call_BeforeType
 //this.evisitor.recieveOrder='ORDER_NONE';
 this.evisitor.valueColor=330;
 this.evisitor.statementColor=70;
@@ -47,7 +47,7 @@ this.evisitor.soundColor=20;
 + **Modify Boolean Not's `inputsInline` and set the type of block `idString_1_e` and block `idString_2_e` to `idString_e`**
 
 <pre>
-/* Function_1
+/* Call_BeforeBlock
 delete(this.block('negate_e').inputsInline);
 this.block('idString_1_e').output='idString_e';
 this.block('idString_2_e').output='idString_e';

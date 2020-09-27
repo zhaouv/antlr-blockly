@@ -319,7 +319,7 @@ editor_blockly.runOne = function (){
     printf(converter.blocks);
     converter.renderGrammarName();
     //converter.generToolbox();
-    converter.generMainFile();
+    converter.generMainFile({});
     printf(converter.mainFile.join(''));
     console.log(converter);
 

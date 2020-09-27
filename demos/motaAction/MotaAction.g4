@@ -1162,7 +1162,7 @@ LineComment
     :   '//' ~[\r\n]* -> skip
     ;
 
-/* Function_0
+/* Call_BeforeType
 //this.evisitor.recieveOrder='ORDER_NONE';
 this.evisitor.valueColor=330;
 this.evisitor.statementColor=70;
@@ -1176,13 +1176,13 @@ this.evisitor.eventColor=220;
 this.evisitor.soundColor=20;
 */
 
-/* Function_1
+/* Call_BeforeBlock
 delete(this.block('negate_e').inputsInline);
 this.block('idString_1_e').output='idString_e';
 this.block('idString_2_e').output='idString_e';
 */
 
-/* Functions
+/* Insert_FunctionStart
 
 function ActionParser(){
 }

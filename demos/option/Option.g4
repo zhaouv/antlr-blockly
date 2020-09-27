@@ -103,7 +103,7 @@ NEWLINE:'\r'? '\n' ;
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
 
-/* Function_0
+/* Call_BeforeType
 // this.evisitor.recieveOrder='ORDER_NONE';
 // this.evisitor.valueColor=330;
 // this.evisitor.statementColor=300;
@@ -115,7 +115,7 @@ this.evisitor.codeAreaStatementColor=200;
 this.evisitor.targetStatementColor=220;
 */
 
-/* Functions
+/* Insert_FunctionStart
 for (var key in OptionBlocks) {
     if (OptionBlocks[key].json) {
         OptionBlocks[key].json.nextStatement=undefined;

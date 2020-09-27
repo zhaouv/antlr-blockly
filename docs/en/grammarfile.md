@@ -276,9 +276,9 @@ antlr-blockly recognizes only the lexer rules above it as a field, the lexer rul
 
 Grammar files can also be embedded in a specific area as `/* functionName\n ... */`
 
-> `Function_0,Function_1,Function_2` will be directly executed by `Converter`, and `Functions` will be put into the generated code.
+> `Call_BeforeType,Call_BeforeBlock,Call_AfterAllContent` will be directly executed by `Converter`, and `Insert_FunctionStart,Insert_BeforeCallIniter` will be put into the generated code.
 
-+ `Function_0` can modify the following variables in the following way  
++ `Call_BeforeType` can modify the following variables in the following way  
 ```js
   this.evisitor.valueColor=330;  
   this.evisitor.statementColor=160;  
@@ -297,7 +297,7 @@ Grammar files can also be embedded in a specific area as `/* functionName\n ... 
 ```  
 The most commonly used is `this.evisitor.recieveOrder = 'ORDER_NONE';` to make statements accept values without parentheses.
 
-+ `Function_1` to modify a specific block  
++ `Call_BeforeBlock` to modify a specific block  
 For example, in [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4), modify Boolean Not's `inputsInline` and set the type of block `idString_1_e` and block `idString_2_e` to `idString_e`  
 ```js
 delete(this.block('negate_e').inputsInline);
@@ -305,9 +305,7 @@ this.block('idString_1_e').output='idString_e';
 this.block('idString_2_e').output='idString_e';
 ```
 
-+ `Function_2` The definition of the blocks here has been converted to a string. You can replace the string `this.blocks` by `replace`, change the default values for each of the complex lexer rules, and so on.
-
-+ `Functions` The code here will be placed after the `'GrammarName'Functions = {};` of the generated web page. The escape function used to embed the lexical specification, for example  
++ `Insert_FunctionStart` The code here will be placed after the `'GrammarName'Functions = {};` of the generated web page. The escape function used to embed the lexical specification, for example  
 ``` js
   XxxFunctions.IdString_pre = function(IdString){
     if (IdString.indexOf('__temp_name__')!==-1) throw new Error('Please change __temp_name__');

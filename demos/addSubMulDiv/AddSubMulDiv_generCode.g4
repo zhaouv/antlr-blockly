@@ -87,6 +87,6 @@ NEWLINE:'\r'? '\n' ;
         // return newlines to parser (is end-statement signal)
 WS  :   [ \t]+ -> skip ;         // toss out whitespace
 
-/* Function_0
+/* Call_BeforeType
 this.evisitor.recieveOrder='ORDER_NONE';
 */

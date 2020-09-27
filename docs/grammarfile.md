@@ -276,9 +276,9 @@ antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则�
 
 语法文件中还可以以`/* 函数名\n ... */`的形式在特定的区域嵌入代码  
 
-> `Function_0,Function_1,Function_2` 会被`Converter`直接执行,`Functions`会被置入生成的代码中.
+> `Call_BeforeType,Call_BeforeBlock,Call_AfterAllContent` 会被`Converter`直接执行,`Insert_FunctionStart,Insert_BeforeCallIniter`会被置入生成的代码中.
 
-+ `Function_0` 能够以如下的形式修改以下变量  
++ `Call_BeforeType` 能够以如下的形式修改以下变量  
 ```js
   this.evisitor.valueColor=330;  
   this.evisitor.statementColor=160;  
@@ -297,7 +297,7 @@ antlr-blockly只识别其之上的词法规则作为域, 之下的词法规则�
 ```  
 最常用到的是`this.evisitor.recieveOrder='ORDER_NONE';`来使得语句接受值时不加括号.
 
-+ `Function_1` 修改某个具体方块  
++ `Call_BeforeBlock` 修改某个具体方块  
 例如 [MotaAction.g4](https://github.com/zhaouv/antlr-blockly/blob/master/demos/motaAction/MotaAction.g4) 中修改布尔非的`inputsInline`, 以及把方块`idString_1_e`和`idString_2_e`的类型设定为`idString_e`  
 ```js
 delete(this.block('negate_e').inputsInline);
@@ -305,9 +305,7 @@ this.block('idString_1_e').output='idString_e';
 this.block('idString_2_e').output='idString_e';
 ```
 
-+ `Function_2` 此处方块的定义已经转化为字符串, 可以通过对字符串`this.blocks`进行`replace`替换, 修改各复杂词法规则的默认值等等.
-
-+ `Functions` 此处的代码会置入生成的网页的`语法名Functions={};`之后. 用来嵌入词法规格的转义函数,例如  
++ `Insert_FunctionStart` 此处的代码会置入生成的网页的`语法名Functions={};`之后. 用来嵌入词法规格的转义函数,例如  
 ``` js
   XxxFunctions.IdString_pre = function(IdString){
     if (IdString.indexOf('__temp_name__')!==-1) throw new Error('请修改__temp_name__');

@@ -119,7 +119,7 @@
 <!-- content START -->
 
 <div id="content_A" style="width: 100%;display:none"></div> 
-<h1>antlr-blockly</h1>
+<h1>antlr-blockly <span style="color:blue">playground</span></h1>
 <textarea id="input_B" spellcheck="false" style="width: 100%; height: 18.2em;overflow:y;/* resize:none; */" placeholder="Paste Your Grammar File Here"></textarea>
 <br/>
 <div style="margin:0;padding:0;position:relative;width:100%">
@@ -187,7 +187,7 @@ function func_Run(){
     content_A.style.width='100%';
     content_A.style.display='block';
     // content_A.style.backgroundColor = 'white';
-    content_A.innerHTML = converter.html.bodyContent;
+    content_A.innerHTML = converter.html.bodyDebugButtons + converter.html.bodyContent;
 
     var script = document.createElement('script');
     script.innerHTML = converter.js.text();

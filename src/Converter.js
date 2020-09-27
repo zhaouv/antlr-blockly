@@ -7,7 +7,7 @@
  * ---
  * 
  * converter = new Converter();
- * converter.main(grammarFile,{Function_0:function(){
+ * converter.main(grammarFile,{Call_BeforeType:function(){
  *   this.evisitor.statementColor=230;
  * }});
  * 
@@ -132,7 +132,7 @@ Converter.prototype.generBlocks = function (grammarFile, functions) {
     var evisitor = new EvalVisitor().init(svisitor, grammarFile);
     this.evisitor = evisitor;
 
-    /* Function_0
+    /* Call_BeforeType
     // 此处是整体修改
     // 能够修改以下变量
     this.evisitor.valueColor=330;
@@ -150,15 +150,15 @@ Converter.prototype.generBlocks = function (grammarFile, functions) {
     this.workSpaceName='workspace';
     this.codeAreaId='codeArea';
      */
-    eval(this.evisitor.matchInject('Function_0'));
-    if (functions['Function_0']) functions['Function_0'].call(this);
+    eval(this.evisitor.matchInject('Call_BeforeType'));
+    if (functions['Call_BeforeType']) functions['Call_BeforeType'].call(this);
 
     evisitor.visit(tree);
-    /* Function_1
+    /* Call_BeforeBlock
     // 此处修改各个具体方块
      */
-    eval(this.evisitor.matchInject('Function_1'));
-    if (functions['Function_1']) functions['Function_1'].call(this);
+    eval(this.evisitor.matchInject('Call_BeforeBlock'));
+    if (functions['Call_BeforeBlock']) functions['Call_BeforeBlock'].call(this);
 
     evisitor.generBlocks();
     // console.log(evisitor);
@@ -167,13 +167,6 @@ Converter.prototype.generBlocks = function (grammarFile, functions) {
     this.blocks_field = evisitor.blocks_field;
     this.blocks_block = evisitor.blocks_block;
 
-    /* Function_2
-    // 此处是整体修改
-    可以通过对this.blocks进行replace替换,
-    修改各复杂词法规则的默认值
-     */
-    eval(this.evisitor.matchInject('Function_2'));
-    if (functions['Function_2']) functions['Function_2'].call(this);
     return this;
 }
 
@@ -232,13 +225,13 @@ Converter.prototype.generMainFile = function (functions) {
         blocks_block: this.blocks_block + '\n\n',
         OmitedError: this.OmitedError + '\n\n',
         Functions_define: grammarName + 'Functions={}\n\n',
-        injectFunctions: this.evisitor.matchInject('Functions'),
-        insertFunctions: functions['Functions'] || '',
+        Insert_FunctionStart: this.evisitor.matchInject('Insert_FunctionStart'),
         Functions_pre: this.Functions_pre + '\n\n',
         Functions_fieldDefault: this.Functions_fieldDefault + '\n\n',
         Functions_defaultCode: this.Functions_defaultCode + '\n\n',
         Functions_xmlText: this.Functions_xmlText + '\n\n',
         Functions_blocksIniter: this.Functions_blocksIniter + '\n\n',
+        Insert_BeforeCallIniter: this.evisitor.matchInject('Insert_BeforeCallIniter'),
         callIniter: grammarName + 'Functions.blocksIniter();\n\n',
         toolbox: this.toolbox + '\n\n',
     }
@@ -279,13 +272,13 @@ Converter.prototype.generMainFile = function (functions) {
         'blocks_block',
         'OmitedError',
         'Functions_define',
-        'injectFunctions',
-        'insertFunctions',
+        'Insert_FunctionStart',
         'Functions_pre',
         'Functions_fieldDefault',
         'Functions_defaultCode',
         'Functions_xmlText',
         'Functions_blocksIniter',
+        'Insert_BeforeCallIniter',
         'callIniter',
         'toolbox',
         // from tpl
@@ -295,9 +288,16 @@ Converter.prototype.generMainFile = function (functions) {
         'debugFunctions'
     ]
     this.html._name = 'index.html'
-    this.js._name = this.grammarName + '.js'
+    this.js._name = grammarName + '.js'
     this.html.text = text
     this.js.text = text
+
+    /* Call_AfterAllContent
+     */
+    eval(this.evisitor.matchInject('Call_AfterAllContent'));
+    if (functions['Call_AfterAllContent']) functions['Call_AfterAllContent'].call(this);
+
+    return this
 }
 
 ///////////////////////////////////////////////////////////////////////////////
