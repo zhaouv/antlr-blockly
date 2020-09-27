@@ -17,8 +17,6 @@ blocklyRuntimeStatement
 defaultMap:{path:"./",files:'blockly_compressed.js, blocks_compressed.js, javascript_compressed.js, zh-hans.js'}
 color : this.blocklyRuntimeStatementColor
 */
-// cdn demo:
-// {path:"https://cdn.bootcdn.net/ajax/libs/blockly/3.20200402.1/",files:'blockly.min.js, msg/zh-hans.min.js'}
 ;
 
 blocklyDivStatement
@@ -99,15 +97,10 @@ BGNL:   'asfvaswvr'? 'asdvaswvr'? ;
 MeaningfulSplit : '=== meaningful ^ ===' ;
 
 NEWLINE:'\r'? '\n' ; 
-        // return newlines to parser (is end-statement signal)
-WS  :   [ \t]+ -> skip ;         // toss out whitespace
+WS  :   [ \t]+ -> skip ; 
 
 
 /* Call_BeforeType
-// this.evisitor.recieveOrder='ORDER_NONE';
-// this.evisitor.valueColor=330;
-// this.evisitor.statementColor=300;
-// this.evisitor.entryColor=250;
 this.evisitor.blocklyRuntimeStatementColor=135;
 this.evisitor.blocklyDivStatementColor=160;
 this.evisitor.toolboxStatementColor=180;
