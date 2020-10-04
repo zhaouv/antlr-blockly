@@ -127,13 +127,22 @@ ${grammarName}Functions.defaultCode_TEXT = function (ruleName,args,block) {
 
 ${grammarName}Functions.defaultCode_JSON_TYPE='type'
 
-/**
- * @class
- */
+${grammarName}Functions.parserPre={}
+${grammarName}Functions.parserPre.pre = function(LexerId) {
+    if (${grammarName}Functions.parserPre.hasOwnProperty(LexerId+'_pre')) {
+        return ${grammarName}Functions.parserPre[LexerId+'_pre'];
+    }
+    return function(obj,blockObj,fieldName,blockType,index){return obj}
+}
+/** @class */
 ${grammarName}Functions.parserClass = function (params) {
 }
 ${grammarName}Functions.parserClass.prototype.parse = function (obj,next) {
-    var rule = ${grammarName}Blocks[obj[${grammarName}Functions.defaultCode_JSON_TYPE]]
+    var blockType = obj[${grammarName}Functions.defaultCode_JSON_TYPE]
+    var rule = ${grammarName}Blocks[blockType]
+    if (${grammarName}Functions.parserPre.hasOwnProperty(blockType+'_pre')) {
+        obj = ${grammarName}Functions.parserPre[blockType+'_pre'](obj)
+    }
     var input = []
     for (var index = 0; index < rule.args.length; index++) {
         var dobj = obj[rule.args[index]];
@@ -148,7 +157,8 @@ ${grammarName}Functions.parserClass.prototype.parse = function (obj,next) {
         } else if (rule.argsType[index]==='value') {
             input.push(this.parse(dobj))
         } else {
-            input.push(dobj)
+            var LexerId = rule.argsGrammarName[index]
+            input.push(${grammarName}Functions.parserPre.pre(LexerId)(dobj,obj,rule.args[index],blockType,index))
         }
     }
     return rule.xmlText(input,next)

@@ -42,7 +42,9 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + [x] 生成的文件前打上生成标注
 
-+ [ ] **!** json作为defaultCode时, 更多基于类型的处理
++ [x] json作为defaultCode时, 更多基于类型的处理  
+  + [x] 域  
+  + [x] 图块  
 
 + [ ] 发布到npm  
   ?更改类Converter的名字  
@@ -54,6 +56,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   Function_2 -> 移除  
   Functions -> Insert_FunctionStart  
   新增 Call_AfterAllContent  
+  新增 Insert_BeforeCallIniter  
 
 + [x] 注入中使用color和colour均可以
 
