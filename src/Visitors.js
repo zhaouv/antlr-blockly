@@ -919,10 +919,16 @@ EvalVisitor.prototype.visitLexerRuleList = function(ctx) {
 EvalVisitor.prototype.visitLexerRuleComplex = function(ctx) {
     var lexerId = ctx.LexerIdentifier(0).getText();
     if (this.speicalLexerRule(lexerId)) return;
+    try {
+        var values = this.matchInject(lexerId);
+        var defaultText = eval('('+values+')');
+    } catch (ee) {
+        var defaultText = lexerId+'_default'
+    }
     //复杂词法规则作为文本域让用户输入
     var lexervalue = {
         'type': lexerId.slice(-6)!=='_Multi'?'field_input':'field_multilinetext',
-        'text': lexerId+'_default'
+        'text': defaultText
     }
     this.setRule('lexer',lexerId,lexervalue);
 };

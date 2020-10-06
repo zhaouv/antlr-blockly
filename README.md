@@ -64,7 +64,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   + [x] 提供一个blockly.3.20200402.1.zip以供下载
   + [x] node环境下先暂时需要新写一个脚本来执行, 之后在考虑commander.js之类的
 
-+ ?通过注入给一般域加默认值
++ [x] 通过注入给一般域加默认值
 
 + ?精确区分undefined和null
 
@@ -72,7 +72,7 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + [x] 单语句的支持: json中不再是数组, 放入多个语句时报错
 
-+ [ ] demos按照新的设计改写
++ [ ] **!** demos按照新的设计改写
 
 + [ ] 文档
   + [ ] xmlText函数attribute
