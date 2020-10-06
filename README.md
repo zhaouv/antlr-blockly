@@ -40,15 +40,36 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + ?playground能多次点run
 
++ [ ] 发布到npm  
+  ?更改类Converter的名字  
+  提供把blockly runtime以及bundle复制到目标位置的脚本
+
++ ?精确区分undefined和null
+
++ [ ] 文档
+  + [ ] xmlText函数attribute
+  + [ ] defaultCode_JSON
+  + [ ] `# id`
+  + [ ] `abc=Bool`
+  + [ ] defaultMap
+  + ... v0.1.2
+  + [ ] Insert_BeforeCallIniter,Call_AfterAllContent
+
++ [ ] 文档:api说明
+
++ 多语言的支持
+
++ 注释,每处做了什么的说明
+
++ [ ] 更多demo,提供一个包含`function`的例子
+
+## v 0.1.2 (Beta)
+
 + [x] 生成的文件前打上生成标注
 
 + [x] json作为defaultCode时, 更多基于类型的处理  
   + [x] 域  
   + [x] 图块  
-
-+ [ ] 发布到npm  
-  ?更改类Converter的名字  
-  提供把blockly runtime以及bundle复制到目标位置的脚本
 
 + [x] 注入的函数改名字  
   Function_0 -> Call_BeforeType  
@@ -66,22 +87,9 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 + [x] 通过注入给一般域加默认值
 
-+ ?精确区分undefined和null
-
 + [x] 支持map作为输入的xmlText
 
 + [x] 单语句的支持: json中不再是数组, 放入多个语句时报错
-
-+ [ ] **!** demos按照新的设计改写
-
-+ [ ] 文档
-  + [ ] xmlText函数attribute
-  + [ ] defaultCode_JSON
-  + [ ] `# id`
-  + [ ] `abc=Bool`
-  + [ ] defaultMap
-  + ...
-  + [ ] Insert_BeforeCallIniter,Call_AfterAllContent
 
 + [x] 默认值提供defaultMap, 优先级大于default数组
 
@@ -103,14 +111,6 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
   + ~~所有都允许左递归, 只有expression允许直接的左递归且不命名方块~~
   + ~~所有都允许左递归, 放弃expression的特殊地位, 不兼容旧的.g4~~
   + [x] 所有都允许左递归, 放弃expression的特殊地位, 所有的列表都用xxx_arithmetic_ii给默认名称
-
-+ [ ] 文档:api说明
-
-+ 多语言的支持
-
-+ 注释,每处做了什么的说明
-
-+ [ ] 更多demo,提供一个包含`function`的例子
 
 ## v 0.1.1 (Beta)
 
