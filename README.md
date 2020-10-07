@@ -36,6 +36,8 @@ The benefits of using a visual editor: low learning costs, the generated JSON/DS
 
 ## Todo
 
++ [ ] `if (["delete","create","move","finished_loading"].indexOf(event.type)!==-1) return;` `codeAreaFunc(err,code,event);` omitedcheckUpdateFunction
+
 + [ ] 新的主页, ?作为新仓库, 把doc index playground demos移过去
 
 + ?playground能多次点run
